@@ -24,6 +24,8 @@ namespace KingmakerAI
         static LibraryScriptableObject library = Main.library;
         static UnitsAroundConsideration aoe_considertion => library.Get<UnitsAroundConsideration>("96a5a05d98be03446bbf21e217270b06");
         static UnitsAroundConsideration aoe_more_enemies_considertion => library.Get<UnitsAroundConsideration>("b2490b137b8b53a4e950c1d79d1c5c1d");
+        static CommandCooldownConsideration swift_action_available = library.Get<CommandCooldownConsideration>("c2b7d2f9a5cb8d04d9e1aa4bf3d3c598");
+        static CommandCooldownConsideration no_standard_action = library.Get<CommandCooldownConsideration>("eb52264e87de14842b44b362da4e0673");
 
         static internal void load()
         {
@@ -497,9 +499,12 @@ namespace KingmakerAI
             var quick_channel_action = createCastSpellAction("QuickChannelNegativeClericAiAction", quick_channel.Parent, new Consideration[0], new Consideration[] { aoe_more_enemies_considertion },
                                           base_score: 20.0f, variant: quick_channel);
             quick_channel_action.CooldownRounds = 1;
+            quick_channel_action.ActorConsiderations = quick_channel_action.ActorConsiderations.AddToArray(no_standard_action);
+
             var cast_cold_ice_strike = createCastSpellAction("CastColdIceStrikeSpellAiAction", cold_ice_strike, new Consideration[0], new Consideration[] { aoe_considertion },
                                           base_score: 50.0f, variant: null);
             cast_cold_ice_strike.CooldownRounds = 1;
+            cast_cold_ice_strike.ActorConsiderations = cast_cold_ice_strike.ActorConsiderations.AddToArray(swift_action_available, no_standard_action);
 
 
             brain.Actions = brain.Actions.AddToArray(cast_flame_strike, cast_command, quick_channel_action, cast_cold_ice_strike);
