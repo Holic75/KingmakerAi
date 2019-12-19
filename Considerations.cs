@@ -26,6 +26,10 @@ namespace KingmakerAI.NewConsiderations
 
             var weapon = attacker.Body?.PrimaryHand?.MaybeWeapon;
 
+            if (!attacker.Body.HandsAreEnabled && attacker.Body.AdditionalLimbs.Count > 0)
+            {
+                weapon = attacker.Body.AdditionalLimbs[0].MaybeWeapon;
+            }
             int odds = -10;
             if (weapon != null)
             {
