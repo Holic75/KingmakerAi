@@ -38,7 +38,7 @@ namespace KingmakerAI.NewConsiderations
                 odds = attack_bonus - target_ac;
             }
 
-            var uncertanity_base = (float)(5 + Math.Max(-4, Math.Max(attacker.Stats.Intelligence.Bonus, attacker.Stats.Wisdom.Bonus)));
+            var uncertanity_base = (float)(5 + Math.Max(-4, (attacker.Stats.Intelligence.Bonus + attacker.Stats.Wisdom.Bonus)/2));
             int uncertainty_range = (int)(50.0f / uncertanity_base); //so if bonus is 0, it will be 10, if -4, it will be 50, if +5 it will be + 5
             int uncertainty = 0;
             if (uncertanity_base != 0)
