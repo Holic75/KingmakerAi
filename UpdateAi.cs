@@ -3,6 +3,8 @@ using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.Blueprints.Classes.Spells;
+using Kingmaker.Blueprints.Items.Shields;
+using Kingmaker.Blueprints.Items.Weapons;
 using Kingmaker.Controllers.Brain.Blueprints;
 using Kingmaker.Controllers.Brain.Blueprints.Considerations;
 using Kingmaker.EntitySystem.Stats;
@@ -27,6 +29,8 @@ namespace KingmakerAI
         static CommandCooldownConsideration swift_action_available = library.Get<CommandCooldownConsideration>("c2b7d2f9a5cb8d04d9e1aa4bf3d3c598");
         static CommandCooldownConsideration no_standard_action = library.Get<CommandCooldownConsideration>("eb52264e87de14842b44b362da4e0673");
 
+        static BlueprintAiCastSpell quick_channel_action;
+
         static internal void load()
         {
             updateAttackConsiderations();
@@ -36,11 +40,35 @@ namespace KingmakerAI
             updateGoblinRogue();
             updateGoblinArcher();
             updateGoblinAlchemist();
-            //  
             updateGoblinShaman();
+
+
+            fixFallenPriest();
+
+            fixVarraskInquisitor();
             fixSaves();
         }
 
+
+        static void fixVarraskInquisitor()
+        {
+            var inquisitor = library.Get<BlueprintUnit>("685baae218ee68e41890342f197a9156");
+            var class_levels = inquisitor.GetComponent<AddClassLevels>();
+            class_levels.Selections[0].Features[0] = library.Get<BlueprintFeature>("121811173a614534e8720d7550aae253"); //shield bash
+            class_levels.Selections[0].Features[3] = library.Get<BlueprintFeature>("ac8aaf29054f5b74eb18f2af950e752d"); //twf
+            inquisitor.Body.PrimaryHand = library.Get<BlueprintItemWeapon>("684ff52e687aacf43a3f673e42b9c957"); //flaming ls +2
+            inquisitor.Body.SecondaryHand = library.Get<BlueprintItemShield>("3b3f25ba61ba5f346b4d546e702732cb"); //light shield + 3
+            class_levels.Selections[0].Features[5] = library.Get<BlueprintFeature>("9af88f3ed8a017b45a6837eab7437629"); //improved twf
+
+            class_levels.SelectSpells = class_levels.SelectSpells.AddToArray(library.Get<BlueprintAbility>("ef16771cb05d1344989519e87f25b3c5"));//add divine power
+
+            var brain = inquisitor.Brain;
+            brain.Actions[1] = library.Get<BlueprintAiCastSpell>("09de02db1b07d364795f412abb557de3"); //replace shield with divine power
+
+            var buffs = library.Get<BlueprintFeature>("d63d5ef2907eb73419fed27db0bcbb70");
+            buffs.AddComponent(Helpers.CreateAddStatBonus(StatType.AC, 4, ModifierDescriptor.Deflection)); //shield of faith
+            //buffs.CreateAddFact(library.Get<BlueprintFeature>("63bdc7fca5acbc749aa9e3cfffb53f11")); improved critical longsword
+        }
 
         static void updateGoblinShaman()
         {
@@ -338,6 +366,57 @@ namespace KingmakerAI
         }
 
 
+        static void fixFallenPriest()
+        {
+            var priest = library.Get<BlueprintUnit>("f0c4eafde7038e1488f54905e6846fc3");
+            priest.AddFacts = priest.AddFacts.AddToArray(library.Get<BlueprintFeature>("3adb2c906e031ee41a01bfc1d5fb7eea")); //channel negative
+            priest.Charisma = 14;
+
+            var spell_focus = library.Get<BlueprintParametrizedFeature>("16fa59cc9a72a6043b566b49184f53fe");
+            var greater_spell_focus = library.Get<BlueprintParametrizedFeature>("5b04b45b228461c43bad768eb0f7c7bf");
+            var class_levels = priest.GetComponent<AddClassLevels>();
+
+
+            var feat_selection = new SelectionEntry();
+            feat_selection.Selection = library.Get<BlueprintFeatureSelection>("247a4068296e8be42890143f451b4b45");//basic feat selection
+            feat_selection.Features = new BlueprintFeature[]
+            {
+                library.Get<BlueprintFeature>("fd30c69417b434d47b6b03b9c1f568ff"), //1 - selective channel
+                spell_focus, //3 - spell focus enchantment
+                spell_focus, //5 - spell focus necromancy
+                library.Get<BlueprintFeature>("ef7ece7bb5bb66a41b256976b27f424e"), //7 - quick spell
+                greater_spell_focus, //9 - gsf - enchantment
+                greater_spell_focus, //11 - gsf - necromancy
+                ChannelEnergyEngine.quick_channel, //13
+                ChannelEnergyEngine.improved_channel
+            };
+            class_levels.Skills = new StatType[] { StatType.SkillLoreReligion, StatType.SkillPerception};
+
+
+            var domain_selection = createFeatureSelection(library.Get<BlueprintFeatureSelection>("48525e5da45c9c243a343fc6545dbdb9"),
+                                                          library.Get<BlueprintFeature>("07854f99c8d029b4cbfdf6ae6c7bc452")); //strength
+
+            var domain_selection2 = createFeatureSelection(library.Get<BlueprintFeatureSelection>("43281c3d7fe18cc4d91928395837cd1e"),
+                                              library.Get<BlueprintFeature>("9ebe166b9b901c746b1858029f13a2c5")); //maddness
+
+
+            class_levels.Selections = new SelectionEntry[] { feat_selection, domain_selection, domain_selection2,
+                                                            createSpellFocusSelection(SpellSchool.Enchantment),
+                                                            createSpellFocusSelection(SpellSchool.Necromancy),
+                                                            createGreaterSpellFocusSelection(SpellSchool.Enchantment),
+                                                            createGreaterSpellFocusSelection(SpellSchool.Necromancy)
+                                                           };
+
+            //uses quick channel
+            //aura of madness
+            //rift of ruin
+            //destruction, boneshatter
+            var brain = priest.Brain;
+            brain.Actions = brain.Actions.AddToArray(quick_channel_action);
+            
+        }
+
+
 
 
         static void fixSaves()
@@ -496,7 +575,7 @@ namespace KingmakerAI
 
             var quick_channel = ChannelEnergyEngine.getQuickChannelVariant(library.Get<BlueprintAbility>("89df18039ef22174b81052e2e419c728"));
 
-            var quick_channel_action = createCastSpellAction("QuickChannelNegativeClericAiAction", quick_channel.Parent, new Consideration[0], new Consideration[] { aoe_more_enemies_considertion },
+            quick_channel_action = createCastSpellAction("QuickChannelNegativeClericAiAction", quick_channel.Parent, new Consideration[0], new Consideration[] { aoe_more_enemies_considertion },
                                           base_score: 20.0f, variant: quick_channel);
             quick_channel_action.CooldownRounds = 1;
             quick_channel_action.ActorConsiderations = quick_channel_action.ActorConsiderations.AddToArray(no_standard_action);

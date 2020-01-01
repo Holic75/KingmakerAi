@@ -17,6 +17,7 @@ namespace KingmakerAI.NewConsiderations
         static System.Random rng = new System.Random();
 
         public float min_score = 0.1f;
+        public float in_threat_range_bonus = 0.5f;
         public float max_score = 1.0f;
 
         public override float Score(DecisionContext context)
@@ -51,6 +52,11 @@ namespace KingmakerAI.NewConsiderations
             odds = Math.Min(Math.Max(odds, -20), 0); //from -20 to 0
 
             var score = (float)(odds + 20) / 20.0f;
+
+            if (attacker.CombatState.IsEngage(target))
+            {
+                score += in_threat_range_bonus;
+            }
 
             return Math.Max(Math.Min(score, max_score), min_score);
         }

@@ -79,7 +79,7 @@ namespace KingmakerAI
                 Main.library = self;
                 try
                 {
-                    Main.DebugLog("Loading Kingmaker AI");
+                    Main.logger.Log("Loading Kingmaker AI");
 
 #if DEBUG                
                     bool allow_guid_generation = true;
