@@ -39,14 +39,71 @@ namespace KingmakerAI
             updateGoblinFighter();
             updateGoblinRogue();
             updateGoblinArcher();
-            updateGoblinAlchemist();
+            updateAlchemist();
             updateGoblinShaman();
 
-
             fixFallenPriest();
-
+            fixBanditConjurers();
+            //fix necromancers, illusionist and transmuters
             fixVarraskInquisitor();
             fixSaves();
+        }
+
+
+        static void fixBanditConjurers()
+        {
+            var features = library.GetAllBlueprints().Where<BlueprintScriptableObject>(f => f.name.Contains("BanditConjurerFeatureListLevel")).Cast<BlueprintFeature>().ToArray();
+            var spell_lists = library.GetAllBlueprints().Where<BlueprintScriptableObject>(f => f.name.Contains("BanditConjurerSpellList")).Cast<BlueprintFeature>().ToArray();
+
+            var grease = library.Get<BlueprintAbility>("95851f6e85fe87d4190675db0419d112");
+            var glitterdust = library.Get<BlueprintAbility>("ce7dad2b25acf85429b6c9550787b2d9");
+            var stinking_cloud = library.Get<BlueprintAbility>("68a9e6d7256f1354289a39003a46d826");
+            var acid_pit = library.Get<BlueprintAbility>("1407fb5054d087d47a4c40134c809f12");
+
+            var spells_to_cast = new BlueprintAbility[] { grease,
+                                                          glitterdust,
+                                                          stinking_cloud,
+                                                          acid_pit,
+                                                        };
+
+            var spell_list = new BlueprintAbility[] { library.Get<BlueprintAbility>("0c852a2405dd9f14a8bbcfaf245ff823"), //acid splash
+                                                      grease,
+                                                      library.Get<BlueprintAbility>("8fd74eddd9b6c224693d9ab241f25e84"), //sm 1
+                                                      library.Get<BlueprintAbility>("8fd74eddd9b6c224693d9ab241f25e84"), //sm 1
+                                                      glitterdust,
+                                                      library.Get<BlueprintAbility>("1724061e89c667045a6891179ee2e8e7"), //sm2
+                                                      library.Get<BlueprintAbility>("1724061e89c667045a6891179ee2e8e7"), //sm2
+                                                      stinking_cloud,
+                                                      library.Get<BlueprintAbility>("5d61dde0020bbf54ba1521f7ca0229dc"), //sm3
+                                                      library.Get<BlueprintAbility>("5d61dde0020bbf54ba1521f7ca0229dc"), //sm3
+                                                      acid_pit,
+                                                      library.Get<BlueprintAbility>("7ed74a3ec8c458d4fb50b192fd7be6ef"), //sm4
+                                                      library.Get<BlueprintAbility>("7ed74a3ec8c458d4fb50b192fd7be6ef"), //sm4
+                                                      library.Get<BlueprintAbility>("903092f6488f9ce45a80943923576ab3"), //displacement
+                                                      library.Get<BlueprintAbility>("3e4ab69ada402d145a5e0ad3ad4b8564"), //mirror image
+                                                     };
+      
+            foreach (var f in features)
+            {
+                f.GetComponent<AddClassLevels>().MemorizeSpells = spell_list;
+            }
+
+            foreach (var sl in spell_lists)
+            {
+                sl.GetComponent<LearnSpells>().Spells = sl.GetComponent<LearnSpells>().Spells.AddToArray(grease, glitterdust, stinking_cloud, acid_pit);
+            }
+
+            var brain = library.Get<BlueprintBrain>("fde24a9130c94f74baa7f166ca1b8fcb");
+
+
+            
+            for (int i = 0; i < spells_to_cast.Length; i++)
+            {
+                var ai_action = library.CopyAndAdd<BlueprintAiCastSpell>("d33950abdb291564696f29302a022faa", spells_to_cast[i].Name + "BanditConjurerAiAction", "");
+                ai_action.Ability = spells_to_cast[i];
+                ai_action.BaseScore = 3 + i;
+                brain.Actions = brain.Actions.AddToArray(ai_action);
+            }
         }
 
 
@@ -335,9 +392,10 @@ namespace KingmakerAI
         }
 
 
-        static void updateGoblinAlchemist()
+        static void updateAlchemist()
         {
-            var spells = library.GetAllBlueprints().Where<BlueprintScriptableObject>(f => f.name.Contains("GoblinAlchemistSpellListLevel")).Cast<BlueprintFeature>().ToArray();
+            var spells = library.GetAllBlueprints().Where<BlueprintScriptableObject>(f => f.name.Contains("GoblinAlchemistSpellListLevel") || f.name.Contains("BanditAlchemistSpellListLevel")).Cast<BlueprintFeature>().ToArray();
+
 
             var haste = library.Get<BlueprintAbility>("486eaff58293f6441a5c2759c4872f98");
             foreach (var s in spells)
@@ -346,7 +404,7 @@ namespace KingmakerAI
                 learn.Spells = learn.Spells.AddToArray(haste);
             }
 
-            var features = library.GetAllBlueprints().Where<BlueprintScriptableObject>(f => f.name.Contains("GoblinAlchemistFeatureListLevel")).Cast<BlueprintFeature>().ToArray();
+            var features = library.GetAllBlueprints().Where<BlueprintScriptableObject>(f => f.name.Contains("GoblinAlchemistFeatureListLevel") || f.name.Contains("BanditAlchemistFeatureListLevel")).Cast<BlueprintFeature>().ToArray();
 
             var chocking_bombs = library.Get<BlueprintFeature>("b3c6cb76d5b11cf4c8314d7b1c7b9b8b");
 
@@ -357,12 +415,18 @@ namespace KingmakerAI
                 var selections = levels.Selections;
                 selections[1].Features = selections[1].Features.AddToArray(chocking_bombs); //add chocking bombs
             }
-            var brain = library.Get<BlueprintBrain>("53a68e3631a6e1646997de0cb50ba49f");
+            var brains = new BlueprintBrain[]{library.Get<BlueprintBrain>("53a68e3631a6e1646997de0cb50ba49f"), //goblin
+                                              library.Get<BlueprintBrain>("b7853e33e6e32d94aac4cd2375547e23") //bandit
+                                              };
 
             var use_chocking_bomb = library.Get<BlueprintAiCastSpell>("9efb8b70ddb084445a2be809e8271259");
             var use_haste = library.Get<BlueprintAiCastSpell>("c2030f9e42b7e3d4fb08f6f05c68eae1");
 
-            brain.Actions = brain.Actions.AddToArray(use_chocking_bomb, use_haste);
+
+            foreach (var b in brains)
+            {
+                b.Actions = b.Actions.AddToArray(use_chocking_bomb, use_haste);
+            }
         }
 
 
