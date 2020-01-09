@@ -1,6 +1,7 @@
 ﻿using CallOfTheWild;
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
+using Kingmaker.Blueprints.Classes.Experience;
 using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Blueprints.Items.Shields;
@@ -28,6 +29,16 @@ namespace KingmakerAI
         static UnitsAroundConsideration aoe_more_enemies_considertion => library.Get<UnitsAroundConsideration>("b2490b137b8b53a4e950c1d79d1c5c1d");
         static CommandCooldownConsideration swift_action_available = library.Get<CommandCooldownConsideration>("c2b7d2f9a5cb8d04d9e1aa4bf3d3c598");
         static CommandCooldownConsideration no_standard_action = library.Get<CommandCooldownConsideration>("eb52264e87de14842b44b362da4e0673");
+        static Consideration[] harmful_enemy_ally_aoe_target_consideration = library.Get<BlueprintAiCastSpell>("d33950abdb291564696f29302a022faa").TargetConsiderations;
+        static Consideration attack_target_consideration = library.Get<ComplexConsideration>("7a2b25dcc09cd244db261ce0a70cca84");
+        static Consideration light_armor_consideration = library.Get<ArmorTypeConsideration>("2ba801c8a6f585749b7fd636e843e6f0");
+        static Consideration heavy_armor_consideration = library.Get<ArmorTypeConsideration>("c376d918c01838b48befcb711cc528ff");
+
+        static class Feats
+        {
+            public static BlueprintFeature dodge = library.Get<BlueprintFeature>("97e216dbb46ae3c4faef90cf6bbe6fd5");
+            public static BlueprintFeature improved_initiative = library.Get<BlueprintFeature>("797f25d709f559546b29e7bcb181cc74");
+        }
 
         static BlueprintAiCastSpell quick_channel_action;
 
@@ -44,9 +55,112 @@ namespace KingmakerAI
 
             fixFallenPriest();
             fixBanditConjurers();
-            //fix necromancers, illusionist and transmuters
+            fixBanditTransmuter();
+            //fix necromancers, illusionist
+            fixMaestroJanush();
+            
             fixVarraskInquisitor();
+            
             fixSaves();
+        }
+
+
+        static void fixMaestroJanush()
+        {
+            //increase level of janush to allow him to cast baleful polymorph and tar pool
+            var unit = library.Get<BlueprintUnit>("14d442fea70487047bedb82d86b55451");
+
+            var new_feature_list = library.CopyAndAdd<BlueprintFeature>("8bcac5e1bd4f254438fa8797337137a6", "MaestroJanushFeatureList", "");
+            new_feature_list.ReplaceComponent<AddClassLevels>(a =>
+                                                                {
+                                                                    a.Levels = 12;
+                                                                    a.Selections[0].Features = a.Selections[0].Features.AddToArray(Feats.improved_initiative, Feats.dodge);
+
+                                                                }
+                                                                );
+            unit.AddFacts[0] = new_feature_list;
+            unit.GetComponent<Experience>().CR = 10;
+            var fox_cunning_buff = library.Get<BlueprintBuff>("c8c9872e9e02026479d82b9264b9cc6b");
+            var stoneskin_buff = library.Get<BlueprintBuff>("7aeaf147211349b40bb55c57fec8e28d");
+            var mirror_image_buff = library.Get<BlueprintBuff>("e0f432ae40dcd894f8d80ee4e81a38d4");
+            new_feature_list.GetComponent<AddFacts>().Facts = new_feature_list.GetComponent<AddFacts>().Facts.AddToArray(fox_cunning_buff, stoneskin_buff, mirror_image_buff);
+        }
+
+        static void fixBanditTransmuter()
+        {
+            var features = library.GetAllBlueprints().Where<BlueprintScriptableObject>(f => f.name.Contains("BanditTransmuterFeatureListLevel")).Cast<BlueprintFeature>().ToArray();
+            var spell_lists = library.GetAllBlueprints().Where<BlueprintScriptableObject>(f => f.name.Contains("BanditTransmuterSpellListLevel")).Cast<BlueprintFeature>().ToArray();
+
+            var obsidian_flow = library.Get<BlueprintAbility>("e48638596c955a74c8a32dbc90b518c1");
+            var baleful_polymorph = library.Get<BlueprintAbility>("3105d6e9febdc3f41a08d2b7dda1fe74");
+            var tar_pool = library.Get<BlueprintAbility>("7d700cdf260d36e48bb7af3a8ca5031f");
+
+            var spells_to_cast = new BlueprintAbility[] { obsidian_flow,
+                                                          baleful_polymorph,
+                                                          tar_pool,
+                                                          CallOfTheWild.NewSpells.rigor_mortis,
+                                                        };
+
+            var reduce_mass = library.Get<BlueprintAbility>("2427f2e3ca22ae54ea7337bbab555b16");
+            var enlarge_mass = library.Get<BlueprintAbility>("66dc49bf154863148bd217287079245e");
+
+            foreach (var f in features)
+            {
+                var add_calss_levels = f.GetComponent<AddClassLevels>();
+
+                var spell_list = add_calss_levels.MemorizeSpells.RemoveFromArray(reduce_mass).RemoveFromArray(reduce_mass).RemoveFromArray(enlarge_mass);
+
+                spell_list = spell_list.AddToArray(new BlueprintAbility[]
+                                                                        {
+                                                                            CallOfTheWild.NewSpells.rigor_mortis,
+                                                                            CallOfTheWild.NewSpells.rigor_mortis,
+                                                                            CallOfTheWild.NewSpells.rigor_mortis,
+                                                                            baleful_polymorph,
+                                                                            baleful_polymorph,
+                                                                            baleful_polymorph,
+                                                                            tar_pool
+                                                                        }
+                                                   );
+                add_calss_levels.MemorizeSpells = spell_list;
+            }
+
+            
+            foreach (var sl in spell_lists)
+            {
+                sl.GetComponent<LearnSpells>().Spells = sl.GetComponent<LearnSpells>().Spells.AddToArray(spells_to_cast);
+            }
+
+            var brain = library.Get<BlueprintBrain>("bf90f2053c06375418c119115122ae3d");
+
+
+            var area_spells = new BlueprintAbility[] { obsidian_flow, tar_pool };
+            for (int i = 0; i < area_spells.Length; i++)
+            {
+                var ai_action = library.CopyAndAdd<BlueprintAiCastSpell>("d33950abdb291564696f29302a022faa", area_spells[i].name + "BanditTransmuterAiAction", "");
+                ai_action.Ability = area_spells[i];
+                ai_action.BaseScore = 5.9f + 2*i;
+                brain.Actions = brain.Actions.AddToArray(ai_action);
+            }
+
+            var polymorph_buff = library.Get<BlueprintBuff>("0a52d8761bfd125429842103aed48b90");
+            var rigor_mortis_buff = library.Get<BlueprintBuff>("ed6ccaa592c4414cb6a9d29149a368e0");
+
+            var no_polymorph_buff = library.Get<BuffConsideration>("881bcb09ccf53074d88c5dec9f2fcaa9");
+            var no_rigor_mortis_buff = createNoBuffConsideration("NoBufRigorMortis", rigor_mortis_buff);
+
+            var apply_polymorph = createCastSpellAction("BanditTransmuterCastBalefulPolymorphAiAction", baleful_polymorph, new Consideration[0],
+                                                        new Consideration[] { light_armor_consideration, no_polymorph_buff },
+                                                        5 + 1);
+
+            var apply_rigor_mortis = createCastSpellAction("BanditTransmuterCastRigorMortisAiAction", CallOfTheWild.NewSpells.rigor_mortis, new Consideration[0],
+                                            new Consideration[] { light_armor_consideration, no_rigor_mortis_buff },
+                                            4 + 1);
+            brain.Actions = brain.Actions.AddToArray(apply_polymorph, apply_rigor_mortis);
+
+            var blueprint_fix = library.CopyAndAdd<BlueprintAiCastSpell>("d33950abdb291564696f29302a022faa", "BlueprintFix7b662573dc6842b4aa3643f620d61693", "7b662573dc6842b4aa3643f620d61693");
+            var blueprint_fix2 = library.CopyAndAdd<BlueprintAiCastSpell>("d33950abdb291564696f29302a022faa", "BlueprintFixf14df4d4c1884f22a790b05d303de6ab", "f14df4d4c1884f22a790b05d303de6ab");
+            var blueprint_fix3 = library.CopyAndAdd<BlueprintAiCastSpell>("d33950abdb291564696f29302a022faa", "BlueprintFix985e411952d94369bc155c6725872022", "985e411952d94369bc155c6725872022");
+            var blueprint_fix4 = library.CopyAndAdd<BlueprintAiCastSpell>("d33950abdb291564696f29302a022faa", "BlueprintFixdfde3680c8cc4164888772e4fd3b7dca", "dfde3680c8cc4164888772e4fd3b7dca");
         }
 
 
@@ -99,7 +213,7 @@ namespace KingmakerAI
             
             for (int i = 0; i < spells_to_cast.Length; i++)
             {
-                var ai_action = library.CopyAndAdd<BlueprintAiCastSpell>("d33950abdb291564696f29302a022faa", spells_to_cast[i].Name + "BanditConjurerAiAction", "");
+                var ai_action = library.CopyAndAdd<BlueprintAiCastSpell>("d33950abdb291564696f29302a022faa", spells_to_cast[i].name + "BanditConjurerAiAction", "");
                 ai_action.Ability = spells_to_cast[i];
                 ai_action.BaseScore = 3 + i;
                 brain.Actions = brain.Actions.AddToArray(ai_action);
@@ -512,8 +626,8 @@ namespace KingmakerAI
                             sb.ForgetMemorized(s);
                         }
                     }
-
-                    acl.LevelUp(u, 0);
+                    
+                    acl.LevelUp(u, acl.Levels - u.Progression.GetClassLevel(acl.CharacterClass));
                 }
                 u.Brain.RestoreAvailableActions();
             };
@@ -535,6 +649,15 @@ namespace KingmakerAI
             library.AddAsset(action, "");
 
             return action;
+        }
+
+
+        static BuffConsideration createNoBuffConsideration(string name, params BlueprintBuff[] buffs)
+        {
+            var no_buff = library.CopyAndAdd<BuffConsideration>("881bcb09ccf53074d88c5dec9f2fcaa9", name, "");
+            no_buff.Buffs = buffs;
+
+            return no_buff;
         }
 
 
