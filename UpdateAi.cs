@@ -4,10 +4,12 @@ using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Experience;
 using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.Blueprints.Classes.Spells;
+using Kingmaker.Blueprints.Items.Equipment;
 using Kingmaker.Blueprints.Items.Shields;
 using Kingmaker.Blueprints.Items.Weapons;
 using Kingmaker.Controllers.Brain.Blueprints;
 using Kingmaker.Controllers.Brain.Blueprints.Considerations;
+using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.EntitySystem.Stats;
 using Kingmaker.Enums;
 using Kingmaker.UnitLogic;
@@ -38,12 +40,87 @@ namespace KingmakerAI
         {
             public static BlueprintFeature dodge = library.Get<BlueprintFeature>("97e216dbb46ae3c4faef90cf6bbe6fd5");
             public static BlueprintFeature improved_initiative = library.Get<BlueprintFeature>("797f25d709f559546b29e7bcb181cc74");
+            public static BlueprintParametrizedFeature spell_focus = library.Get<BlueprintParametrizedFeature>("16fa59cc9a72a6043b566b49184f53fe");
+            public static BlueprintParametrizedFeature greater_spell_focus = library.Get<BlueprintParametrizedFeature>("5b04b45b228461c43bad768eb0f7c7bf");
+            public static BlueprintFeature spell_penetration = library.Get<BlueprintFeature>("ee7dc126939e4d9438357fbd5980d459");
         }
 
-        static BlueprintAiCastSpell quick_channel_action;
+
+        static class Spells
+        {
+            public static BlueprintAbility phantasmal_putrefaction = library.Get<BlueprintAbility>("1f2e6019ece86d64baa5effa15e81ecc");
+            public static BlueprintAbility magic_missile = library.Get<BlueprintAbility>("4ac47ddb9fa1eaf43a1b6809980cfbd2");
+            public static BlueprintAbility cold_ice_strike = library.Get<BlueprintAbility>("5ef85d426783a5347b420546f91a677b");
+            public static BlueprintAbility mind_fog = library.Get<BlueprintAbility>("eabf94e4edc6e714cabd96aa69f8b207");
+            public static BlueprintAbility phantasmal_killer = library.Get<BlueprintAbility>("6717dbaef00c0eb4897a1c908a75dfe5");
+            public static BlueprintAbility phantasmal_web = library.Get<BlueprintAbility>("12fb4a4c22549c74d949e2916a2f0b6a");
+            public static BlueprintAbility fireball = library.Get<BlueprintAbility>("2d81362af43aeac4387a3d4fced489c3");
+            public static BlueprintAbility acid_fog = library.Get<BlueprintAbility>("dbf99b00cd35d0a4491c6cc9e771b487");
+            public static BlueprintAbility cloudkill = library.Get<BlueprintAbility>("548d339ba87ee56459c98e80167bdf10");
+            public static BlueprintAbility sirocco = library.Get<BlueprintAbility>("093ed1d67a539ad4c939d9d05cfe192c");
+            public static BlueprintAbility stinking_cloud = library.Get<BlueprintAbility>("68a9e6d7256f1354289a39003a46d826");
+            public static BlueprintAbility serenity = library.Get<BlueprintAbility>("d316d3d94d20c674db2c24d7de96f6a7");
+            public static BlueprintAbility cloak_of_dreams = library.Get<BlueprintAbility>("7f71a70d822af94458dc1a235507e972");
+            public static BlueprintAbility confusion = library.Get<BlueprintAbility>("cf6c901fb7acc904e85c63b342e9c949");
+        }
+
+
+        static class AiActions
+        {
+            static public BlueprintAiCastSpell cast_cold_ice_strike = createCastSpellAction("CastColdIceStrikeSpellAiAction", Spells.cold_ice_strike, 
+                                                                                     new Consideration[] { swift_action_available, no_standard_action },
+                                                                                     new Consideration[] { aoe_considertion },
+                                                                                     base_score: 50.0f, variant: null, cooldown_rounds: 1);
+            static public BlueprintAiCastSpell quick_channel_action;
+            static public BlueprintAiCastSpell cast_command = createCastSpellAction("CastCommandGreaterHaltSpellAiAction", NewSpells.command_greater, 
+                                                                                  new Consideration[0], 
+                                                                                  new Consideration[] { aoe_more_enemies_considertion },
+                                                                                  base_score: 10, variant: NewSpells.command_greater.Variants[0]);
+
+            static public BlueprintAiCastSpell cast_phantasmal_putrefaction_once = createCastSpellAction("CastPhantasmalPutrefactionSpellAiAction", Spells.phantasmal_putrefaction,
+                                                                                  new Consideration[0],
+                                                                                  new Consideration[] { aoe_more_enemies_considertion },
+                                                                                  base_score: 10.0f, combat_count: 1);
+            static public BlueprintAiCastSpell cast_phantasmal_web_plus2_once = createCastSpellAction("CastPhantasmalWebPlus2SpellAiAction", Spells.phantasmal_web,
+                                                                                                      new Consideration[0],
+                                                                                                      new Consideration[] { aoe_more_enemies_considertion },
+                                                                                                      base_score: 10.0f, combat_count: 1);
+            static public BlueprintAiCastSpell cast_confusion_plus2_once = createCastSpellAction("CastConfusionPlus2SpellAiAction", Spells.confusion,
+                                                                                          new Consideration[0],
+                                                                                          new Consideration[] { aoe_more_enemies_considertion },
+                                                                                          base_score: 10.0f, combat_count: 1);
+            static public BlueprintAiCastSpell cast_acid_fog_once = createCastSpellAction("CastAcidFogSpellAiAction", Spells.acid_fog,
+                                                                                      new Consideration[0],
+                                                                                      harmful_enemy_ally_aoe_target_consideration,
+                                                                                      base_score: 7.5f, combat_count: 1);
+            static public BlueprintAiCastSpell cast_phantasmal_killer = library.Get<BlueprintAiCastSpell>("0ae15dd91d960d34f9ffe5fb3eb0d655");
+            static public BlueprintAiCastSpell cast_cloudkill_once = createCastSpellAction("CastCloudkillSpellOnceAiAction", Spells.cloudkill,
+                                                                                              new Consideration[0],
+                                                                                              harmful_enemy_ally_aoe_target_consideration,
+                                                                                              base_score: 6.5f, combat_count: 1);
+            static public BlueprintAiCastSpell cast_fireball_quicken = createCastSpellAction("CastQuickenFireballAiAction", Spells.fireball,
+                                                                      new Consideration[] { swift_action_available},
+                                                                      harmful_enemy_ally_aoe_target_consideration,
+                                                                      base_score: 20.0f);
+            static public BlueprintAiCastSpell cast_sheet_lightning_quicken_once = createCastSpellAction("CastQuickenSheetLightningAiAction", NewSpells.sheet_lightning,
+                                                          new Consideration[] { swift_action_available },
+                                                          harmful_enemy_ally_aoe_target_consideration,
+                                                          base_score: 30.0f, combat_count: 1);
+
+            static public void init()
+            {
+                var quick_channel = ChannelEnergyEngine.getQuickChannelVariant(library.Get<BlueprintAbility>("89df18039ef22174b81052e2e419c728"));
+                quick_channel_action = createCastSpellAction("QuickChannelNegativeClericAiAction", quick_channel.Parent, 
+                                                             new Consideration[1] { no_standard_action }, 
+                                                             new Consideration[] { aoe_more_enemies_considertion },
+                                                             base_score: 20.0f, variant: quick_channel, cooldown_rounds: 1);
+            }
+
+        }
 
         static internal void load()
         {
+            AiActions.init();
             updateAttackConsiderations();
             updateTsanna();
 
@@ -60,10 +137,40 @@ namespace KingmakerAI
             fixMaestroJanush();
             
             fixVarraskInquisitor();
+            fixLadyOfShallows();
             
             fixSaves();
         }
 
+
+        static void fixLadyOfShallows()
+        {
+            var sorcerer = library.Get<BlueprintCharacterClass>("b3a505fb61437dc4097f43c3f8f9a4cf");
+            var unit = library.Get<BlueprintUnit>("ac131b0101870b6489609a7f33b5e576");
+
+            var class_levels = unit.GetComponents<AddClassLevels>().Where(c => c.CharacterClass == sorcerer).FirstOrDefault();
+            class_levels.SelectSpells = class_levels.SelectSpells.AddToArray(Spells.fireball,
+                                                                             Spells.confusion,
+                                                                             Spells.phantasmal_killer,
+                                                                             Spells.cloudkill, 
+                                                                             Spells.acid_fog).RemoveFromArray(Spells.serenity);
+            class_levels.Selections[0].Features = class_levels.Selections[0].Features.AddToArray(Feats.spell_focus, Feats.spell_focus, Feats.spell_penetration);
+            class_levels.Selections = class_levels.Selections.AddToArray(createSpellFocusSelection(SpellSchool.Evocation));
+            class_levels.Selections = class_levels.Selections.AddToArray(createGreaterSpellFocusSelection(SpellSchool.Evocation));
+            class_levels.Selections = class_levels.Selections.AddToArray(createSpellFocusSelection(SpellSchool.Conjuration));
+            class_levels.Selections = class_levels.Selections.AddToArray(createSpellFocusSelection(SpellSchool.Enchantment));
+            var auto_quicken_metamagic = library.Get<BlueprintFeature>("d26acdac8ded95b44b787c9700634fc9");
+            auto_quicken_metamagic.GetComponent<AutoMetamagic>().Abilities.AddRange(new BlueprintAbility[] { Spells.fireball, NewSpells.sheet_lightning });
+            auto_quicken_metamagic.AddComponent(Helpers.Create<IncreaseSpellDC>(i => { i.BonusDC = 2; i.Spell = Spells.confusion; }));
+            var brain = unit.Brain;
+            brain.Actions = brain.Actions.AddToArray(AiActions.cast_fireball_quicken, 
+                                                     AiActions.cast_cloudkill_once,
+                                                     AiActions.cast_confusion_plus2_once,
+                                                     AiActions.cast_acid_fog_once,
+                                                     AiActions.cast_phantasmal_killer);
+            unit.Body.QuickSlots[0] = library.Get<BlueprintItemEquipmentUsable>("55a059b32df920c4abe65b8ee8b56056"); //rod of quicken metamagic lesser
+            //unit.Body.QuickSlots[0] = library.Get<BlueprintItemEquipmentUsable>("651b0460f600d5f42b0467e7186aab80"); //rod of lesser maximize
+        }
 
         static void fixMaestroJanush()
         {
@@ -284,7 +391,6 @@ namespace KingmakerAI
                                                            };
 
             var flame_strike = library.Get<BlueprintAbility>("f9910c76efc34af41b6e43d5d8752f0f");
-            var cold_ice_strike = library.Get<BlueprintAbility>("5ef85d426783a5347b420546f91a677b");
 
             class_levels.MemorizeSpells = new BlueprintAbility[]
             {
@@ -303,8 +409,8 @@ namespace KingmakerAI
 
                 //level 6
                 library.Get<BlueprintAbility>("e740afbab0147944dab35d83faa0ae1c"), //sm 6
-                cold_ice_strike,
-                cold_ice_strike,
+                Spells.cold_ice_strike,
+                Spells.cold_ice_strike,
                 library.Get<BlueprintAbility>("36c8971e91f1745418cc3ffdfac17b74"), //blade barrier
 
                 //level 7
@@ -590,7 +696,7 @@ namespace KingmakerAI
             //rift of ruin
             //destruction, boneshatter
             var brain = priest.Brain;
-            brain.Actions = brain.Actions.AddToArray(quick_channel_action);
+            brain.Actions = brain.Actions.AddToArray(AiActions.quick_channel_action);
             
         }
 
@@ -635,7 +741,7 @@ namespace KingmakerAI
         }
 
         static BlueprintAiCastSpell createCastSpellAction(string name, BlueprintAbility spell, Consideration[] actor_consideration, Consideration[] target_consideration,
-                                                               float base_score = 1f, BlueprintAbility variant = null, int combat_count = 0)
+                                                               float base_score = 1f, BlueprintAbility variant = null, int combat_count = 0, int cooldown_rounds = 0)
         {
 
             var action = CallOfTheWild.Helpers.Create<BlueprintAiCastSpell>();
@@ -646,6 +752,7 @@ namespace KingmakerAI
             action.name = name;
             action.BaseScore = base_score;
             action.CombatCount = combat_count;
+            action.CooldownRounds = cooldown_rounds;
             library.AddAsset(action, "");
 
             return action;
@@ -727,7 +834,6 @@ namespace KingmakerAI
 
             var slay_living = library.Get<BlueprintAbility>("4fbd47525382517419c66fb548fe9a67");
             var flame_strike = library.Get<BlueprintAbility>("f9910c76efc34af41b6e43d5d8752f0f");
-            var cold_ice_strike = library.Get<BlueprintAbility>("5ef85d426783a5347b420546f91a677b");
             foreach (var u in units)
             {
                 var class_levels = u.GetComponent<AddClassLevels>();
@@ -741,9 +847,9 @@ namespace KingmakerAI
                 spells.Add(flame_strike);
                 spells.Add(flame_strike);
                 spells.Add(flame_strike);
-                spells.Add(cold_ice_strike);
-                spells.Add(cold_ice_strike);
-                spells.Add(cold_ice_strike);
+                spells.Add(Spells.cold_ice_strike);
+                spells.Add(Spells.cold_ice_strike);
+                spells.Add(Spells.cold_ice_strike);
                 class_levels.MemorizeSpells = spells.ToArray();
                 class_levels.Selections[2].Features[1] = ChannelEnergyEngine.quick_channel;
                 class_levels.Selections[3].ParamSpellSchool = Kingmaker.Blueprints.Classes.Spells.SpellSchool.Enchantment;
@@ -757,23 +863,8 @@ namespace KingmakerAI
 
             var cast_flame_strike = library.CopyAndAdd<BlueprintAiCastSpell>("4f48fd03d530f86439657e4d93bffc89", "CastFlameStrikePriority9SpellAiAction", "");
             cast_flame_strike.BaseScore = 9.0f;
-            var cast_command = createCastSpellAction("CastCommandGreaterHaltSpellAiAction", NewSpells.command_greater, new Consideration[0], new Consideration[] { aoe_more_enemies_considertion },
-                                                      base_score: 10, variant: NewSpells.command_greater.Variants[0]);
 
-            var quick_channel = ChannelEnergyEngine.getQuickChannelVariant(library.Get<BlueprintAbility>("89df18039ef22174b81052e2e419c728"));
-
-            quick_channel_action = createCastSpellAction("QuickChannelNegativeClericAiAction", quick_channel.Parent, new Consideration[0], new Consideration[] { aoe_more_enemies_considertion },
-                                          base_score: 20.0f, variant: quick_channel);
-            quick_channel_action.CooldownRounds = 1;
-            quick_channel_action.ActorConsiderations = quick_channel_action.ActorConsiderations.AddToArray(no_standard_action);
-
-            var cast_cold_ice_strike = createCastSpellAction("CastColdIceStrikeSpellAiAction", cold_ice_strike, new Consideration[0], new Consideration[] { aoe_considertion },
-                                          base_score: 50.0f, variant: null);
-            cast_cold_ice_strike.CooldownRounds = 1;
-            cast_cold_ice_strike.ActorConsiderations = cast_cold_ice_strike.ActorConsiderations.AddToArray(swift_action_available, no_standard_action);
-
-
-            brain.Actions = brain.Actions.AddToArray(cast_flame_strike, cast_command, quick_channel_action, cast_cold_ice_strike);
+            brain.Actions = brain.Actions.AddToArray(cast_flame_strike, AiActions.cast_command, AiActions.quick_channel_action, AiActions.cast_cold_ice_strike);
         }
     }
 
