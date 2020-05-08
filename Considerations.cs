@@ -17,7 +17,7 @@ namespace KingmakerAI.NewConsiderations
         static System.Random rng = new System.Random();
 
         public float min_score = 0.1f;
-        public float in_threat_range_bonus = 0.5f;
+        public float in_threat_range_bonus = 0.2f;
         public float max_score = 1.0f;
 
         public override float Score(DecisionContext context)

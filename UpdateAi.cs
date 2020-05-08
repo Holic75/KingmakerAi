@@ -62,6 +62,9 @@ namespace KingmakerAI
             public static BlueprintAbility serenity = library.Get<BlueprintAbility>("d316d3d94d20c674db2c24d7de96f6a7");
             public static BlueprintAbility cloak_of_dreams = library.Get<BlueprintAbility>("7f71a70d822af94458dc1a235507e972");
             public static BlueprintAbility confusion = library.Get<BlueprintAbility>("cf6c901fb7acc904e85c63b342e9c949");
+            public static BlueprintAbility fear = library.Get<BlueprintAbility>("d2aeac47450c76347aebbc02e4f463e0");
+            public static BlueprintAbility false_life = library.Get<BlueprintAbility>("7a5b5bf845779a941a67251539545762");
+            public static BlueprintAbility false_life_greater = library.Get<BlueprintAbility>("dc6af3b4fd149f841912d8a3ce0983de");
         }
 
 
@@ -135,6 +138,8 @@ namespace KingmakerAI
             fixBanditTransmuter();
             //fix necromancers, illusionist
             fixMaestroJanush();
+
+            fixDLC2CultistNecromancerBoss();
             
             fixVarraskInquisitor();
             fixLadyOfShallows();
@@ -191,6 +196,36 @@ namespace KingmakerAI
             var stoneskin_buff = library.Get<BlueprintBuff>("7aeaf147211349b40bb55c57fec8e28d");
             var mirror_image_buff = library.Get<BlueprintBuff>("e0f432ae40dcd894f8d80ee4e81a38d4");
             new_feature_list.GetComponent<AddFacts>().Facts = new_feature_list.GetComponent<AddFacts>().Facts.AddToArray(fox_cunning_buff, stoneskin_buff, mirror_image_buff);
+        }
+
+
+        static void fixDLC2CultistNecromancerBoss()
+        {
+            var unit = library.Get<BlueprintUnit>("c71f32cb01138b54a8e9747f84c435b8");
+
+            var spell_list = library.CopyAndAdd<BlueprintFeature>("941a90b7b2e418e4597b99513f96db2e", "DLC2_NecromancerSpellList", "");
+            spell_list.ReplaceComponent<LearnSpells>(l => l.Spells = l.Spells.AddToArray(Spells.cloudkill, Spells.stinking_cloud, Spells.fear));
+            unit.AddFacts = unit.AddFacts.AddToArray(spell_list);
+
+            var auto_metamgic = library.Get<BlueprintFeature>("f65fc9a042f5e7247a03702dca121936");
+            auto_metamgic.GetComponent<AutoMetamagic>().Abilities.Add(Spells.false_life_greater);
+
+            var fear_ai_action = createCastSpellAction("CastFear13SpellOnceAiAction", Spells.fear,
+                                                                                              new Consideration[0],
+                                                                                              harmful_enemy_ally_aoe_target_consideration,
+                                                                                              base_score: 13.0f, combat_count: 1,
+                                                                                              guid : "63620d265f8e46fc9c2ee2e997a468e5");
+
+            var cloudkill_ai_action = createCastSpellAction("CastCloudkill15SpellOnceAiAction", Spells.cloudkill,
+                                                                                              new Consideration[0],
+                                                                                              harmful_enemy_ally_aoe_target_consideration,
+                                                                                              base_score: 15.0f, combat_count: 1);
+            var class_levels = unit.GetComponent<AddClassLevels>();
+            class_levels.MemorizeSpells[4] = Spells.fear;
+            class_levels.MemorizeSpells = class_levels.MemorizeSpells.AddToArray(Spells.cloudkill);
+
+            var brain = unit.Brain;
+            brain.Actions = brain.Actions.AddToArray(fear_ai_action, cloudkill_ai_action);
         }
 
         static void fixBanditTransmuter()
@@ -741,7 +776,7 @@ namespace KingmakerAI
         }
 
         static BlueprintAiCastSpell createCastSpellAction(string name, BlueprintAbility spell, Consideration[] actor_consideration, Consideration[] target_consideration,
-                                                               float base_score = 1f, BlueprintAbility variant = null, int combat_count = 0, int cooldown_rounds = 0)
+                                                               float base_score = 1f, BlueprintAbility variant = null, int combat_count = 0, int cooldown_rounds = 0, string guid = "")
         {
 
             var action = CallOfTheWild.Helpers.Create<BlueprintAiCastSpell>();
@@ -753,7 +788,7 @@ namespace KingmakerAI
             action.BaseScore = base_score;
             action.CombatCount = combat_count;
             action.CooldownRounds = cooldown_rounds;
-            library.AddAsset(action, "");
+            library.AddAsset(action, guid);
 
             return action;
         }
