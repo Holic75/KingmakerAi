@@ -71,6 +71,7 @@
     </Reference>
     <Reference Include="ProperFlanking20">
       <HintPath>..\..\..\GOG Games\PathfinderKingmaker2.0\Pathfinder Kingmaker\Mods\ProperFlanking2\ProperFlanking20.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
