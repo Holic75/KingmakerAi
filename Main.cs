@@ -24,7 +24,7 @@ namespace KingmakerAI
             internal Settings()
             {
 
-                using (StreamReader settings_file = File.OpenText("Mods/KingmakerAI/settings.json"))
+                using (StreamReader settings_file = File.OpenText(UnityModManager.modsPath + @"/KingmakerAI/settings.json"))
                 using (JsonTextReader reader = new JsonTextReader(settings_file))
                 {
                     JObject jo = (JObject)JToken.ReadFrom(reader);
@@ -94,7 +94,7 @@ namespace KingmakerAI
                     string guid_file_name = @"C:\Repositories\KingmakerAI\KingmakerAI\blueprints.txt";
                     CallOfTheWild.Helpers.GuidStorage.dump(guid_file_name);
 #endif
-                    CallOfTheWild.Helpers.GuidStorage.dump(@"./Mods/KingmakerAI/loaded_blueprints.txt");
+                    CallOfTheWild.Helpers.GuidStorage.dump(UnityModManager.modsPath + @"/KingmakerAI/loaded_blueprints.txt");
                 }
                 catch (Exception ex)
                 {
