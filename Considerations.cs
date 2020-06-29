@@ -1,9 +1,11 @@
-﻿using Kingmaker.Controllers.Brain;
+﻿using CallOfTheWild;
+using Kingmaker.Controllers.Brain;
 using Kingmaker.Controllers.Brain.Blueprints.Considerations;
 using Kingmaker.EntitySystem.Entities;
 using Kingmaker.PubSubSystem;
 using Kingmaker.RuleSystem;
 using Kingmaker.RuleSystem.Rules;
+using Kingmaker.UnitLogic.ActivatableAbilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,9 +23,11 @@ namespace KingmakerAI.NewConsiderations
         public float min_score = 0.1f;
         public float in_threat_range_bonus = 0.2f;
         public float max_score = 1.0f;
+        public static BlueprintActivatableAbility tumble = Main.library.Get<BlueprintActivatableAbility>("4be5757b85af47545a5789f1d03abda9");
 
         public override float Score(DecisionContext context)
         {
+            
             UnitEntityData attacker = context.Unit;
             UnitEntityData target = context.Target.Unit ?? context.Unit;
 
@@ -78,6 +82,14 @@ namespace KingmakerAI.NewConsiderations
             odds = Math.Min(Math.Max(odds, -20), 0); //from -20 to 0
 
             var score = (float)(odds + 20) / 20.0f;
+
+            //try to use tumble if possible
+            var tumble_toggle = attacker.ActivatableAbilities.Enumerable.Where(a => a.Blueprint == tumble).FirstOrDefault();
+            if (tumble_toggle != null && !attacker.IsPlayerFaction)
+            {
+                tumble_toggle.IsOn = attacker.CombatState.IsEngaged;
+            }
+
 
             if (attacker.CombatState.IsEngage(target))
             {
