@@ -32,6 +32,7 @@ namespace KingmakerAI
         static CommandCooldownConsideration swift_action_available = library.Get<CommandCooldownConsideration>("c2b7d2f9a5cb8d04d9e1aa4bf3d3c598");
         static CommandCooldownConsideration no_standard_action = library.Get<CommandCooldownConsideration>("eb52264e87de14842b44b362da4e0673");
         static Consideration[] harmful_enemy_ally_aoe_target_consideration = library.Get<BlueprintAiCastSpell>("d33950abdb291564696f29302a022faa").TargetConsiderations;
+        static Consideration[] harmful_enemy_aoe_target_consideration = new Consideration[] { aoe_considertion, aoe_more_enemies_considertion };
         static Consideration attack_target_consideration = library.Get<ComplexConsideration>("7a2b25dcc09cd244db261ce0a70cca84");
         static Consideration light_armor_consideration = library.Get<ArmorTypeConsideration>("2ba801c8a6f585749b7fd636e843e6f0");
         static Consideration heavy_armor_consideration = library.Get<ArmorTypeConsideration>("c376d918c01838b48befcb711cc528ff");
@@ -65,6 +66,20 @@ namespace KingmakerAI
             public static BlueprintAbility fear = library.Get<BlueprintAbility>("d2aeac47450c76347aebbc02e4f463e0");
             public static BlueprintAbility false_life = library.Get<BlueprintAbility>("7a5b5bf845779a941a67251539545762");
             public static BlueprintAbility false_life_greater = library.Get<BlueprintAbility>("dc6af3b4fd149f841912d8a3ce0983de");
+
+            public static BlueprintAbility spike_stones = library.Get<BlueprintAbility>("d1afa8bc28c99104da7d784115552de5");
+            public static BlueprintAbility slowing_mud = library.Get<BlueprintAbility>("6b30813c3709fc44b92dc8fd8191f345");
+            public static BlueprintAbility obsidian_flow = library.Get<BlueprintAbility>("e48638596c955a74c8a32dbc90b518c1");
+            public static BlueprintAbility flame_strike = library.Get<BlueprintAbility>("f9910c76efc34af41b6e43d5d8752f0f");
+
+            public static BlueprintAbility fire_snake = library.Get<BlueprintAbility>("ebade19998e1f8542a1b55bd4da766b3");
+
+            
+            public static BlueprintAbility baleful_polymorph = library.Get<BlueprintAbility>("3105d6e9febdc3f41a08d2b7dda1fe74");
+            public static BlueprintAbility tar_pool = library.Get<BlueprintAbility>("7d700cdf260d36e48bb7af3a8ca5031f");
+
+
+
         }
 
 
@@ -110,6 +125,8 @@ namespace KingmakerAI
                                                           harmful_enemy_ally_aoe_target_consideration,
                                                           base_score: 30.0f, combat_count: 1);
 
+            static public BlueprintAiCastSpell spike_stones6 = library.Get<BlueprintAiCastSpell>("52c7350061720e44f861b867471a8c4c");
+
             static public void init()
             {
                 var quick_channel = ChannelEnergyEngine.getQuickChannelVariant(library.Get<BlueprintAbility>("89df18039ef22174b81052e2e419c728"));
@@ -139,12 +156,91 @@ namespace KingmakerAI
             //fix necromancers, illusionist
             fixMaestroJanush();
 
+            fixDuergarDruids();
+            fixDuergarKineticist();
+
             fixDLC2CultistNecromancerBoss();
             
             fixVarraskInquisitor();
             fixLadyOfShallows();
             
+
             fixSaves();
+        }
+
+        static void fixDuergarKineticist()
+        {
+            var deadly_earth_action = library.Get<BlueprintAiCastSpell>("90ba668c7e9f73d449f0e320a7755fb1");
+            deadly_earth_action.Variant = library.Get<BlueprintAbility>("0be97d0e752060f468bbf62ce032b9f5");
+            deadly_earth_action.CombatCount = 1;
+            var brain = library.Get<BlueprintBrain>("58455fc3b78db7c4282593ac7acabcb4");
+            brain.Actions = brain.Actions.AddToArray(deadly_earth_action);
+        }
+
+
+        static void fixDuergarDruids()
+        {
+            var cast_tar_pool = createCastSpellAction("CastTarPool7AiAction", Spells.tar_pool,
+                                                                                  new Consideration[0],
+                                                                                  harmful_enemy_ally_aoe_target_consideration,
+                                                                                  base_score: 7.0f, combat_count: 1);
+
+            var cast_sirocco = createCastSpellAction("CastSirocco7AiAction", Spells.sirocco,
+                                                                      new Consideration[0],
+                                                                      harmful_enemy_ally_aoe_target_consideration,
+                                                                      base_score: 7.0f, combat_count: 1);
+
+
+            var cast_fire_snake6 = createCastSpellAction("CastFireSnake6AiAction", Spells.fire_snake,
+                                                                      new Consideration[0],
+                                                                      harmful_enemy_aoe_target_consideration,
+                                                                      base_score: 6.0f);
+
+            var cast_slowing_mud = createCastSpellAction("CastSlowingMud6_1AiAction", Spells.slowing_mud,
+                                                          new Consideration[0],
+                                                          harmful_enemy_aoe_target_consideration,
+                                                          base_score: 5.1f, combat_count: 1);
+
+
+            var cast_flamestrike = createCastSpellAction("CastFlamestrike5AiAction", Spells.flame_strike,
+                                                          new Consideration[0],
+                                                          harmful_enemy_ally_aoe_target_consideration,
+                                                          base_score: 5.0f);
+
+
+            var cast_be = createCastSpellAction("CastBurningEntanglement4_1AiAction", CallOfTheWild.NewSpells.burning_entanglement,
+                                  new Consideration[0],
+                                  harmful_enemy_ally_aoe_target_consideration,
+                                  base_score: 4.1f);
+
+            var cast_earth_tremor = new BlueprintAiCastSpell[CallOfTheWild.NewSpells.earth_tremor.Variants.Length];
+            for (int i = 0; i < CallOfTheWild.NewSpells.earth_tremor.Variants.Length; i++)
+            {
+                cast_earth_tremor[i] = createCastSpellAction($"CastEarthTremor{i}4AiAction", CallOfTheWild.NewSpells.earth_tremor,
+                                                              new Consideration[0],
+                                                              harmful_enemy_ally_aoe_target_consideration,
+                                                              base_score: 4.0f, variant: CallOfTheWild.NewSpells.earth_tremor.Variants[i]);
+            }
+
+            var brain = library.Get<BlueprintBrain>("7f6527bd36838ff42a1cb3964a05fd1b");
+            brain.Actions = brain.Actions.Take(1).ToArray().AddToArray(cast_tar_pool, 
+                                                                       cast_sirocco,
+                                                                       cast_fire_snake6,
+                                                                       cast_slowing_mud,
+                                                                       cast_flamestrike,
+                                                                       cast_be).AddToArray(cast_earth_tremor);
+
+            var features = library.Get<BlueprintFeature>("fd2460491b9d8e843b52c19f915ef47b");
+            features.GetComponent<AddClassLevels>().MemorizeSpells = new BlueprintAbility[]
+            {
+                Spells.tar_pool, Spells.sirocco, //6
+                Spells.fire_snake, Spells.fire_snake, Spells.fire_snake, //5
+                Spells.slowing_mud, Spells.flame_strike, Spells.flame_strike, Spells.flame_strike, //4
+                CallOfTheWild.NewSpells.burning_entanglement, CallOfTheWild.NewSpells.earth_tremor, CallOfTheWild.NewSpells.earth_tremor, CallOfTheWild.NewSpells.earth_tremor
+            };
+
+
+
         }
 
 
@@ -750,9 +846,15 @@ namespace KingmakerAI
                 tr.Property("Brain").SetValue(new UnitBrain(u));
                 //u.Initialize();
 
-                //add spells if they have changed
-                foreach (var acl in u.Blueprint.GetComponents<AddClassLevels>())
+                
+                var acls = u.Blueprint.GetComponents<AddClassLevels>().ToArray();
+                foreach (var f in u.Blueprint.AddFacts)
                 {
+                    acls = acls.AddToArray(f.GetComponents<AddClassLevels>());
+                }
+                foreach (var acl in acls)
+                {
+                    //add spells if they have changed
                     var sb = u.GetSpellbook(acl.CharacterClass);
                     if (sb == null)
                     {
@@ -767,9 +869,12 @@ namespace KingmakerAI
                             sb.ForgetMemorized(s);
                         }
                     }
-                    
+                    Main.logger.Log(u.CharacterName);
                     acl.LevelUp(u, acl.Levels - u.Progression.GetClassLevel(acl.CharacterClass));
                 }
+
+
+
                 u.Brain.RestoreAvailableActions();
             };
             SaveGameFix.save_game_actions.Add(ai_fix);

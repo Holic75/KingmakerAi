@@ -21,7 +21,8 @@ namespace KingmakerAI.NewConsiderations
         static System.Random rng = new System.Random();
 
         public float min_score = 0.1f;
-        public float in_threat_range_bonus = 0.2f;
+        public float engaged_by_bonus = 0.05f;
+        public float engage_bonus = 0.15f;
         public float max_score = 1.0f;
         public static BlueprintActivatableAbility tumble = Main.library.Get<BlueprintActivatableAbility>("4be5757b85af47545a5789f1d03abda9");
 
@@ -82,18 +83,22 @@ namespace KingmakerAI.NewConsiderations
             odds = Math.Min(Math.Max(odds, -20), 0); //from -20 to 0
 
             var score = (float)(odds + 20) / 20.0f;
-
+            score *= 0.5f;
             //try to use tumble if possible
             var tumble_toggle = attacker.ActivatableAbilities.Enumerable.Where(a => a.Blueprint == tumble).FirstOrDefault();
             if (tumble_toggle != null && !attacker.IsPlayerFaction)
             {
-                tumble_toggle.IsOn = attacker.CombatState.IsEngaged;
+                tumble_toggle.IsOn = attacker.CombatState.IsEngaged && attacker.Stats.GetStat(Kingmaker.EntitySystem.Stats.StatType.SkillMobility).ModifiedValue >= 10;
             }
 
-
+            
             if (attacker.CombatState.IsEngage(target))
             {
-                score += in_threat_range_bonus;
+                score += engage_bonus;
+            }
+            if (attacker.CombatState.EngagedBy.Contains(target))
+            {
+                score += engaged_by_bonus;
             }
 
             return Math.Max(Math.Min(score, max_score), min_score);
