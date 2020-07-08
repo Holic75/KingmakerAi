@@ -8,10 +8,10 @@ Mod also provides a limited ability to make party members execute scripts (for p
 Script examples are provide in /ScriptExamples folder
 #Possible commands:
 
--cast ability_name[.variant] target_descriptor
--move_to target_descriptor
--activate ability_name
--deactivate ability_name
+- cast ability_name[.variant] target_descriptor
+- move_to target_descriptor
+- activate ability_name
+- deactivate ability_name
  
 ability_name and variant are defined by their internal names (you can use Spacehamster BlueprintDump, DataViewer or Bag of Tricks mods to find them).
  
