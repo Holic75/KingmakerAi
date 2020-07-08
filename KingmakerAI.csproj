@@ -138,6 +138,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Scripting\Scripts.cs" />
+    <Compile Include="Scripting\UI.cs" />
     <Compile Include="UpdateAi.cs" />
   </ItemGroup>
   <ItemGroup>

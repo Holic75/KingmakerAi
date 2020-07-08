@@ -4,6 +4,7 @@ using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Experience;
 using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.Blueprints.Classes.Spells;
+using Kingmaker.Blueprints.Facts;
 using Kingmaker.Blueprints.Items.Equipment;
 using Kingmaker.Blueprints.Items.Shields;
 using Kingmaker.Blueprints.Items.Weapons;
@@ -16,6 +17,8 @@ using Kingmaker.UnitLogic;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.FactLogic;
+using Kingmaker.UnitLogic.Mechanics;
+using Kingmaker.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,6 +52,14 @@ namespace KingmakerAI
 
         static class Spells
         {
+            public static BlueprintAbility bless = library.Get<BlueprintAbility>("90e59f4a4ada87243b7b3535a06d0638");
+            public static BlueprintAbility shield_of_faith = library.Get<BlueprintAbility>("183d5bb91dea3a1489a6db6c9cb64445");
+            public static BlueprintAbility bulls_strength = library.Get<BlueprintAbility>("4c3d08935262b6544ae97599b3a9556d");
+            public static BlueprintAbility owls_wisdom = library.Get<BlueprintAbility>("f0455c9295b53904f9e02fc571dd2ce1");
+            public static BlueprintAbility divine_favor = library.Get<BlueprintAbility>("9d5d2d3ffdd73c648af3eb3e585b1113");
+            public static BlueprintAbility divine_power = library.Get<BlueprintAbility>("ef16771cb05d1344989519e87f25b3c5");
+            public static BlueprintAbility prayer = library.Get<BlueprintAbility>("faabd2cc67efa4646ac58c7bb3e40fcc");
+
             public static BlueprintAbility phantasmal_putrefaction = library.Get<BlueprintAbility>("1f2e6019ece86d64baa5effa15e81ecc");
             public static BlueprintAbility magic_missile = library.Get<BlueprintAbility>("4ac47ddb9fa1eaf43a1b6809980cfbd2");
             public static BlueprintAbility cold_ice_strike = library.Get<BlueprintAbility>("5ef85d426783a5347b420546f91a677b");
@@ -85,6 +96,8 @@ namespace KingmakerAI
 
         static class AiActions
         {
+            static public BlueprintAiAction attack_action = library.Get<BlueprintAiAction>("866ffa6c34000cd4a86fb1671f86c7d8");
+            static public Consideration target_self = library.Get<Consideration>("83e2dd97b82d769498394c3edf0d260e");
             static public BlueprintAiCastSpell cast_cold_ice_strike = createCastSpellAction("CastColdIceStrikeSpellAiAction", Spells.cold_ice_strike, 
                                                                                      new Consideration[] { swift_action_available, no_standard_action },
                                                                                      new Consideration[] { aoe_considertion },
@@ -127,6 +140,9 @@ namespace KingmakerAI
 
             static public BlueprintAiCastSpell spike_stones6 = library.Get<BlueprintAiCastSpell>("52c7350061720e44f861b867471a8c4c");
 
+            static public BlueprintFeature cleric_free_cast_long_spells;
+            static public BlueprintAiAction[] cleric_precast_spells_ai_action;
+
             static public void init()
             {
                 var quick_channel = ChannelEnergyEngine.getQuickChannelVariant(library.Get<BlueprintAbility>("89df18039ef22174b81052e2e419c728"));
@@ -134,6 +150,35 @@ namespace KingmakerAI
                                                              new Consideration[1] { no_standard_action }, 
                                                              new Consideration[] { aoe_more_enemies_considertion },
                                                              base_score: 20.0f, variant: quick_channel, cooldown_rounds: 1);
+
+                var spells = new BlueprintAbility[] {NewSpells.aura_of_doom,
+                                                Spells.shield_of_faith,
+                                                NewSpells.bone_fists,
+                                                Spells.owls_wisdom,
+                                                Spells.bulls_strength,
+                                                Spells.divine_favor,
+                                                Spells.divine_power,
+                                                Spells.prayer};
+                cleric_free_cast_long_spells = Helpers.CreateFeature("AiClericFreeCastBuffSpellsLong",
+                                                                     "",
+                                                                     "",
+                                                                     "",
+                                                                     null,
+                                                                     FeatureGroup.None,
+                                                                     Helpers.Create<CallOfTheWild.TurnActionMechanics.UseAbilitiesAsFreeAction>(u => u.abilities = spells)
+                                                                     );
+
+                cleric_precast_spells_ai_action = new BlueprintAiAction[spells.Length];
+                for (int i = 0; i < spells.Length; i++)
+                {
+                    cleric_precast_spells_ai_action[i] = createCastSpellAction("ClericFreePrecast" + spells[i].name +"AiAction",
+                                                           spells[i],
+                                                           new Consideration[0],
+                                                           new Consideration[] { target_self },
+                                                           100.0f, 
+                                                           combat_count: 1);
+                    
+                }
             }
 
         }
@@ -163,9 +208,28 @@ namespace KingmakerAI
             
             fixVarraskInquisitor();
             fixLadyOfShallows();
-            
+            fixBSLCyclopsCleric();
 
             fixSaves();
+        }
+
+        static void fixBSLCyclopsCleric()
+        {
+            var brain = library.Get<BlueprintBrain>("0c17da3383b976b42b853e458b51f6bf");
+            var feature_list = library.Get<BlueprintFeature>("82662ebad000b1349baf02e2f8e86748");
+            var acl = feature_list.GetComponents<AddClassLevels>().Where(c => c.CharacterClass == library.Get<BlueprintCharacterClass>("67819271767a9dd4fbfd4ae700befea0")).FirstOrDefault();
+            acl.MemorizeSpells = new BlueprintAbility[]
+            {
+                Spells.shield_of_faith,
+                Spells.bulls_strength,
+                Spells.owls_wisdom,
+                NewSpells.aura_of_doom,
+                Spells.divine_power
+            };
+            var unit = library.Get<BlueprintUnit>("fe662d20a0272bb4ea66bef675b4b52d");
+            unit.AddFacts = unit.AddFacts.AddToArray(AiActions.cleric_free_cast_long_spells);
+            //feature_list.AddComponent(Helpers.CreateAddFact(AiActions.cleric_free_cast_long_spells));
+            brain.Actions = AiActions.cleric_precast_spells_ai_action.AddToArray(AiActions.attack_action);
         }
 
         static void fixDuergarKineticist()
@@ -525,11 +589,18 @@ namespace KingmakerAI
 
             class_levels.MemorizeSpells = new BlueprintAbility[]
             {
+                //level 1
+                //level 2
+                Spells.owls_wisdom,
+                Spells.bulls_strength,
+                NewSpells.bone_fists,
+                //level 3
+                Spells.prayer,
                 //level 4
                 NewSpells.aura_of_doom,
                 library.Get<BlueprintAbility>("d2aeac47450c76347aebbc02e4f463e0"), //fear
-                library.Get<BlueprintAbility>("9d5d2d3ffdd73c648af3eb3e585b1113"), //divine favor
-                library.Get<BlueprintAbility>("9d5d2d3ffdd73c648af3eb3e585b1113"), //divine favor
+                Spells.divine_power,
+                Spells.divine_power,
 
                 //level 5
                 CallOfTheWild.NewSpells.command_greater,
@@ -581,9 +652,9 @@ namespace KingmakerAI
             var new_actions = high_priestess_brain.Actions.Skip(6).ToArray().AddToArray(cast_blade_barrier, cast_fear, cast_blasphemy,
                                                                       library.Get<BlueprintAiAction>("1c5cdf69effdbdf4e91aa7fa8e36a261"), //sm6
                                                                        library.Get<BlueprintAiAction>("1dd4f2a2fb786714eaca3a94a03e8c5f"), //sm7
-                                                                       library.Get<BlueprintAiAction>("09de02db1b07d364795f412abb557de3"), //divine favor
                                                                       library.Get<BlueprintAiAction>("866ffa6c34000cd4a86fb1671f86c7d8")); //attack
-            goblin_shaman.Brain.Actions = new_actions;
+            goblin_shaman.Brain.Actions = new_actions.AddToArray(AiActions.cleric_precast_spells_ai_action);
+            goblin_shaman.AddFacts = goblin_shaman.AddFacts.AddToArray(AiActions.cleric_free_cast_long_spells);
 
         }
 
@@ -869,12 +940,17 @@ namespace KingmakerAI
                             sb.ForgetMemorized(s);
                         }
                     }
-                    Main.logger.Log(u.CharacterName);
                     acl.LevelUp(u, acl.Levels - u.Progression.GetClassLevel(acl.CharacterClass));
                 }
 
-
-
+                //add new facts
+                foreach (BlueprintUnitFact bf in (u.Blueprint.AddFacts).EmptyIfNull<BlueprintUnitFact>())
+                {
+                    if (bf != null && !u.HasFact(bf))
+                    {
+                        u.AddFact(bf, (MechanicsContext)null, (FeatureParam)null);
+                    }
+                }
                 u.Brain.RestoreAvailableActions();
             };
             SaveGameFix.save_game_actions.Add(ai_fix);
@@ -974,15 +1050,27 @@ namespace KingmakerAI
 
             var slay_living = library.Get<BlueprintAbility>("4fbd47525382517419c66fb548fe9a67");
             var flame_strike = library.Get<BlueprintAbility>("f9910c76efc34af41b6e43d5d8752f0f");
+            var inflict_critical_wounds = library.Get<BlueprintAbility>("651110ed4f117a948b41c05c5c7624c0");
             foreach (var u in units)
             {
+                u.AddFacts = u.AddFacts.AddToArray(AiActions.cleric_free_cast_long_spells);
                 var class_levels = u.GetComponent<AddClassLevels>();
                 class_levels.Skills = new StatType[] { StatType.SkillLoreReligion, StatType.SkillLoreNature, StatType.SkillPerception };
                 var spells = class_levels.MemorizeSpells.ToList();
+                spells.Add(Spells.bulls_strength);
+                spells.Add(Spells.owls_wisdom);
+                spells.Add(NewSpells.bone_fists);
+                spells.Remove(inflict_critical_wounds);
+                spells.Remove(inflict_critical_wounds);
+                spells.Remove(inflict_critical_wounds);
+                spells.Remove(inflict_critical_wounds);
                 spells.Remove(slay_living);
                 spells.Remove(slay_living);
                 spells.Remove(slay_living);
                 spells.Remove(slay_living);
+                spells.Remove(slay_living);
+                spells.Add(NewSpells.aura_of_doom);
+                spells.Add(CallOfTheWild.NewSpells.command_greater);
                 spells.Add(CallOfTheWild.NewSpells.command_greater);
                 spells.Add(flame_strike);
                 spells.Add(flame_strike);
@@ -1003,8 +1091,8 @@ namespace KingmakerAI
 
             var cast_flame_strike = library.CopyAndAdd<BlueprintAiCastSpell>("4f48fd03d530f86439657e4d93bffc89", "CastFlameStrikePriority9SpellAiAction", "");
             cast_flame_strike.BaseScore = 9.0f;
-
-            brain.Actions = brain.Actions.AddToArray(cast_flame_strike, AiActions.cast_command, AiActions.quick_channel_action, AiActions.cast_cold_ice_strike);
+            
+            brain.Actions = brain.Actions.AddToArray(cast_flame_strike, AiActions.cast_command, AiActions.quick_channel_action, AiActions.cast_cold_ice_strike).AddToArray(AiActions.cleric_precast_spells_ai_action);
         }
     }
 

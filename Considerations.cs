@@ -32,9 +32,9 @@ namespace KingmakerAI.NewConsiderations
             UnitEntityData attacker = context.Unit;
             UnitEntityData target = context.Target.Unit ?? context.Unit;
 
-            if (attacker == null || target == null)
+            if (attacker == null || target == null || !target.IsEnemy(attacker) || attacker.CombatState.AIData.UnreachableUnits.Contains(target))
             {
-                return min_score;
+                return 0.0f;
             }
             var weapon = attacker.Body?.PrimaryHand?.MaybeWeapon;
 

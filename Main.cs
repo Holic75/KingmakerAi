@@ -21,13 +21,20 @@ namespace KingmakerAI
     {
         internal class Settings
         {
+            [JsonProperty]
+            internal string scripts_working_folder { get; set; }
+            [JsonProperty]
+            internal string party_info_file { get; set; }
+
             internal Settings()
             {
 
-                using (StreamReader settings_file = File.OpenText("Mods/KingmakerAI/settings.json"))
+                using (StreamReader settings_file = File.OpenText(UnityModManager.modsPath + @"/KingmakerAi/settings.json"))
                 using (JsonTextReader reader = new JsonTextReader(settings_file))
                 {
                     JObject jo = (JObject)JToken.ReadFrom(reader);
+                    scripts_working_folder = (string)jo["scripts_working_folder"];
+                    party_info_file = (string)jo["party_info_file"];
                 }
             }
         }
@@ -56,6 +63,7 @@ namespace KingmakerAI
         {
             try
             {
+                modEntry.OnGUI = Scripting.UI.onGUI;
                 logger = modEntry.Logger;
                 harmony = Harmony12.HarmonyInstance.Create(modEntry.Info.Id);
                 harmony.PatchAll(Assembly.GetExecutingAssembly());
@@ -95,6 +103,8 @@ namespace KingmakerAI
                     CallOfTheWild.Helpers.GuidStorage.dump(guid_file_name);
 #endif
                     CallOfTheWild.Helpers.GuidStorage.dump(@"./Mods/KingmakerAI/loaded_blueprints.txt");
+                    Scripting.UI.initialize(Main.settings.scripts_working_folder, Main.settings.party_info_file);
+
                 }
                 catch (Exception ex)
                 {
