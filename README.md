@@ -7,7 +7,7 @@ It requires at least Proper Flanking 2 1.19c and Call of the Wild 1.99f.
 Mod also provides a limited ability to make party members execute scripts (for pre-buffing for example)
 Script examples are provide in /ScriptExamples folder
 
-#Possible commands:
+### Possible commands:
 
 - cast ability_name[.variant] target_descriptor
 - move_to target_descriptor
