@@ -31,8 +31,8 @@ using Kingmaker.Blueprints;
  * activate ability_name
  * deactivate ability_name
  * 
- * target_descriptor = [1][2][3][4][5][6][7][8][s][p]
- * 1 - 8 - correspond to unit tags (i.e action will be applied to all unit that have at least one tag, so 123 will be applied to anyone who has tag 1, 2 or 3 or any combination of them)
+ * target_descriptor = [1][2][3][4][5][6][7][8][9][s][p]
+ * 1 - 9 - correspond to unit tags (i.e action will be applied to all unit that have at least one tag, so 123 will be applied to anyone who has tag 1, 2 or 3)
  * s - apply on self
  * p - apply on own pet
  * 

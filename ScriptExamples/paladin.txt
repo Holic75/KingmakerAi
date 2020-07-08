@@ -1,0 +1,4 @@
+cast BullsStrength 67
+cast ArchonsAura s
+cast DivineHunterBondSwitchAbility s
+cast OwlsWisdom 7

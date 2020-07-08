@@ -1,0 +1,44 @@
+[
+  {
+    "$id": "1",
+    "name": "Anna",
+    "tags": "1",
+    "script_file": "summoner.txt"
+  },
+  {
+    "$id": "2",
+    "name": "Anna.Twinned Eidolon",
+    "tags": "2",
+    "script_file": ""
+  },
+  {
+    "$id": "3",
+    "name": "Elia",
+    "tags": "3",
+    "script_file": ""
+  },
+  {
+    "$id": "4",
+    "name": "Edwin",
+    "tags": "4",
+    "script_file": "arcanist.txt"
+  },
+  {
+    "$id": "5",
+    "name": "Linzi",
+    "tags": "5",
+    "script_file": "bard.txt"
+  },
+  {
+    "$id": "6",
+    "name": "Coran",
+    "tags": "6",
+    "script_file": "paladin.txt"
+  },
+  {
+    "$id": "7",
+    "name": "Cernd",
+    "tags": "7",
+    "script_file": "shaman.txt"
+  }
+]

@@ -1,0 +1,7 @@
+cast FalseLifeGreater s
+cast AuraOfDoomAbility s
+cast Barkskin s3
+cast ShieldOfFaith s12
+cast DeadlyJuggernautAbility s
+cast FlyAbility s123
+cast BoneFistsAbility s

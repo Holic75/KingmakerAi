@@ -1,0 +1,4 @@
+cast EnlargePerson 37
+cast MageArmor s2
+cast MageShield sp
+cast CatsGrace 3567

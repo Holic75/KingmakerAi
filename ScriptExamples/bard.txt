@@ -1,0 +1,4 @@
+cast Echolocation s
+cast RemoveFear s
+cast GoodHope s
+cast DelayPoisonCommunal s

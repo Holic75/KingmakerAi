@@ -1,0 +1,11 @@
+move_to p
+activate ImprovedSpellSharingToggleAbility
+cast Barkskin s
+deactivate ImprovedSpellSharingToggleAbility
+cast ProtectionFromArrowsCommunal s
+cast ExpeditiousRetreat sp
+cast EnlargePerson sp
+cast MageShield sp
+cast EvolutionSurgeGreaterBaseAbility.EvolutionSurgeGreaterSizeIncreaseLargeEvolutionFeatureBuffAbility s
+cast RemainingEvolutionSurgeGreaterBaseAbility.RemainingEvolutionSurgeGreaterStrength2AbilityIncreaseFeatureBuffAbility s
+cast Blur sp
