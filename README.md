@@ -1,7 +1,7 @@
 # Kingmaker AI
 
 This is a mod for Pathfinder: Kingmaker that aims to make game a bit more challenging.
-It requires at least Proper Flanking 2 1.19c and Call of the Wild 1.99f.
+It requires at least Proper Flanking 2 1.19c and Call of the Wild 1.99h.
 
 
 Mod also provides a limited ability to make party members execute scripts (for pre-buffing for example)
