@@ -88,9 +88,6 @@ namespace KingmakerAI
             
             public static BlueprintAbility baleful_polymorph = library.Get<BlueprintAbility>("3105d6e9febdc3f41a08d2b7dda1fe74");
             public static BlueprintAbility tar_pool = library.Get<BlueprintAbility>("7d700cdf260d36e48bb7af3a8ca5031f");
-
-
-
         }
 
 
@@ -185,6 +182,7 @@ namespace KingmakerAI
 
         static internal void load()
         {
+            Profiles.ProfileManager.initialize();
             AiActions.init();
             updateAttackConsiderations();
             updateTsanna();
@@ -197,7 +195,9 @@ namespace KingmakerAI
 
             fixFallenPriest();
             fixBanditConjurers();
+            fixBanditTransmuter2();
             fixBanditTransmuter();
+
             //fix necromancers, illusionist
             fixMaestroJanush();
 
@@ -211,6 +211,26 @@ namespace KingmakerAI
             fixBSLCyclopsCleric();
 
             fixSaves();
+        }
+
+
+        static void fixBanditTransmuter()
+        {
+            var transmuter = Profiles.ProfileManager.getProfile("WizardTransmuter");
+            var features = library.GetAllBlueprints().Where<BlueprintScriptableObject>(f => f.name.Contains("BanditTransmuterFeatureListLevel")).Cast<BlueprintFeature>().ToArray();
+          
+
+            var brain = library.Get<BlueprintBrain>("bf90f2053c06375418c119115122ae3d");
+            brain.Actions = transmuter.brain.Actions;
+
+            foreach (var f in features)
+            {
+                var old_acl = f.GetComponent<AddClassLevels>();
+                f.RemoveComponent(old_acl);
+                f.AddComponent(transmuter.getAcl(old_acl.Levels));
+                f.RemoveComponents<AddFacts>();
+                f.AddComponent(Helpers.CreateAddFacts(transmuter.getFeatures(old_acl.Levels)));
+            }
         }
 
         static void fixBSLCyclopsCleric()
@@ -388,7 +408,7 @@ namespace KingmakerAI
             brain.Actions = brain.Actions.AddToArray(fear_ai_action, cloudkill_ai_action);
         }
 
-        static void fixBanditTransmuter()
+        static void fixBanditTransmuter2()
         {
             var features = library.GetAllBlueprints().Where<BlueprintScriptableObject>(f => f.name.Contains("BanditTransmuterFeatureListLevel")).Cast<BlueprintFeature>().ToArray();
             var spell_lists = library.GetAllBlueprints().Where<BlueprintScriptableObject>(f => f.name.Contains("BanditTransmuterSpellListLevel")).Cast<BlueprintFeature>().ToArray();

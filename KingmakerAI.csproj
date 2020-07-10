@@ -133,6 +133,10 @@
   <ItemGroup>
     <Compile Include="Considerations.cs" />
     <Compile Include="Main.cs" />
+    <Compile Include="Profiles\Profile.cs" />
+    <Compile Include="Profiles\ProfileDefines.cs" />
+    <Compile Include="Profiles\ProfileManager.cs" />
+    <Compile Include="Profiles\Profiles.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

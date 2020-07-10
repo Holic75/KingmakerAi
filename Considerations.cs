@@ -15,6 +15,24 @@ using UnityEngine;
 
 namespace KingmakerAI.NewConsiderations
 {
+
+
+    public class TargetFactionConsideration : Consideration
+    {
+        [Range(0.0f, 1f)]
+        public float enemy_score;
+        [Range(0.0f, 1f)]
+        public float ally_score;
+
+        public override float Score(DecisionContext context)
+        {
+            if ((context.Target.Unit ?? context.Unit).IsEnemy(context.Unit))
+                return this.enemy_score;
+            return this.ally_score;
+        }
+    }
+
+
     public class AcConsideration : Consideration
     {
         static Dictionary<(UnitEntityData, UnitEntityData), int> uncertainty_values = new Dictionary<(UnitEntityData, UnitEntityData), int>();
