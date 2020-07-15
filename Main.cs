@@ -97,6 +97,7 @@ namespace KingmakerAI
                     CallOfTheWild.Helpers.GuidStorage.load(Properties.Resources.blueprints, allow_guid_generation);
 
                     UpdateAi.load();
+                    Core.load();
 
 #if DEBUG
                     string guid_file_name = @"C:\Repositories\KingmakerAI\KingmakerAI\blueprints.txt";

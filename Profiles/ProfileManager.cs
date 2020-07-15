@@ -137,7 +137,7 @@ namespace KingmakerAI.Profiles
 
                 if (check_buff)
                 {
-                    var no_buff = getNoBuffFromSpell(ability, is_ally, checked_buff);
+                    var no_buff = getNoBuffFromSpell(ability, !is_ally, checked_buff);
 
                     if (no_buff != null)
                     {
@@ -157,7 +157,7 @@ namespace KingmakerAI.Profiles
                 }
 
                 cast_spell_actions[name] = createCastSpellAction(name + "AiCastSpellAction", spell, actor_considerations.ToArray(), target_considerations.ToArray(),
-                                                                 is_precast ? precast_boost + score : score, variant, combat_count, cooldown_rounds,
+                                                                 is_precast ? precast_boost + score + aoe_boost: score + aoe_boost, variant, combat_count, cooldown_rounds,
                                                                  "");
             }
 
@@ -204,7 +204,7 @@ namespace KingmakerAI.Profiles
 
                 if (check_buff)
                 {
-                    var no_buff = getNoBuffFromSpell(ability, is_ally, checked_buff);
+                    var no_buff = getNoBuffFromSpell(ability, !is_ally, checked_buff);
                     if (no_buff != null)
                     {
                         target_considerations.Add(no_buff);
@@ -367,6 +367,9 @@ namespace KingmakerAI.Profiles
             initializeDefines();
             createTransmuterProfile();
             createConjurerProfile();
+            createNecromancerProfile();
+            createIllusionistProfile();
+            createRedDragonSorcerer();
         }
     }
 }

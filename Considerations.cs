@@ -1,10 +1,13 @@
 ﻿using CallOfTheWild;
+using Kingmaker.Blueprints.Items.Armors;
 using Kingmaker.Controllers.Brain;
 using Kingmaker.Controllers.Brain.Blueprints.Considerations;
 using Kingmaker.EntitySystem.Entities;
+using Kingmaker.Items;
 using Kingmaker.PubSubSystem;
 using Kingmaker.RuleSystem;
 using Kingmaker.RuleSystem.Rules;
+using Kingmaker.UnitLogic;
 using Kingmaker.UnitLogic.ActivatableAbilities;
 using System;
 using System.Collections.Generic;
@@ -15,7 +18,38 @@ using UnityEngine;
 
 namespace KingmakerAI.NewConsiderations
 {
+    public class ArmorAroundConsideration : UnitsAroundConsideration
+    {
+        public bool is_light;
+        private object unitEntityData;
 
+        public override bool IsOk(UnitEntityData target)
+        {
+            if (!base.IsOk(target))
+                return false;
+           
+            ItemEntityArmor maybeArmor = target.Body.Armor.MaybeArmor;
+            if (maybeArmor == null)
+                return is_light;
+            switch (maybeArmor.Blueprint.Type.ProficiencyGroup)
+            {
+                case ArmorProficiencyGroup.None:
+                case ArmorProficiencyGroup.Light:
+                    return is_light;
+                case ArmorProficiencyGroup.Medium:
+                case ArmorProficiencyGroup.Heavy:
+                    return !is_light;
+                case ArmorProficiencyGroup.Buckler:
+                case ArmorProficiencyGroup.LightShield:
+                case ArmorProficiencyGroup.HeavyShield:
+                case ArmorProficiencyGroup.TowerShield:
+                    UberDebug.LogWarning((object)unitEntityData, (object)string.Format("Shield in armor slot ({0})", (object)unitEntityData));
+                    return !is_light;
+                default:
+                    return is_light;
+            }
+        }
+    }
 
     public class TargetFactionConsideration : Consideration
     {
@@ -29,6 +63,51 @@ namespace KingmakerAI.NewConsiderations
             if ((context.Target.Unit ?? context.Unit).IsEnemy(context.Unit))
                 return this.enemy_score;
             return this.ally_score;
+        }
+    }
+
+
+    public class UnitPolymorphed : Consideration
+    {
+        public float polymorphed_score;
+        public float not_polymorphed_score;
+
+        public override float Score(DecisionContext context)
+        {
+            var unit = context.Target?.Unit;
+            if (unit == null)
+            {
+                return 0.0f;
+            }
+
+            return unit.Body.IsPolymorphed ? polymorphed_score : not_polymorphed_score;
+        }
+    }
+
+
+    public class BabPartConsideration : Consideration
+    {
+        public float min_score = 0f;
+        public float max_score = 1.0f;
+        public float min_bab_part = 0.7f;
+
+        public override float Score(DecisionContext context)
+        {
+            var unit = context.Target?.Unit;
+            if (unit == null)
+            {
+                return min_score;
+            }
+
+            float val = (float) unit.Descriptor.Stats.BaseAttackBonus.ModifiedValue / (float) unit.Descriptor.Progression.CharacterLevel;
+            if (val < min_bab_part)
+            {
+                return min_score;
+            }
+            else
+            {
+                return Math.Min(max_score, val);
+            }
         }
     }
 
@@ -50,9 +129,9 @@ namespace KingmakerAI.NewConsiderations
             UnitEntityData attacker = context.Unit;
             UnitEntityData target = context.Target.Unit ?? context.Unit;
 
-            if (attacker == null || target == null || !target.IsEnemy(attacker) || attacker.CombatState.AIData.UnreachableUnits.Contains(target))
+            if (attacker == null || target == null || !target.IsEnemy(attacker) || attacker.CombatState.AIData.UnreachableUnits.Contains(target) || attacker.IsPlayerFaction)
             {
-                return 0.0f;
+                return min_score;
             }
             var weapon = attacker.Body?.PrimaryHand?.MaybeWeapon;
 
