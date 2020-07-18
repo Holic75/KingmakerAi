@@ -1,4 +1,5 @@
 ﻿using CallOfTheWild;
+using Kingmaker;
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Experience;
@@ -11,6 +12,7 @@ using Kingmaker.Blueprints.Items.Weapons;
 using Kingmaker.Controllers.Brain.Blueprints;
 using Kingmaker.Controllers.Brain.Blueprints.Considerations;
 using Kingmaker.Designers.Mechanics.Facts;
+using Kingmaker.EntitySystem;
 using Kingmaker.EntitySystem.Stats;
 using Kingmaker.Enums;
 using Kingmaker.UnitLogic;
@@ -899,7 +901,6 @@ namespace KingmakerAI
             //destruction, boneshatter
             var brain = priest.Brain;
             brain.Actions = brain.Actions.AddToArray(AiActions.quick_channel_action);
-            
         }
 
 
@@ -907,53 +908,60 @@ namespace KingmakerAI
 
         static void fixSaves()
         {
-            Action<UnitDescriptor> ai_fix = delegate (UnitDescriptor u)
+            /*Action<UnitDescriptor> ai_fix = delegate (UnitDescriptor u)
             {
-                if (u.IsPlayerFaction)
-                {
-                    return;
-                }
-                var tr = Harmony12.Traverse.Create(u);
-                tr.Property("Brain").SetValue(new UnitBrain(u));
-                //u.Initialize();
-
-                
-                var acls = u.Blueprint.GetComponents<AddClassLevels>().ToArray();
-                foreach (var f in u.Blueprint.AddFacts)
-                {
-                    acls = acls.AddToArray(f.GetComponents<AddClassLevels>());
-                }
-                foreach (var acl in acls)
-                {
-                    //add spells if they have changed
-                    var sb = u.GetSpellbook(acl.CharacterClass);
-                    if (sb == null)
-                    {
-                        continue;
-                    }
-
-                    if (!sb.Blueprint.Spontaneous)
-                    {
-                        var slots = sb.GetAllMemorizedSpells().ToArray();
-                        foreach (var s in slots)
-                        {
-                            sb.ForgetMemorized(s);
-                        }
-                    }
-                    acl.LevelUp(u, acl.Levels - u.Progression.GetClassLevel(acl.CharacterClass));
-                }
-
-                //add new facts
-                foreach (BlueprintUnitFact bf in (u.Blueprint.AddFacts).EmptyIfNull<BlueprintUnitFact>())
-                {
-                    if (bf != null && !u.HasFact(bf))
-                    {
-                        u.AddFact(bf, (MechanicsContext)null, (FeatureParam)null);
-                    }
-                }
-                u.Brain.RestoreAvailableActions();
+                fixAiOnLoad(u);
             };
-            SaveGameFix.save_game_actions.Add(ai_fix);
+            SaveGameFix.save_game_actions.Add(ai_fix);*/
+        }
+
+
+        static public void fixAiOnLoad(UnitDescriptor u)
+        {
+            if (u.IsPlayerFaction)
+            {
+                return;
+            }
+            var tr = Harmony12.Traverse.Create(u);
+            tr.Property("Brain").SetValue(new UnitBrain(u));
+            //u.Initialize();
+
+
+            var acls = u.Blueprint.GetComponents<AddClassLevels>().ToArray();
+            foreach (var f in u.Blueprint.AddFacts)
+            {
+                acls = acls.AddToArray(f.GetComponents<AddClassLevels>());
+            }
+            Main.logger.Log("Found acls: " + acls.Length.ToString());
+            foreach (var acl in acls)
+            {
+                //add spells if they have changed
+                var sb = u.GetSpellbook(acl.CharacterClass);
+                if (sb == null)
+                {
+                    continue;
+                }
+
+                if (!sb.Blueprint.Spontaneous)
+                {
+                    var slots = sb.GetAllMemorizedSpells().ToArray();
+                    foreach (var s in slots)
+                    {
+                        sb.ForgetMemorized(s);
+                    }
+                }
+                acl.LevelUp(u, acl.Levels - u.Progression.GetClassLevel(acl.CharacterClass));
+            }
+
+            //add new facts
+            foreach (BlueprintUnitFact bf in (u.Blueprint.AddFacts).EmptyIfNull<BlueprintUnitFact>())
+            {
+                if (bf != null && !u.HasFact(bf))
+                {
+                    u.AddFact(bf, (MechanicsContext)null, (FeatureParam)null);
+                }
+            }
+            u.Brain.RestoreAvailableActions();
         }
 
         static BlueprintAiCastSpell createCastSpellAction(string name, BlueprintAbility spell, Consideration[] actor_consideration, Consideration[] target_consideration,
@@ -1093,6 +1101,25 @@ namespace KingmakerAI
             cast_flame_strike.BaseScore = 9.0f;
             
             brain.Actions = brain.Actions.AddToArray(cast_flame_strike, AiActions.cast_command, AiActions.quick_channel_action, AiActions.cast_cold_ice_strike).AddToArray(AiActions.cleric_precast_spells_ai_action);
+        }
+
+
+        //fix unit spells/brains on area loaded
+        [Harmony12.HarmonyPatch(typeof(Game), "OnAreaLoaded")]
+        class Game_OnAreaLoaded_Patch
+        {
+            static void Postfix(Game __instance)
+            {
+                foreach (var u in __instance.State.AwakeUnits)
+                {
+                    if (u.Descriptor == null)
+                    {
+                        continue;
+                    }
+                    fixAiOnLoad(u.Descriptor);
+                    Main.logger.Log("Fixing " + u.CharacterName);
+                }
+            }
         }
     }
 

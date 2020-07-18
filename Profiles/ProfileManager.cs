@@ -370,6 +370,8 @@ namespace KingmakerAI.Profiles
             createNecromancerProfile();
             createIllusionistProfile();
             createRedDragonSorcerer();
+            createUndeadSorcerer();
+            createDruidProfile();
         }
     }
 }

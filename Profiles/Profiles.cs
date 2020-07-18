@@ -29,7 +29,7 @@ namespace KingmakerAI.Profiles
                                        Spells.tar_pool, Spells.bears_endurance_mass, Spells.chain_lightning, Spells.chain_lightning, Spells.chain_lightning,
                                        CallOfTheWild.NewSpells.fly_mass, CallOfTheWild.NewSpells.particulate_form, Spells.resonating_word, Spells.resonating_word, Spells.resonating_word,
                                        Spells.frightful_aspect, Spells.storm_bolts, Spells.storm_bolts, Spells.storm_bolts, Spells.storm_bolts,
-                                       Spells.fiery_body, CallOfTheWild.NewSpells.meteor_swarm, CallOfTheWild.NewSpells.meteor_swarm, CallOfTheWild.NewSpells.meteor_swarm);
+                                       Spells.fiery_body, Spells.polar_midnight, CallOfTheWild.NewSpells.meteor_swarm, CallOfTheWild.NewSpells.meteor_swarm);
 
 
             profile.setAiActions(AiActions.acid_splash_ai_action,
@@ -68,6 +68,7 @@ namespace KingmakerAI.Profiles
                 getAoeAiSpell(Spells.storm_bolts, 9, is_ally: false, affects_allies: false),
                 //9
                 getSelfSpell(Spells.fiery_body, 10, is_precast: true, combat_count: 1),
+                getAoeAiSpell(Spells.polar_midnight, 10.5f, is_ally: false, affects_allies: true),
                 getAoeAiSpell(CallOfTheWild.NewSpells.meteor_swarm, 10, is_ally: false, affects_allies: true)
                 );
 
@@ -245,7 +246,7 @@ namespace KingmakerAI.Profiles
                 //2
                 getSelfSpell(Spells.mirror_image, 3, is_precast: true, combat_count: 1),
                 getSelfSpell(Spells.false_life, 3, is_precast: true, combat_count: 1, extra_target_consideration: new Consideration[] { getNoBuffFromSpell(Spells.false_life_greater, false) }),
-                getAoeAiSpell(Spells.scare, 3.5f, is_ally: false, affects_allies: true, combat_count: 1),
+                getAoeAiSpell(Spells.scare, 3.5f, is_ally: false, affects_allies: false, combat_count: 1),
                 getSingleTargetAiSpell(Spells.blindness, 3, is_ally: false),
                 //3
                 getAoeAiSpell(CallOfTheWild.NewSpells.howling_agony, 4.5f, is_ally: false, affects_allies: false, combat_count: 1),
@@ -637,6 +638,102 @@ namespace KingmakerAI.Profiles
             profile.addFeatureSelection(Bloodlines.bloodline_draconic_feat_selection, Feats.great_fortitude);
 
 
+
+            registerProfile(profile);
+        }
+
+
+        static void createDruidProfile()
+        {
+            var profile = new Profile("DruidCaster",
+                                      Classes.druid,
+                                      StatType.Wisdom,
+                                      new StatType[] { StatType.SkillLoreNature, StatType.SkillPerception, StatType.SkillMobility, StatType.SkillLoreReligion });
+
+            profile.addMemorizedSpells(Spells.longstrider, Spells.feather_step, Spells.flare_burst,
+                                       CallOfTheWild.NewSpells.burst_of_radiance, CallOfTheWild.NewSpells.flurry_of_snowballs, Spells.barkskin, Spells.owls_wisdom, Spells.barkskin, CallOfTheWild.NewSpells.flurry_of_snowballs,
+                                       CallOfTheWild.NewSpells.burning_entanglement, CallOfTheWild.NewSpells.earth_tremor, CallOfTheWild.NewSpells.earth_tremor, Spells.feather_step_mass, CallOfTheWild.NewSpells.earth_tremor, CallOfTheWild.NewSpells.earth_tremor,
+                                       Spells.obsidian_flow, Spells.slowing_mud, Spells.flame_strike, Spells.flame_strike, CallOfTheWild.NewSpells.explosion_of_rot, CallOfTheWild.NewSpells.explosion_of_rot,
+                                       Spells.fire_snake, Spells.fire_snake, Spells.fire_snake, Spells.stone_skin, Spells.baleful_polymorph, Spells.baleful_polymorph,
+                                       Spells.tar_pool, Spells.sirocco, Spells.stoneskin_communal, Spells.plague_storm, Spells.bears_endurance_mass,
+                                       Spells.creeping_doom, Spells.legendary_proportions, Spells.fire_storm, Spells.fire_storm, Spells.fire_storm, Spells.fire_storm,
+                                       Spells.frightful_aspect, Spells.sea_mantle, Spells.storm_bolts, Spells.storm_bolts, Spells.storm_bolts,
+                                       Spells.fiery_body, Spells.polar_midnight, Spells.summon_elder_worm, Spells.summon_elder_worm);
+
+
+            profile.setAiActions(//no cantrips
+                AiActions.attack_action,
+                //1
+                getSelfSpell(Spells.longstrider, 2, is_precast: true, combat_count: 1),
+                getSelfSpell(Spells.feather_step, 2, is_precast: true, combat_count: 1),
+                getAoeAiSpell(Spells.flare_burst, 2, is_ally: false, affects_allies: true,  combat_count: 1),
+                //2
+                getAoeAiSpell(CallOfTheWild.NewSpells.burst_of_radiance, 3.5f, is_ally: false, affects_allies: true, combat_count: 1),
+                getAoeAiSpell(CallOfTheWild.NewSpells.flurry_of_snowballs, 3f, is_ally: false, affects_allies: true, combat_count: 1),
+                getSingleTargetAiSpell(Spells.bulls_strength, 3, is_ally: true, is_precast: true, extra_target_consideration: new Consideration[] { Considerations.heavy_armor_consideration }, combat_count: 2),
+                getSelfSpell(Spells.barkskin, 3, is_precast: true, combat_count: 3),
+                getSingleTargetAiSpell(Spells.cats_grace, 3, is_ally: true, is_precast: true, extra_target_consideration: new Consideration[] { Considerations.light_armor_consideration }),
+                //3
+                getAoeAiSpell(Spells.feather_step_mass, 4, is_precast: true, is_ally: true, combat_count: 1),
+                getAoeAiSpell(CallOfTheWild.NewSpells.burning_entanglement, 4.5f, is_ally: false, affects_allies: true, combat_count: 1),
+                getAoeAiSpell(CallOfTheWild.NewSpells.earth_tremor, 4, is_ally: false, affects_allies: true, variant: CallOfTheWild.NewSpells.earth_tremor.Variants[0]),
+                getAoeAiSpell(CallOfTheWild.NewSpells.earth_tremor, 4, is_ally: false, affects_allies: true, variant: CallOfTheWild.NewSpells.earth_tremor.Variants[1]),
+                getAoeAiSpell(CallOfTheWild.NewSpells.earth_tremor, 4, is_ally: false, affects_allies: true, variant: CallOfTheWild.NewSpells.earth_tremor.Variants[2]),
+                //4
+                getSelfSpell(Spells.stone_skin, 5, is_precast: true, combat_count: 1),
+                getAoeAiSpell(Spells.obsidian_flow, 5.5f, is_ally: false, affects_allies: true, combat_count: 1),
+                getAoeAiSpell(Spells.slowing_mud, 5.5f, is_ally: false, affects_allies: false, combat_count: 1),
+                getAoeAiSpell(Spells.flame_strike, 5, is_ally: false, affects_allies: true),
+                getAoeAiSpell(CallOfTheWild.NewSpells.explosion_of_rot, 5, is_ally: false, affects_allies: true),
+                //5
+                getAoeAiSpell(Spells.fire_snake, 6, is_ally: false, affects_allies: false),
+                getSingleTargetAiSpell(Spells.baleful_polymorph, 6, is_ally: false),
+                //6
+                getAoeAiSpell(Spells.tar_pool, 7.5f, is_ally: false, affects_allies: true, combat_count: 1),
+                getAoeAiSpell(Spells.sirocco, 7.5f, is_ally: false, affects_allies: true, combat_count: 1),
+                getAoeAiSpell(Spells.bears_endurance_mass, 7, is_ally: true, is_precast: true, combat_count: 1),
+                getAoeAiSpell(Spells.plague_storm, 7.5f, is_ally: false, affects_allies: true, variant: Spells.plague_storm.Variants[0], combat_count: 1),
+                getAoeAiSpell(Spells.stoneskin_communal, 7, is_ally: true, is_precast: true, combat_count: 1),
+                //7
+                getSelfSpell(Spells.creeping_doom, 8, combat_count: 1),
+                getSingleTargetAiSpell(Spells.legendary_proportions, 8, is_precast: true, is_ally: true, extra_target_consideration: new Consideration[] { Considerations.heavy_armor_consideration }, combat_count: 2),
+                getAoeAiSpell(Spells.fire_storm, 8.0f, is_ally: false, affects_allies: false),
+                //8
+                getSelfSpell(Spells.frightful_aspect, 9, is_precast: true, combat_count: 1),
+                getSelfSpell(Spells.sea_mantle, 9, is_precast: true, combat_count: 1),
+                getAoeAiSpell(Spells.storm_bolts, 9, is_ally: false, affects_allies: false),
+                //9
+                getSelfSpell(Spells.fiery_body, 10, is_precast: true, combat_count: 1),
+                getAoeAiSpell(Spells.polar_midnight, 10.5f, is_ally: false, affects_allies: true),
+                getSelfSpell(Spells.summon_elder_worm, 10.0f, is_precast: true, combat_count: 2)
+                );
+
+            var free_spells = new BlueprintAbility[]
+            {
+                Spells.longstrider, Spells.feather_step, Spells.bulls_strength, Spells.mirror_image, Spells.owls_wisdom, Spells.cats_grace, Spells.feather_step_mass, Spells.bears_endurance_mass,
+                Spells.stone_skin, Spells.stoneskin_communal,  Spells.summon_elder_worm, Spells.sea_mantle, Spells.frightful_aspect, Spells.fiery_body
+            };
+            profile.addFeatureComponent(0,
+                Helpers.Create<CallOfTheWild.TurnActionMechanics.UseAbilitiesAsFreeAction>(u => u.abilities = free_spells)
+                );
+
+            //feats
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.combat_casting);//1
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.improved_initiative); //3
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.spell_focus); //5
+            profile.addParametrizedFeatureSelection(Feats.spell_focus, SpellSchool.Transmutation);
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.spell_focus); //7
+            profile.addParametrizedFeatureSelection(Feats.spell_focus, SpellSchool.Evocation);
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.spell_penetration); //9
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.quicken_spell); //11
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.toughness); //13
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.greater_spell_penetration); //15
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.greater_spell_focus); //17
+            profile.addParametrizedFeatureSelection(Feats.greater_spell_focus, SpellSchool.Transmutation);
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.greater_spell_focus); //19
+            profile.addParametrizedFeatureSelection(Feats.greater_spell_focus, SpellSchool.Evocation);
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.dodge); //21
+           //animal companion can be added separately
 
             registerProfile(profile);
         }

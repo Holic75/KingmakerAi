@@ -128,13 +128,13 @@ namespace KingmakerAI.Profiles
 
         public void addSelectedSpells(params BlueprintAbility[] spells)
         {
-            acl.SelectSpells = spells;
+            acl.SelectSpells = spells.Distinct().ToArray();
         }
 
 
         public void addMemorizedSpells(params BlueprintAbility[] spells)
         {
-            acl.MemorizeSpells = spells;
+            acl.MemorizeSpells = spells.Distinct().ToArray();
         }
 
 

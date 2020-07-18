@@ -61,6 +61,7 @@ namespace KingmakerAI.Profiles
         public static class AiActions
         {
             static public BlueprintAiCastSpell acid_splash_ai_action = library.Get<BlueprintAiCastSpell>("8cf4732cf870f8f4cbf760331c8f2696");
+            static public BlueprintAiAction attack_action = library.Get<BlueprintAiAction>("866ffa6c34000cd4a86fb1671f86c7d8");
         }
 
 
@@ -74,19 +75,21 @@ namespace KingmakerAI.Profiles
              public static UnitsAroundConsideration avoid_friends = library.Get<UnitsAroundConsideration>("8e6f34026b34c3d4ba831bb94548904a");
              public static UnitsAroundConsideration choose_more_friends;
              public static Consideration[] harmful_enemy_ally_aoe_target_consideration = new Consideration[] {avoid_friends, aoe_at_least_one_enemy_considertion, aoe_more_enemies_considertion, attack_target_prioriteis };
-             public static Consideration[] harmful_enemy_aoe_target_consideration = new Consideration[] { aoe_at_least_one_enemy_considertion, aoe_more_enemies_considertion, attack_target_prioriteis};
+            public static Consideration[] harmful_enemy_ally_aoe_target_consideration_small = new Consideration[] { avoid_friends, aoe_at_least_one_enemy_considertion, attack_target_prioriteis };
+            public static Consideration[] harmful_enemy_aoe_target_consideration = new Consideration[] { aoe_at_least_one_enemy_considertion, aoe_more_enemies_considertion, attack_target_prioriteis};
+            public static Consideration[] harmful_enemy_aoe_target_consideration_small = new Consideration[] { aoe_at_least_one_enemy_considertion, attack_target_prioriteis };
 
-             public static Consideration light_armor_consideration = library.Get<ArmorTypeConsideration>("2ba801c8a6f585749b7fd636e843e6f0");
-             public static Consideration heavy_armor_consideration = library.Get<ArmorTypeConsideration>("c376d918c01838b48befcb711cc528ff");
+            public static ArmorTypeConsideration light_armor_consideration;
+             public static ArmorTypeConsideration heavy_armor_consideration;
              public static Consideration light_armor_around_enemies_consideration;
              public static Consideration heavy_armor_around_enemies_consideration;
 
-            public static Consideration target_self_consideration = library.Get<TargetSelfConsideration>("83e2dd97b82d769498394c3edf0d260e");
+             public static Consideration target_self_consideration = library.Get<TargetSelfConsideration>("83e2dd97b82d769498394c3edf0d260e");
              public static Consideration target_other_consideration = library.Get<TargetSelfConsideration>("f4be6fc6f46b61044a44715f99f1918d");
 
              public static Consideration unconcious_penalty = library.Get<LifeStateConsideration>("bf033da33480da84f8265f5f8bcdd467");
              public static Consideration stand_still = library.Get<InRangeConsideration>("da2c75bc93165b749b18654b21759ea3");
-             public static Consideration in_range = library.Get<InRangeConsideration>("804d2cf0fb1815948b04ec697cbfdbf4");
+             public static Consideration in_range = library.Get<InRangeConsideration>("f083257df5834aa459be020f9b291f21");
 
              public static NewConsiderations.TargetFactionConsideration is_enemy;
              public static NewConsiderations.TargetFactionConsideration is_ally;
@@ -98,6 +101,12 @@ namespace KingmakerAI.Profiles
         public static class Spells
         {
             public static BlueprintAbility acid_splash = library.Get<BlueprintAbility>("0c852a2405dd9f14a8bbcfaf245ff823");
+
+            public static BlueprintAbility flare_burst = library.Get<BlueprintAbility>("39a602aa80cc96f4597778b6d4d49c0a");
+            public static BlueprintAbility feather_step = library.Get<BlueprintAbility>("f3c0b267dd17a2a45a40805e31fe3cd1");
+            public static BlueprintAbility longstrider = library.Get<BlueprintAbility>("14c90900b690cac429b229efdf416127");
+            public static BlueprintAbility faerie_fire = library.Get<BlueprintAbility>("4d9bf81b7939b304185d58a09960f589");
+            public static BlueprintAbility entnagle = library.Get<BlueprintAbility>("0fd00984a2c0e0a429cf1a911b4ec5ca");
 
             public static BlueprintAbility color_spray = library.Get<BlueprintAbility>("91da41b9793a4624797921f221db653c");
             public static BlueprintAbility cause_fear = library.Get<BlueprintAbility>("bd81a3931aa285a4f9844585b5d97e51");
@@ -112,6 +121,10 @@ namespace KingmakerAI.Profiles
             public static BlueprintAbility mage_shield = library.Get<BlueprintAbility>("ef768022b0785eb43a18969903c537c4");
             public static BlueprintAbility grease = library.Get<BlueprintAbility>("95851f6e85fe87d4190675db0419d112");
             public static BlueprintAbility burning_hands = library.Get<BlueprintAbility>("4783c3709a74a794dbe7c8e7e0b1b038");
+
+            public static BlueprintAbility barkskin = library.Get<BlueprintAbility>("5b77d7cc65b8ab74688e74a37fc2f553");
+            public static BlueprintAbility delay_poison = library.Get<BlueprintAbility>("b48b4c5ffb4eab0469feba27fc86a023");
+            public static BlueprintAbility sickening_entnaglement = library.Get<BlueprintAbility>("6c7467f0344004d48848a43d8c078bf8");
 
             public static BlueprintAbility bulls_strength = library.Get<BlueprintAbility>("4c3d08935262b6544ae97599b3a9556d");
             public static BlueprintAbility foxs_cunning = library.Get<BlueprintAbility>("ae4d3ad6a8fda1542acf2e9bbc13d113");
@@ -128,6 +141,9 @@ namespace KingmakerAI.Profiles
             public static BlueprintAbility burning_arc = library.Get<BlueprintAbility>("eaac3d36e0336cb479209a6f65e25e7c");
             public static BlueprintAbility scorching_ray = library.Get<BlueprintAbility>("cdb106d53c65bbc4086183d54c3b97c7");
             public static BlueprintAbility boneshaker = library.Get<BlueprintAbility>("b7731c2b4fa1c9844a092329177be4c3");
+
+            public static BlueprintAbility delay_poison_communal = library.Get<BlueprintAbility>("04e820e1ce3a66f47a50ad5074d3ae40");
+            public static BlueprintAbility feather_step_mass = library.Get<BlueprintAbility>("d219494150ac1f24f9ce14a3d4f66d26");
 
             public static BlueprintAbility displacement = library.Get<BlueprintAbility>("903092f6488f9ce45a80943923576ab3");
             public static BlueprintAbility divine_power = library.Get<BlueprintAbility>("ef16771cb05d1344989519e87f25b3c5");
@@ -146,8 +162,12 @@ namespace KingmakerAI.Profiles
             public static BlueprintAbility heroism = library.Get<BlueprintAbility>("5ab0d42fb68c9e34abae4921822b9d63");
             public static BlueprintAbility dispel_magic = library.Get<BlueprintAbility>("92681f181b507b34ea87018e8f7a528a");
             public static BlueprintAbility resist_energy_communal = library.Get<BlueprintAbility>("96c9d98b6a9a7c249b6c4572e4977157");
+            public static BlueprintAbility stone_skin = library.Get<BlueprintAbility>("c66e86905f7606c4eaa5c774f0357b2b");
 
             public static BlueprintAbility dragon_breath = library.Get<BlueprintAbility>("5e826bcdfde7f82468776b55315b2403");
+            public static BlueprintAbility flame_strike = library.Get<BlueprintAbility>("f9910c76efc34af41b6e43d5d8752f0f");
+            public static BlueprintAbility animal_growth = library.Get<BlueprintAbility>("56923211d2ac95e43b8ac5031bab74d8");
+            public static BlueprintAbility vine_trap = library.Get<BlueprintAbility>("6d1d48a939ce475409f06e1b376bc386");
 
             public static BlueprintAbility elemental_body1 = library.Get<BlueprintAbility>("690c90a82bf2e58449c6b541cb8ea004");
             public static BlueprintAbility elemental_body2 = library.Get<BlueprintAbility>("6d437be73b459594ab103acdcae5b9e2");
@@ -169,6 +189,9 @@ namespace KingmakerAI.Profiles
             public static BlueprintAbility summon_monster9 = library.Get<BlueprintAbility>("52b5df2a97df18242aec67610616ded0");
             public static BlueprintAbility summon_monster9_d3 = library.Get<BlueprintAbility>("4988b2e622c6f2d4b897894e3be13f09");
             public static BlueprintAbility create_undead = library.Get<BlueprintAbility>("76a11b460be25e44ca85904d6806e5a3");
+            public static BlueprintAbility summon_elder_worm = library.Get<BlueprintAbility>("954f1469ed62843409783c9fa7472998");
+            public static BlueprintAbility summon_nature_ally_7 = library.Get<BlueprintAbility>("051b979e7d7f8ec41b9fa35d04746b33");
+            public static BlueprintAbility summon_nature_ally_8 = library.Get<BlueprintAbility>("ea78c04f0bd13d049a1cce5daf8d83e0");
 
             public static BlueprintAbility acidic_spray = library.Get<BlueprintAbility>("c543eef6d725b184ea8669dd09b3894c");
             public static BlueprintAbility stoneskin_communal = library.Get<BlueprintAbility>("7c5d556b9a5883048bf030e20daebe31");
@@ -205,6 +228,8 @@ namespace KingmakerAI.Profiles
             public static BlueprintAbility hell_fire_ray = library.Get<BlueprintAbility>("700cfcbd0cb2975419bcab7dbb8c6210");
             public static BlueprintAbility heroism_greater = library.Get<BlueprintAbility>("e15e5e7045fda2244b98c8f010adfe31");
             public static BlueprintAbility heroic_invocation = library.Get<BlueprintAbility>("43740dab07286fe4aa00a6ee104ce7c1");
+            public static BlueprintAbility creeping_doom = library.Get<BlueprintAbility>("b974af13e45639a41a04843ce1c9aa12");
+            public static BlueprintAbility fire_storm = library.Get<BlueprintAbility>("e3d0dfe1c8527934294f241e0ae96a8d");
 
             public static BlueprintAbility frightful_aspect = library.Get<BlueprintAbility>("e788b02f8d21014488067bdd3ba7b325");
             public static BlueprintAbility rift_of_ruin = library.Get<BlueprintAbility>("dd3dacafcf40a0145a5824c838e2698d");
@@ -219,7 +244,6 @@ namespace KingmakerAI.Profiles
             public static BlueprintAbility spike_stones = library.Get<BlueprintAbility>("d1afa8bc28c99104da7d784115552de5");
             public static BlueprintAbility slowing_mud = library.Get<BlueprintAbility>("6b30813c3709fc44b92dc8fd8191f345");
             public static BlueprintAbility obsidian_flow = library.Get<BlueprintAbility>("e48638596c955a74c8a32dbc90b518c1");
-            public static BlueprintAbility flame_strike = library.Get<BlueprintAbility>("f9910c76efc34af41b6e43d5d8752f0f");
             public static BlueprintAbility horrid_wilting = library.Get<BlueprintAbility>("08323922485f7e246acb3d2276515526");
             public static BlueprintAbility death_clutch = library.Get<BlueprintAbility>("c3d2294a6740bc147870fff652f3ced5");
             public static BlueprintAbility shadow_evcation_greater = library.Get<BlueprintAbility>("3c4a2d4181482e84d9cd752ef8edc3b6");
@@ -230,7 +254,7 @@ namespace KingmakerAI.Profiles
             public static BlueprintAbility power_word_stun = library.Get<BlueprintAbility>("f958ef62eea5050418fb92dfa944c631");
 
             public static BlueprintAbility fire_snake = library.Get<BlueprintAbility>("ebade19998e1f8542a1b55bd4da766b3");
-            public static BlueprintAbility fire_storm = library.Get<BlueprintAbility>("e3d0dfe1c8527934294f241e0ae96a8d");
+            public static BlueprintAbility polar_midnight = library.Get<BlueprintAbility>("ba48abb52b142164eba309fd09898856");
             public static BlueprintAbility storm_bolts = library.Get<BlueprintAbility>("7cfbefe0931257344b2cb7ddc4cdff6f");
 
             public static BlueprintAbility fiery_body = library.Get<BlueprintAbility>("08ccad78cac525040919d51963f9ac39");
@@ -334,6 +358,11 @@ namespace KingmakerAI.Profiles
 
         static void initializeDefines()
         {
+            Considerations.light_armor_consideration = library.CopyAndAdd<ArmorTypeConsideration>("2ba801c8a6f585749b7fd636e843e6f0", "LightArmorOnlyConsideration", "");
+            Considerations.light_armor_consideration.HeavyArmorScore = 0.0f;
+            Considerations.heavy_armor_consideration = library.CopyAndAdd<ArmorTypeConsideration>("c376d918c01838b48befcb711cc528ff", "HeavyArmorOnlyConsideration", "");
+            Considerations.heavy_armor_consideration.LightArmorScore = 0.0f;
+
             Considerations.is_enemy = Helpers.Create<NewConsiderations.TargetFactionConsideration>();
             Considerations.is_enemy.enemy_score = 1.00f;
             Considerations.is_enemy.name = "IsEnemyConsideration";

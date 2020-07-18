@@ -25,7 +25,42 @@ namespace KingmakerAI
             fixBanditNecromancers();
             fixDLC2CultistNecromancerBoss();
             fixBanditIllusionists();
+            fixDruids();
 
+        }
+
+
+        static void fixDruids()
+        {
+            var druid = Profiles.ProfileManager.getProfile("DruidCaster");
+            { 
+                //bsl duergars
+                var brain = library.Get<BlueprintBrain>("7f6527bd36838ff42a1cb3964a05fd1b");
+                brain.Actions = druid.brain.Actions;
+
+                var features = library.Get<BlueprintFeature>("fd2460491b9d8e843b52c19f915ef47b");
+
+                var old_acl = features.GetComponent<AddClassLevels>();
+                features.RemoveComponent(old_acl);
+                var new_acl = druid.getAcl(old_acl.Levels).CreateCopy(a => a.Archetypes = new BlueprintArchetype[] { library.Get<BlueprintArchetype>("35a3b7bfc663ac74aa8bb50adfe70813") }); //add blight druid
+                features.AddComponent(new_acl);
+                features.RemoveComponents<AddFacts>();
+                features.AddComponent(Helpers.CreateAddFacts(druid.getFeatures(old_acl.Levels)));
+            }
+
+
+            //crazy_dryad
+            {
+                var dryad_brain = library.Get<BlueprintBrain>("b37d5b11de3de4b40bedfa04d338f2b5");
+                dryad_brain.Actions = druid.brain.Actions;
+                var dryad_features = library.Get<BlueprintFeature>("2573ea7a13133934381f51b34ff3c938");
+                var old_acl = dryad_features.GetComponent<AddClassLevels>();
+                dryad_features.RemoveComponent(old_acl);
+                var new_acl = druid.getAcl(old_acl.Levels);
+                dryad_features.AddComponent(new_acl);
+                dryad_features.RemoveComponents<AddFacts>();
+                dryad_features.AddComponent(Helpers.CreateAddFacts(druid.getFeatures(old_acl.Levels)));
+            }
         }
 
 
@@ -107,6 +142,9 @@ namespace KingmakerAI
 
             var brain = library.Get<BlueprintBrain>("fde24a9130c94f74baa7f166ca1b8fcb");
             brain.Actions = necromancer.brain.Actions;
+            
+            var brain_techno_league = library.Get<BlueprintBrain>("1c4fed7a9a2861d49906abdf6fbfdf0c");
+            brain_techno_league.Actions = necromancer.brain.Actions;
 
             foreach (var f in features)
             {
