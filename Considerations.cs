@@ -1,4 +1,5 @@
 ﻿using CallOfTheWild;
+using Kingmaker;
 using Kingmaker.Blueprints.Items.Armors;
 using Kingmaker.Controllers.Brain;
 using Kingmaker.Controllers.Brain.Blueprints.Considerations;
@@ -218,7 +219,7 @@ namespace KingmakerAI.NewConsiderations
 
     [Harmony12.HarmonyPatch(typeof(UnitEntityData))]
     [Harmony12.HarmonyPatch("LeaveCombat", Harmony12.MethodType.Normal)]
-    class BlueprintAbility__LeaveCombat__Patch
+    class UnitEntityData__LeaveCombat__Patch
     {
         static void Postfix(UnitEntityData __instance)
         {
