@@ -933,6 +933,15 @@ namespace KingmakerAI
                 acls = acls.AddToArray(f.GetComponents<AddClassLevels>());
             }
             Main.logger.Log("Found acls: " + acls.Length.ToString());
+            //add new facts
+            foreach (BlueprintUnitFact bf in (u.Blueprint.AddFacts).EmptyIfNull<BlueprintUnitFact>())
+            {
+                if (bf != null && !u.HasFact(bf))
+                {
+                    u.AddFact(bf, (MechanicsContext)null, (FeatureParam)null);
+                }
+            }
+
             foreach (var acl in acls)
             {
                 //add spells if they have changed
@@ -953,14 +962,7 @@ namespace KingmakerAI
                 acl.LevelUp(u, acl.Levels - u.Progression.GetClassLevel(acl.CharacterClass));
             }
 
-            //add new facts
-            foreach (BlueprintUnitFact bf in (u.Blueprint.AddFacts).EmptyIfNull<BlueprintUnitFact>())
-            {
-                if (bf != null && !u.HasFact(bf))
-                {
-                    u.AddFact(bf, (MechanicsContext)null, (FeatureParam)null);
-                }
-            }
+
             u.Brain.RestoreAvailableActions();
         }
 

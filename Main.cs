@@ -68,6 +68,8 @@ namespace KingmakerAI
                 harmony = Harmony12.HarmonyInstance.Create(modEntry.Info.Id);
                 harmony.PatchAll(Assembly.GetExecutingAssembly());
 
+
+
             }
             catch (Exception ex)
             {
@@ -105,6 +107,22 @@ namespace KingmakerAI
 #endif
                     CallOfTheWild.Helpers.GuidStorage.dump(@"./Mods/KingmakerAI/loaded_blueprints.txt");
                     Scripting.UI.initialize(Main.settings.scripts_working_folder, Main.settings.party_info_file);
+
+                    Type TurnController = Type.GetType("TurnBased.Controllers.TurnController, TurnBased");
+                    if (TurnController != null)
+                    {
+                        logger.Log("Found TurnBased mod, patching...");
+                        harmony.Patch(Harmony12.AccessTools.Method(TurnController, "ContinueActing"),
+                                       postfix: new Harmony12.HarmonyMethod(typeof(TurnBasedPatches.TurnController_ContinueActing_Patch), "Postfix")
+                                     );
+                        harmony.Patch(Harmony12.AccessTools.Method(TurnController, "ContinueWaiting"),
+                                        postfix: new Harmony12.HarmonyMethod(typeof(TurnBasedPatches.TurnController_ContinueWaiting_Patch), "Postfix")
+                                    );
+                    }
+                    else
+                    {
+                        logger.Log("TurnBased mod not found.");
+                    }
 
                 }
                 catch (Exception ex)

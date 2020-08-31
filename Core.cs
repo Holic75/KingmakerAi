@@ -140,7 +140,7 @@ namespace KingmakerAI
             var necromancer = Profiles.ProfileManager.getProfile("WizardNecromancer");
             var features = library.GetAllBlueprints().Where<BlueprintScriptableObject>(f => f.name.Contains("BanditNecromancerFeatureListLevel")).Cast<BlueprintFeature>().ToArray();
 
-            var brain = library.Get<BlueprintBrain>("fde24a9130c94f74baa7f166ca1b8fcb");
+            var brain = library.Get<BlueprintBrain>("775dc58da494c1240ab4508697135ebd");
             brain.Actions = necromancer.brain.Actions;
             
             var brain_techno_league = library.Get<BlueprintBrain>("1c4fed7a9a2861d49906abdf6fbfdf0c");
