@@ -26,7 +26,40 @@ namespace KingmakerAI
             fixDLC2CultistNecromancerBoss();
             fixBanditIllusionists();
             fixDruids();
+            fixKoboldsDragonSorcerers();
+            fixKoboldsUndeadSorcerers();
 
+            fixAlchemists();
+        }
+
+
+        static void fixAlchemists()
+        {
+            var alchemist = Profiles.ProfileManager.getProfile("Alchemist");
+            var features = library.GetAllBlueprints().Where<BlueprintScriptableObject>(f => f.name.Contains("GoblinAlchemistFeatureListLevel")
+                                                                                            || f.name.Contains("BanditAlchemistFeatureListLevel")
+                                                                                            || f.name.Contains("KoboldAlchemistFeatureListLevel")).Cast<BlueprintFeature>().ToArray();
+
+            var brains = new BlueprintBrain[]
+            {
+                library.Get<BlueprintBrain>("53a68e3631a6e1646997de0cb50ba49f"), // goblin
+                library.Get<BlueprintBrain>("5374487ceea5ac04d907d301cc53ae38"), //kobold
+                library.Get<BlueprintBrain>("b7853e33e6e32d94aac4cd2375547e23"), //bandit
+            };
+
+            foreach (var b in brains)
+            {
+                b.Actions = alchemist.brain.Actions;
+            }
+          
+
+            foreach (var f in features)
+            {
+                var old_acl = f.GetComponent<AddClassLevels>();
+                Profiles.ProfileManager.replaceAcl(old_acl, alchemist.getAcl(old_acl.Levels));
+                f.RemoveComponents<AddFacts>();
+                f.AddComponent(Helpers.CreateAddFacts(alchemist.getFeatures(old_acl.Levels)));
+            }
         }
 
 
@@ -162,6 +195,44 @@ namespace KingmakerAI
             assassins_leader.RemoveComponent(acl);
             assassins_leader.AddComponent(necromancer.getAcl(acl.Levels));
             assassins_leader.AddFacts = necromancer.getFeatures(acl.Levels);
+        }
+
+
+        static void fixKoboldsDragonSorcerers()
+        {
+            var dragon_srocerer = Profiles.ProfileManager.getProfile("SorcererRedDragon");
+            var features = library.GetAllBlueprints().Where<BlueprintScriptableObject>(f => f.name.Contains("KoboldShamanFeatureListLevel")).Cast<BlueprintFeature>().ToArray();
+
+            var brain = library.Get<BlueprintBrain>("6b724c3dccf221842925c0abbcc6ad8e");
+            brain.Actions = dragon_srocerer.brain.Actions;
+
+            foreach (var f in features)
+            {
+                var old_acl = f.GetComponent<AddClassLevels>();
+
+                Profiles.ProfileManager.replaceAcl(old_acl, dragon_srocerer.getAcl(old_acl.Levels));
+                f.RemoveComponents<AddFacts>();
+                f.AddComponent(Helpers.CreateAddFacts(dragon_srocerer.getFeatures(old_acl.Levels)));
+            }
+        }
+
+
+        static void fixKoboldsUndeadSorcerers()
+        {
+            var undead_srocerer = Profiles.ProfileManager.getProfile("SorcererUndead");
+            var features = library.GetAllBlueprints().Where<BlueprintScriptableObject>(f => f.name.Contains("KoboldShamanNecromancerFeatureListLevel")).Cast<BlueprintFeature>().ToArray();
+
+            var brain = library.Get<BlueprintBrain>("434fe616b01681b4f876083046337922");
+            brain.Actions = undead_srocerer.brain.Actions;
+
+            foreach (var f in features)
+            {
+                var old_acl = f.GetComponent<AddClassLevels>();
+
+                Profiles.ProfileManager.replaceAcl(old_acl, undead_srocerer.getAcl(old_acl.Levels));
+                f.RemoveComponents<AddFacts>();
+                f.AddComponent(Helpers.CreateAddFacts(undead_srocerer.getFeatures(old_acl.Levels)));
+            }
         }
 
 

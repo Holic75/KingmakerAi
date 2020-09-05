@@ -926,7 +926,6 @@ namespace KingmakerAI
             tr.Property("Brain").SetValue(new UnitBrain(u));
             //u.Initialize();
 
-
             var acls = u.Blueprint.GetComponents<AddClassLevels>().ToArray();
             foreach (var f in u.Blueprint.AddFacts)
             {

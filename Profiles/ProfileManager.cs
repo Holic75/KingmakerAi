@@ -1,5 +1,6 @@
 ﻿using CallOfTheWild;
 using Kingmaker.Blueprints;
+using Kingmaker.Blueprints.Classes;
 using Kingmaker.Controllers.Brain.Blueprints;
 using Kingmaker.Controllers.Brain.Blueprints.Considerations;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
@@ -372,6 +373,20 @@ namespace KingmakerAI.Profiles
             createRedDragonSorcerer();
             createUndeadSorcerer();
             createDruidProfile();
+            createAlchemistProfile();
+        }
+
+
+        static public void replaceAcl(AddClassLevels old_acl, AddClassLevels new_acl)
+        {
+            old_acl.CharacterClass = new_acl.CharacterClass;
+            old_acl.Archetypes = new_acl.Archetypes;
+            old_acl.Levels = new_acl.Levels;
+            old_acl.MemorizeSpells = new_acl.MemorizeSpells;
+            old_acl.RaceStat = new_acl.RaceStat;
+            old_acl.Skills = new_acl.Skills;
+            old_acl.SelectSpells = new_acl.SelectSpells;
+            old_acl.Selections = new_acl.Selections;
         }
     }
 }

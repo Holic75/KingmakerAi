@@ -3,6 +3,7 @@ using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Controllers.Brain.Blueprints.Considerations;
 using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.EntitySystem.Stats;
+using Kingmaker.Enums;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
 using System;
 using System.Collections.Generic;
@@ -412,7 +413,7 @@ namespace KingmakerAI.Profiles
 
         static void createRedDragonSorcerer()
         {
-            var profile = new Profile("SorcerorRedDragon",
+            var profile = new Profile("SorcererRedDragon",
                                       Classes.sorceror,
                                       StatType.Charisma,
                                       new StatType[] { StatType.SkillKnowledgeArcana, StatType.SkillKnowledgeWorld, StatType.SkillUseMagicDevice, StatType.SkillPersuasion });
@@ -735,6 +736,103 @@ namespace KingmakerAI.Profiles
             profile.addFeatureSelection(FeatSelections.basic_feat, Feats.dodge); //21
            //animal companion can be added separately
 
+            registerProfile(profile);
+        }
+
+        static void createAlchemistProfile()
+        {
+            var profile = new Profile("Alchemist",
+                                      Classes.alchemist,
+                                      StatType.Intelligence,
+                                      new StatType[] { StatType.SkillKnowledgeArcana, StatType.SkillPerception, StatType.SkillMobility, StatType.SkillThievery });
+
+            profile.addMemorizedSpells(Spells.reduce_person, Spells.mage_shield, Spells.mage_shield, Spells.enlarge_person, Spells.enlarge_person,
+                                       Spells.barkskin, Spells.barkskin, Spells.bulls_strength, Spells.cats_grace, Spells.false_life,
+                                       Spells.haste, Spells.delay_poison_communal, Spells.protection_from_arrows_communal, Spells.heroism, Spells.heroism,
+                                       Spells.false_life_greater, Spells.stone_skin, Spells.stone_skin, Spells.false_life_greater,
+                                       Spells.spell_resistance, Spells.spell_resistance, Spells.stoneskin_communal, NewSpells.air_walk_communal,
+                                       Spells.legendary_proportions, Spells.legendary_proportions, Spells.heal, Spells.heal, Spells.heal
+                                      );
+
+
+            profile.setAiActions(//no cantrips
+                AiActions.attack_action,
+                //1
+                getSelfSpell(Spells.reduce_person, 2, is_precast: true, combat_count: 1),
+                getSingleTargetAiSpell(Spells.enlarge_person, 3, is_ally: true, is_precast: true, extra_target_consideration: new Consideration[] { Considerations.heavy_armor_consideration }, combat_count: 2),
+                getSingleTargetAiSpell(Spells.mage_shield, 3, is_ally: true, is_precast: true, extra_target_consideration: new Consideration[] { }, combat_count: 2),
+                //2
+                getSelfSpell(Spells.false_life, 3, is_precast: true, combat_count: 1),
+                getSingleTargetAiSpell(Spells.bulls_strength, 3, is_ally: true, is_precast: true, extra_target_consideration: new Consideration[] { Considerations.heavy_armor_consideration }, combat_count: 2),
+                getSelfSpell(Spells.barkskin, 3, is_precast: true, combat_count: 3),
+                getSingleTargetAiSpell(Spells.cats_grace, 3, is_ally: true, is_precast: true, extra_target_consideration: new Consideration[] { Considerations.light_armor_consideration }, combat_count: 2),
+                //3
+                getAoeAiSpell(Spells.haste, 4.5f, is_ally: true, combat_count: 1),
+                getAoeAiSpell(Spells.protection_from_arrows_communal, 4, is_ally: true, combat_count: 1),
+                getSingleTargetAiSpell(Spells.heroism, 4, is_precast: true, is_ally: true, combat_count: 2),
+                getAoeAiSpell(Spells.delay_poison_communal, 4, is_precast: true,is_ally: true, combat_count: 1),
+                //4
+                getSingleTargetAiSpell(Spells.stone_skin, 5, is_ally: true, is_precast: true, combat_count: 2),
+                getSingleTargetAiSpell(Spells.false_life_greater, 5, is_ally: true, is_precast: true, combat_count: 2),
+                //5
+                getSingleTargetAiSpell(Spells.spell_resistance, 6, is_ally: true, is_precast: true, combat_count: 2),
+                getAoeAiSpell(Spells.stoneskin_communal, 6, is_ally: true, is_precast: true, combat_count: 1),
+                getAoeAiSpell(NewSpells.air_walk_communal, 6, is_ally: true, is_precast: true, combat_count: 1),
+                //6
+                getSingleTargetAiSpell(Spells.legendary_proportions, 7, is_precast: true, is_ally: true, extra_target_consideration: new Consideration[] { Considerations.heavy_armor_consideration }, combat_count: 2),
+                getSelfSpell(Spells.elemental_body3, 7, is_precast: true, variant: Spells.elemental_body3.Variants[2], extra_target_consideration: new Consideration[] { getNoBuffFromSpell(Spells.fiery_body) }, combat_count: 1),
+
+
+                getAoeAiSpell(AlchemistAbilities.fire_bomb, 3, is_ally: false, affects_allies: false),
+                getAoeAiSpell(AlchemistAbilities.force_bomb, 4, is_ally: false, affects_allies: false),
+                getAoeAiSpell(AlchemistAbilities.chocking_bomb, 5, is_ally: false, affects_allies: false, combat_count: 1),
+                getAoeAiSpell(AlchemistAbilities.blinding_bomb, 6, is_ally: false, affects_allies: false, combat_count: 1),
+
+                getSelfSpell(AlchemistAbilities.dex_mutagen, 5, is_precast: true, combat_count: 1),
+                getSelfSpell(AlchemistAbilities.int_cognatogen, 6, is_precast: true, combat_count: 1),
+                getSelfSpell(AlchemistAbilities.int_greater_cognatogen, 7, is_precast: true, combat_count: 1),
+                getSelfSpell(AlchemistAbilities.int_grand_cognatogen, 8, is_precast: true, combat_count: 1)
+                );
+
+            var free_spells = new BlueprintAbility[]
+            {
+                Spells.reduce_person, Spells.enlarge_person, Spells.mage_shield, Spells.false_life, Spells.barkskin, Spells.protection_from_arrows_communal,
+                Spells.bulls_strength, Spells.cats_grace, Spells.heroism, Spells.delay_poison_communal, NewSpells.air_walk_communal,
+                Spells.stone_skin, Spells.stoneskin_communal,  Spells.false_life_greater, Spells.spell_resistance, Spells.elemental_body3, Spells.legendary_proportions,
+                AlchemistAbilities.dex_mutagen, AlchemistAbilities.int_cognatogen, AlchemistAbilities.int_greater_cognatogen, AlchemistAbilities.int_grand_cognatogen
+            };
+            profile.addFeatureComponent(0,
+                Helpers.Create<CallOfTheWild.TurnActionMechanics.UseAbilitiesAsFreeAction>(u => u.abilities = free_spells)
+                );
+
+            //feats
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.point_blank_shot);//1
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.precise_shot); //3
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.ability_focus_bombs); //5
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.improved_initiative); //7
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.rapid_shot); //9
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.toughness); //11
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.extra_bombs); //13
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.weapon_focus); //15
+            profile.addParametrizedFeatureSelection(Feats.weapon_focus, WeaponCategory.Bomb);
+            profile.addFeatureSelection(FeatSelections.basic_feat, NewFeats.scales_and_skin); //17
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.iron_will); //19
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.dodge); //21
+
+            //discoveries
+            profile.addFeatureSelection(FeatSelections.alchemist_discovery, Discoveries.precise_bomb); //2
+            profile.addFeatureSelection(FeatSelections.alchemist_discovery, Discoveries.infusion); //4
+            profile.addFeatureSelection(FeatSelections.alchemist_discovery, Discoveries.choking_bomb); //6
+            profile.addFeatureSelection(FeatSelections.alchemist_discovery, Discoveries.blinding_bomb); //8
+            profile.addFeatureSelection(FeatSelections.alchemist_discovery, Discoveries.fast_bombs); //10
+            profile.addFeatureSelection(FeatSelections.alchemist_discovery, Discoveries.force_bomb); //12
+            profile.addFeatureSelection(FeatSelections.alchemist_discovery, Discoveries.cognatogen); //14
+            profile.addFeatureSelection(FeatSelections.alchemist_discovery, Discoveries.greater_cognatogen); //16
+            profile.addFeatureSelection(FeatSelections.alchemist_discovery, Discoveries.grand_cognatogen); //18
+            profile.addFeatureSelection(FeatSelections.alchemist_discovery, Discoveries.preserve_organs); //20
+            profile.addFeatureSelection(FeatSelections.alchemist_discovery, Discoveries.mummification); //20
+
+            profile.addFeatureSelection(FeatSelections.grand_discovery, Discoveries.awakened_intellect); 
             registerProfile(profile);
         }
     }
