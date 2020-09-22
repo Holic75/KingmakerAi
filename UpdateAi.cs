@@ -41,6 +41,7 @@ namespace KingmakerAI
         static Consideration attack_target_consideration = library.Get<ComplexConsideration>("7a2b25dcc09cd244db261ce0a70cca84");
         static Consideration light_armor_consideration = library.Get<ArmorTypeConsideration>("2ba801c8a6f585749b7fd636e843e6f0");
         static Consideration heavy_armor_consideration = library.Get<ArmorTypeConsideration>("c376d918c01838b48befcb711cc528ff");
+        static Consideration injury_around_consideration = library.Get<HealthAroundConsideration>("2a2cfff1d585f3142aadaafe0c1a74e6");
 
         static class Feats
         {
@@ -922,6 +923,7 @@ namespace KingmakerAI
             {
                 return;
             }
+            
             var tr = Harmony12.Traverse.Create(u);
             tr.Property("Brain").SetValue(new UnitBrain(u));
             //u.Initialize();

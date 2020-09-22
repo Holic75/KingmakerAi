@@ -443,7 +443,7 @@ namespace KingmakerAI.Profiles
                 //3
                 getAoeAiSpell(Spells.haste, 54, is_ally: true, combat_count: 1),
                 getAoeAiSpell(Spells.fireball, 4f, is_ally: false, affects_allies: true),
-                getSingleTargetAiSpell(Spells.heroism, 4f, is_precast: true, is_ally: true, combat_count: 2, extra_target_consideration: new Consideration[] { Considerations.higher_bab }),
+                getSingleTargetAiSpell(Spells.heroism, 4, is_precast: true, is_ally: true, combat_count: 2, extra_target_consideration: new Consideration[] {Considerations.higher_bab, getNoBuffFromSpell(Spells.heroism, false, extractBuffFromSpell(Spells.heroism_greater)), getNoBuffFromSpell(Spells.heroism, false, extractBuffFromSpell(Spells.good_hope)) }),
                 //4
                 getAoeAiSpell(Spells.controlled_fireball, 5f, is_ally: false, affects_allies: false),
                 getAoeAiSpell(Spells.obsidian_flow, 5.5f, is_ally: false, affects_allies: true, combat_count: 1),
@@ -739,6 +739,99 @@ namespace KingmakerAI.Profiles
             registerProfile(profile);
         }
 
+        static void createBardProfile()
+        {
+            var profile = new Profile("BardArcher",
+                                      Classes.bard,
+                                      StatType.Dexterity,
+                                      new StatType[] { StatType.SkillPersuasion, StatType.SkillPerception, StatType.SkillMobility, StatType.SkillThievery, StatType.SkillPersuasion });
+
+            profile.addMemorizedSpells(Spells.grease, Spells.remove_fear, Spells.hideous_laughter, Spells.ear_piercing_scream, Spells.feather_step,
+                                       Spells.heroism, NewSpells.blistering_invective, Spells.eagles_splendor, Spells.sound_burst, Spells.cats_grace, 
+                                       Spells.haste, Spells.good_hope, Spells.confusion, Spells.thudnering_drums, Spells.feather_step_mass,
+                                       Spells.echolocation, Spells.dominate_person, Spells.see_invisibility_communal, Spells.shout, Spells.freedom_of_movement,
+                                       Spells.cacaphonous_call_mass, Spells.heroism_greater, Spells.resonating_word, Spells.cloak_of_dreams, Spells.mind_fog,
+                                       Spells.overwhelming_presence, Spells.waves_of_ecstasy, Spells.shout_greater, Spells.cats_grace_mass
+                                      );
+
+
+            profile.setAiActions(//no cantrips
+                AiActions.attack_action,
+                //1
+                getAoeAiSpell(Spells.grease, 2.5f, is_ally: false, affects_allies: true),
+                getAoeAiSpell(Spells.remove_fear, 2f, is_ally: true, combat_count: 1, is_precast: true),
+                getSingleTargetAiSpell(Spells.hideous_laughter, 2, is_ally: false),
+                //2
+                getSingleTargetAiSpell(Spells.heroism, 4, is_precast: true, is_ally: true, combat_count: 2),
+                getSelfSpell(Spells.eagles_splendor, 3, is_precast: true, combat_count: 1),
+                getAoeAiSpell(NewSpells.blistering_invective, 3.5f, is_ally: false, combat_count: 1),
+                getAoeAiSpell(Spells.sound_burst, 3, is_ally: false, affects_allies: true),
+                //3
+                getAoeAiSpell(Spells.haste, 4.5f, is_ally: true, combat_count: 1),
+                getAoeAiSpell(Spells.good_hope, 4f, is_ally: true, combat_count: 1, is_precast: true),
+                getAoeAiSpell(Spells.feather_step_mass, 4f, is_ally: true, combat_count: 1, is_precast: true),
+                getAoeAiSpell(Spells.confusion, 4.9f, is_ally: false, affects_allies: true, combat_count: 1),
+                getAoeAiSpell(Spells.thudnering_drums, 4.5f, is_ally: false, affects_allies: true),
+                //4
+                getSelfSpell(Spells.echolocation, 5, is_precast: true, combat_count: 1),
+                getSingleTargetAiSpell(Spells.dominate_person, 5, is_ally: false),
+                getAoeAiSpell(Spells.good_hope, 4.5f, is_ally: true, combat_count: 1),
+                getAoeAiSpell(Spells.shout, 5.5f, is_ally: false, affects_allies: true),
+                getAoeAiSpell(Spells.see_invisibility_communal, 5f, is_ally: true, combat_count: 1, is_precast: true),
+                //5
+                getSingleTargetAiSpell(Spells.heroism_greater, 6, is_ally: true, is_precast: true, combat_count: 2),
+                getAoeAiSpell(Spells.cacaphonous_call_mass, 6.5f, is_ally: false, affects_allies: false, combat_count: 1),
+                getSingleTargetAiSpell(Spells.resonating_word, 6, is_ally: false, combat_count: 2),
+                 //6
+                getAoeAiSpell(Spells.cats_grace_mass, 7f, is_ally: true, combat_count: 1),
+                getAoeAiSpell(Spells.overwhelming_presence, 7.5f, is_ally: false, affects_allies: false, combat_count: 1),
+                getAoeAiSpell(Spells.shout_greater, 7f, is_ally: false, affects_allies: true)
+                );
+
+            var free_spells = new BlueprintAbility[]
+            {
+                Spells.remove_fear, Spells.heroism, Spells.eagles_splendor, Spells.cats_grace, Spells.good_hope, Spells.feather_step_mass,
+                Spells.echolocation, Spells.see_invisibility_communal, Spells.heroism_greater, Spells.cats_grace_mass
+            };
+            profile.addFeatureComponent(0,
+                Helpers.Create<CallOfTheWild.TurnActionMechanics.UseAbilitiesAsFreeAction>(u => u.abilities = free_spells)
+                );
+
+            var melee_profile = profile.getCopy("BardMelee");
+            //feats
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.point_blank_shot);//1
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.precise_shot); //3
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.rapid_shot); //5
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.improved_initiative); //7
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.arcane_strike); //9
+            profile.addParametrizedFeatureSelection(Feats.spell_focus, SpellSchool.Enchantment);//11
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.spell_focus); //
+            profile.addFeatureSelection(FeatSelections.basic_feat, NewFeats.discordant_voice); //13
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.spell_focus); //15
+            profile.addParametrizedFeatureSelection(Feats.spell_focus, SpellSchool.Evocation);//
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.improved_precise_shot); //17
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.spell_penetration); //19
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.dodge); //21
+         
+            registerProfile(profile);
+
+            melee_profile.addFeatureSelection(FeatSelections.basic_feat, Feats.toughness);//1
+            melee_profile.addFeatureSelection(FeatSelections.basic_feat, Feats.power_attack); //3
+            melee_profile.addFeatureSelection(FeatSelections.basic_feat, NewFeats.furious_focus); //5
+            melee_profile.addFeatureSelection(FeatSelections.basic_feat, Feats.improved_initiative); //7
+            melee_profile.addFeatureSelection(FeatSelections.basic_feat, Feats.arcane_strike); //9
+            melee_profile.addParametrizedFeatureSelection(Feats.spell_focus, SpellSchool.Enchantment);//11
+            melee_profile.addFeatureSelection(FeatSelections.basic_feat, Feats.spell_focus); //
+            melee_profile.addFeatureSelection(FeatSelections.basic_feat, NewFeats.discordant_voice); //13
+            melee_profile.addFeatureSelection(FeatSelections.basic_feat, Feats.spell_focus); //15
+            melee_profile.addParametrizedFeatureSelection(Feats.spell_focus, SpellSchool.Evocation);//
+            melee_profile.addFeatureSelection(FeatSelections.basic_feat, Feats.cornugon_smash); //17
+            melee_profile.addFeatureSelection(FeatSelections.basic_feat, SkillUnlocks.intimidate_unlock); //19
+            melee_profile.addFeatureSelection(FeatSelections.basic_feat, Feats.dodge); //21
+
+            registerProfile(melee_profile);
+        }
+
         static void createAlchemistProfile()
         {
             var profile = new Profile("Alchemist",
@@ -754,7 +847,6 @@ namespace KingmakerAI.Profiles
                                        Spells.legendary_proportions, Spells.legendary_proportions, Spells.heal, Spells.heal, Spells.heal
                                       );
 
-
             profile.setAiActions(//no cantrips
                 AiActions.attack_action,
                 //1
@@ -769,7 +861,7 @@ namespace KingmakerAI.Profiles
                 //3
                 getAoeAiSpell(Spells.haste, 4.5f, is_ally: true, combat_count: 1),
                 getAoeAiSpell(Spells.protection_from_arrows_communal, 4, is_ally: true, combat_count: 1),
-                getSingleTargetAiSpell(Spells.heroism, 4, is_precast: true, is_ally: true, combat_count: 2),
+                getSingleTargetAiSpell(Spells.heroism, 4, is_precast: true, is_ally: true, combat_count: 2, extra_target_consideration: new Consideration[] { getNoBuffFromSpell(Spells.heroism,  false, extractBuffFromSpell(Spells.heroism_greater)), getNoBuffFromSpell(Spells.heroism, false, extractBuffFromSpell(Spells.good_hope)) }),
                 getAoeAiSpell(Spells.delay_poison_communal, 4, is_precast: true,is_ally: true, combat_count: 1),
                 //4
                 getSingleTargetAiSpell(Spells.stone_skin, 5, is_ally: true, is_precast: true, combat_count: 2),
@@ -833,6 +925,105 @@ namespace KingmakerAI.Profiles
             profile.addFeatureSelection(FeatSelections.alchemist_discovery, Discoveries.mummification); //20
 
             profile.addFeatureSelection(FeatSelections.grand_discovery, Discoveries.awakened_intellect); 
+            registerProfile(profile);
+        }
+
+
+        static void createClericCasterPositive()
+        {
+            var profile = new Profile("ClericCasterPositive",
+                                      Classes.cleric,
+                                      StatType.Wisdom,
+                                      new StatType[] { StatType.SkillLoreReligion, StatType.SkillPerception, StatType.SkillMobility, StatType.SkillLoreNature });
+
+            profile.addMemorizedSpells(Spells.bless, Spells.shield_of_faith, Spells.shield_of_faith, Spells.remove_fear, Spells.haze_of_dreams,
+                                       Spells.owls_wisdom, Spells.sound_burst, Spells.bulls_strength, Spells.bulls_strength, Spells.bears_endurance,
+                                       Spells.archons_aura, Spells.delay_poison_communal, Spells.prayer, Spells.blindness, Spells.blindness,
+                                       NewSpells.aura_of_doom, Spells.protection_from_energy_communal, Spells.protection_from_energy_communal, Spells.freedom_of_movement,
+                                       Spells.angleic_aspect, NewSpells.command_greater, Spells.flame_strike, Spells.flame_strike, Spells.flame_strike,
+                                       Spells.blade_barrier, Spells.cold_ice_strike, Spells.cold_ice_strike, Spells.cold_ice_strike, Spells.heal,
+                                       Spells.waves_of_ecstasy, Spells.destruction, Spells.destruction, Spells.destruction, Spells.destruction,
+                                       Spells.frightful_aspect, Spells.fire_storm, Spells.rift_of_ruin, Spells.storm_bolts, Spells.strom_bolts,
+                                       Spells.heal_mass, Spells.overwhelming_presence, Spells.polar_midnight, Spells.heal_mass
+                                      );
+
+            var quick_channel = ChannelEnergyEngine.getQuickChannelVariant(library.Get<BlueprintAbility>("f5fc9a1a2a3c1a946a31b320d1dd31b2"));
+
+
+            profile.setAiActions(//no cantrips
+                AiActions.attack_action,
+                //1
+                getAoeAiSpell(Spells.bless, 2, is_ally: true, is_precast: true, combat_count: 1),
+                getAoeAiSpell(Spells.remove_fear, 2, is_ally: true, is_precast: true, combat_count: 1),
+                getSingleTargetAiSpell(Spells.shield_of_faith, 2, is_ally: true, is_precast: true, combat_count: 2),
+                getSingleTargetAiSpell(Spells.haze_of_dreams, 2, is_ally: false,  extra_target_consideration: new Consideration[] { Considerations.heavy_armor_consideration }),
+                //2
+                getSelfSpell(Spells.owls_wisdom, 3, is_precast: true, combat_count: 1),
+                getSelfSpell(Spells.bears_endurance, 3, is_precast: true, combat_count: 1),
+                getSingleTargetAiSpell(Spells.bulls_strength, 3, is_ally: true, is_precast: true, extra_target_consideration: new Consideration[] { Considerations.heavy_armor_consideration }, combat_count: 2),
+                getAoeAiSpell(Spells.sound_burst, 3, is_ally: false, affects_allies: true),
+                 //3
+                getSelfSpell(Spells.archons_aura, 4, is_precast: true),
+                getAoeAiSpell(Spells.delay_poison_communal, 4, is_ally: true, is_precast: true, combat_count: 1),
+                getAoeAiSpell(Spells.prayer, 4.5f, is_ally: true),
+                getSingleTargetAiSpell(Spells.blindness, 4, is_precast: true, is_ally: true),
+                //4
+                getSelfSpell(NewSpells.aura_of_doom, 5, is_precast: true),
+                getSelfSpell(Spells.protection_from_energy_communal, 5, is_precast: true, variant: Spells.protection_from_energy_communal.Variants[3]), //fire
+                getSelfSpell(Spells.protection_from_energy_communal, 5, is_precast: true, variant: Spells.protection_from_energy_communal.Variants[3]), //elec
+                getSelfSpell(Spells.freedom_of_movement, 5, is_precast: true),
+                //5
+                getSelfSpell(Spells.angleic_aspect, 6, is_precast: true, combat_count: 1),
+                getAoeAiSpell(NewSpells.command_greater, 6.5f, is_ally: false, affects_allies: false, combat_count: 1),
+                getAoeAiSpell(Spells.flame_strike, 6, is_ally: false),
+                //6
+                getAoeAiSpell(Spells.cold_ice_strike, 57f, is_ally: true, extra_actor_consideration: new Consideration[] { Considerations.no_standard_action, Considerations.swift_action_available }),
+                getAoeAiSpell(Spells.blade_barrier, 7.5f, is_ally: false),
+                //heal
+                //7
+                getAoeAiSpell(Spells.waves_of_ecstasy, 8.5f, is_ally: false),
+                getSingleTargetAiSpell(Spells.destruction, 8, is_ally: false, extra_target_consideration: new Consideration[] { Considerations.light_armor_consideration }),
+                 //8
+                getSelfSpell(Spells.frightful_aspect, 9, is_precast: true, combat_count: 1),
+                getAoeAiSpell(Spells.storm_bolts, 9, is_ally: false, affects_allies: false),
+                getAoeAiSpell(Spells.fire_storm, 9, is_ally: false, affects_allies: false),
+
+                //9
+                getAoeAiSpell(Spells.overwhelming_presence, 10.5f, is_ally: false, affects_allies: false),
+                getAoeAiSpell(Spells.polar_midnight, 10, is_ally: false, affects_allies: true),
+                //heal mass
+
+                getSelfSpell(quick_channel.Parent, 20.0f, quick_channel, extra_actor_consideration: new Consideration[] {Considerations.injury_around_consideration })
+                );
+
+            var free_spells = new BlueprintAbility[]
+            {
+                Spells.bless, Spells.shield_of_faith, Spells.owls_wisdom, Spells.bulls_strength, Spells.bears_endurance, Spells.archons_aura,
+                Spells.protection_from_energy_communal, Spells.freedom_of_movement, Spells.delay_poison_communal, NewSpells.aura_of_doom,
+                Spells.angleic_aspect, Spells.frightful_aspect
+            };
+            profile.addFeatureComponent(0,
+                Helpers.Create<CallOfTheWild.TurnActionMechanics.UseAbilitiesAsFreeAction>(u => u.abilities = free_spells)
+                );
+
+            //feats
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.improved_initiative);//1
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.spell_focus); //3
+            profile.addParametrizedFeatureSelection(Feats.spell_focus, SpellSchool.Enchantment);
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.spell_focus); //5
+            profile.addParametrizedFeatureSelection(Feats.spell_focus, SpellSchool.Evocation);
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.selective_channel);//7
+            profile.addFeatureSelection(FeatSelections.basic_feat, ChannelEnergyEngine.quick_channel);//9
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.greater_spell_focus); //11
+            profile.addParametrizedFeatureSelection(Feats.greater_spell_focus, SpellSchool.Enchantment);
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.greater_spell_focus); //13
+            profile.addParametrizedFeatureSelection(Feats.greater_spell_focus, SpellSchool.Evocation);
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.spell_penetration); //15
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.greater_spell_penetration); //17
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.extra_channel_cleric); //19
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.toughness); //21
+
+            profile.addFeatureSelection(FeatSelections.channel_energy_selection, ClassAbilities.channel_positive); //21
             registerProfile(profile);
         }
     }

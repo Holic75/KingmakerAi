@@ -19,10 +19,35 @@ using UnityEngine;
 
 namespace KingmakerAI.NewConsiderations
 {
+    public class UnitPartAttackScoreStorage : UnitPart, IUnitCombatHandler, IGlobalSubscriber
+    {
+        public Dictionary<UnitEntityData, int> attack_scores = new Dictionary<UnitEntityData, int>();
+
+        public void HandleUnitJoinCombat(UnitEntityData unit)
+        {
+            if (unit.Descriptor == this.Owner)
+            {
+                attack_scores.Clear();
+            }
+        }
+
+        public void HandleUnitLeaveCombat(UnitEntityData unit)
+        {
+            if (unit.Descriptor == this.Owner)
+            {
+                Main.logger.Log("Clearing attack scores for " + this.Owner.CharacterName);
+                attack_scores.Clear();
+            }
+            else
+            {
+                attack_scores.Remove(unit);
+            }
+        }
+    }
+
     public class ArmorAroundConsideration : UnitsAroundConsideration
     {
         public bool is_light;
-        private object unitEntityData;
 
         public override bool IsOk(UnitEntityData target)
         {
@@ -44,7 +69,7 @@ namespace KingmakerAI.NewConsiderations
                 case ArmorProficiencyGroup.LightShield:
                 case ArmorProficiencyGroup.HeavyShield:
                 case ArmorProficiencyGroup.TowerShield:
-                    UberDebug.LogWarning((object)unitEntityData, (object)string.Format("Shield in armor slot ({0})", (object)unitEntityData));
+                    //UberDebug.LogWarning(target, string.Format("Shield in armor slot ({0})", target));
                     return !is_light;
                 default:
                     return is_light;
@@ -115,7 +140,7 @@ namespace KingmakerAI.NewConsiderations
 
     public class AcConsideration : Consideration
     {
-        static Dictionary<(UnitEntityData, UnitEntityData), int> uncertainty_values = new Dictionary<(UnitEntityData, UnitEntityData), int>();
+        //static Dictionary<(UnitEntityData, UnitEntityData), int> uncertainty_values = new Dictionary<(UnitEntityData, UnitEntityData), int>();
         static System.Random rng = new System.Random();
 
         public float min_score = 0.1f;
@@ -149,9 +174,10 @@ namespace KingmakerAI.NewConsiderations
             }
 
             int uncertainty = 0;
-            if (uncertainty_values.ContainsKey((attacker, target)))
+            var unit_part_attack_scores = attacker.Ensure<UnitPartAttackScoreStorage>();
+            if (unit_part_attack_scores.attack_scores.ContainsKey(target))
             {
-                uncertainty = uncertainty_values[(attacker, target)];
+                uncertainty = unit_part_attack_scores.attack_scores[target];
             }
             else
             {
@@ -172,7 +198,8 @@ namespace KingmakerAI.NewConsiderations
                 {
                     uncertainty = rng.Next(0, uncertainty_range);
                 }
-                uncertainty_values[(attacker, target)] = uncertainty;
+                unit_part_attack_scores.attack_scores[target] = uncertainty;
+                //uncertainty_values[(attacker, target)] = uncertainty;
             }
 
 
@@ -202,7 +229,7 @@ namespace KingmakerAI.NewConsiderations
             return Math.Max(Math.Min(score, max_score), min_score);
         }
 
-        public static void clearUncertanityValues(UnitEntityData unit)
+        /*public static void clearUncertanityValues(UnitEntityData unit)
         {
 
             foreach (var k in uncertainty_values.Keys.ToArray())
@@ -213,11 +240,11 @@ namespace KingmakerAI.NewConsiderations
                 }
             }
             //Main.logger.Log("Stored uncertanities: " + uncertainty_values.Count.ToString());
-        }
+        }*/
     }
 
 
-    [Harmony12.HarmonyPatch(typeof(UnitEntityData))]
+   /* [Harmony12.HarmonyPatch(typeof(UnitEntityData))]
     [Harmony12.HarmonyPatch("LeaveCombat", Harmony12.MethodType.Normal)]
     class UnitEntityData__LeaveCombat__Patch
     {
@@ -225,5 +252,5 @@ namespace KingmakerAI.NewConsiderations
         {
             AcConsideration.clearUncertanityValues(__instance);
         }
-    }
+    }*/
 }

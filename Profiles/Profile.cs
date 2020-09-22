@@ -55,6 +55,18 @@ namespace KingmakerAI.Profiles
         }
 
 
+        public Profile getCopy(string new_name, BlueprintArchetype archetype = null)
+        {
+            var new_profile = new Profile(new_name, acl.CharacterClass, acl.LevelsStat, acl.Skills, archetype);
+            new_profile.acl.MemorizeSpells = acl.MemorizeSpells.CloneObject<BlueprintAbility[]>();
+            new_profile.acl.SelectSpells = acl.SelectSpells.CloneObject<BlueprintAbility[]>();
+            new_profile.acl.Selections = acl.Selections.CloneObject<SelectionEntry[]>();
+            new_profile.brain.Actions = brain.Actions.CloneObject<BlueprintAiAction[]>();
+
+            return new_profile;
+        }
+
+
         public void addFeatureComponent(int level, params BlueprintComponent[] components)
         {
             if (component_arrays[level] == null)
@@ -120,9 +132,11 @@ namespace KingmakerAI.Profiles
             brain.Actions = actions;
         }
 
-        public AddClassLevels getAcl(int levels)
+        public AddClassLevels getAcl(int levels, params SelectionEntry[] selections)
         {
-            return acl.CreateCopy(a => a.Levels = levels);
+            var new_acl = acl.CreateCopy(a => { a.Levels = levels; a.Selections = a.Selections.AddToArray(selections); });
+
+            return new_acl;
         }
 
 
@@ -134,11 +148,11 @@ namespace KingmakerAI.Profiles
 
         public void addMemorizedSpells(params BlueprintAbility[] spells)
         {
-            acl.MemorizeSpells = spells.Distinct().ToArray();
+            acl.MemorizeSpells = spells.ToArray();
         }
 
 
-        public void  addParametrizedFeatureSelection(BlueprintParametrizedFeature feature, SpellSchool school)
+        public void addParametrizedFeatureSelection(BlueprintParametrizedFeature feature, SpellSchool school)
         {
             var spell_focus = new SelectionEntry();
             spell_focus.IsParametrizedFeature = true;

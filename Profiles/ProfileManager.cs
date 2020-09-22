@@ -1,6 +1,7 @@
 ﻿using CallOfTheWild;
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
+using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.Controllers.Brain.Blueprints;
 using Kingmaker.Controllers.Brain.Blueprints.Considerations;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
@@ -374,6 +375,8 @@ namespace KingmakerAI.Profiles
             createUndeadSorcerer();
             createDruidProfile();
             createAlchemistProfile();
+            createClericCasterPositive();
+            createBardProfile();
         }
 
 
@@ -387,6 +390,15 @@ namespace KingmakerAI.Profiles
             old_acl.Skills = new_acl.Skills;
             old_acl.SelectSpells = new_acl.SelectSpells;
             old_acl.Selections = new_acl.Selections;
+        }
+
+        static public SelectionEntry createFeatureSelection(BlueprintFeatureSelection selection, params BlueprintFeature[] features)
+        {
+            var selection_entry = new SelectionEntry();
+            selection_entry.Selection = selection;
+            selection_entry.Features = features;
+
+            return selection_entry;
         }
     }
 }

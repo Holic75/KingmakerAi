@@ -30,6 +30,67 @@ namespace KingmakerAI
             fixKoboldsUndeadSorcerers();
 
             fixAlchemists();
+            fixClerics();
+            fixBards();
+        }
+
+
+
+        static void fixBards()
+        {
+            var bard_melee = Profiles.ProfileManager.getProfile("BardMelee");
+            var features = library.GetAllBlueprints().Where<BlueprintScriptableObject>(f => f.name.Contains("BanditBardFeatureListLevel")).Cast<BlueprintFeature>().ToArray();
+            var brain = library.Get<BlueprintBrain>("424d2726bc862a04bb31180be3661013");
+            brain.Actions = bard_melee.brain.Actions;
+
+            foreach (var f in features)
+            {
+                var old_acl = f.GetComponent<AddClassLevels>();
+                Profiles.ProfileManager.replaceAcl(old_acl, bard_melee.getAcl(old_acl.Levels));
+                f.RemoveComponents<AddFacts>();
+                f.AddComponent(Helpers.CreateAddFacts(bard_melee.getFeatures(old_acl.Levels)));
+            }
+
+
+            var bard_ranged = Profiles.ProfileManager.getProfile("BardArcher");
+            features = library.GetAllBlueprints().Where<BlueprintScriptableObject>(f => f.name.Contains("KoboldBardFeatureListLevel")).Cast<BlueprintFeature>().ToArray();
+            brain = library.Get<BlueprintBrain>("542f43821b9db194d987c23bbff3e664");
+            brain.Actions = bard_ranged.brain.Actions;
+
+            foreach (var f in features)
+            {
+                var old_acl = f.GetComponent<AddClassLevels>();
+                Profiles.ProfileManager.replaceAcl(old_acl, bard_ranged.getAcl(old_acl.Levels));
+                f.RemoveComponents<AddFacts>();
+                f.AddComponent(Helpers.CreateAddFacts(bard_ranged.getFeatures(old_acl.Levels)));
+            }
+
+
+        }
+
+
+        static void fixClerics()
+        {
+            var cleric_caster = Profiles.ProfileManager.getProfile("ClericCasterPositive");
+            var features = library.GetAllBlueprints().Where<BlueprintScriptableObject>(f => f.name.Contains("BanditPositiveClericFeatureListLevel")).Cast<BlueprintFeature>().ToArray();
+
+            var brain = library.Get<BlueprintBrain>("a19c889be3392b24a9890ffe5a196f0e");
+            brain.Actions = cleric_caster.brain.Actions;
+
+            var cleric_selections1 = new SelectionEntry[]
+            {
+               Profiles.ProfileManager.createFeatureSelection(Profiles.ProfileManager.FeatSelections.deity_selection, Profiles.ProfileManager.Deities.gorum),
+               Profiles.ProfileManager.createFeatureSelection(Profiles.ProfileManager.FeatSelections.domain_selection, Profiles.ProfileManager.Domains.glory),
+               Profiles.ProfileManager.createFeatureSelection(Profiles.ProfileManager.FeatSelections.domain_selection2, Profiles.ProfileManager.Domains.chaos2),
+            };
+
+            foreach (var f in features)
+            {
+                var old_acl = f.GetComponent<AddClassLevels>();
+                Profiles.ProfileManager.replaceAcl(old_acl, cleric_caster.getAcl(old_acl.Levels, cleric_selections1));
+                f.RemoveComponents<AddFacts>();
+                f.AddComponent(Helpers.CreateAddFacts(cleric_caster.getFeatures(old_acl.Levels)));
+            }
         }
 
 
@@ -94,6 +155,17 @@ namespace KingmakerAI
                 dryad_features.RemoveComponents<AddFacts>();
                 dryad_features.AddComponent(Helpers.CreateAddFacts(druid.getFeatures(old_acl.Levels)));
             }
+
+
+            //nugrah
+            {
+                var brain = library.Get<BlueprintBrain>("84889317d828e884ca11d04b213f642a");
+                brain.Actions = druid.brain.Actions;
+                var nugrah = library.Get<BlueprintUnit>("f9d8cbf3340d7a24e96bb498732bf531");
+                var old_acl = nugrah.GetComponent<AddClassLevels>();
+                Profiles.ProfileManager.replaceAcl(old_acl, druid.getAcl(old_acl.Levels));
+                nugrah.AddFacts = druid.getFeatures(old_acl.Levels);
+            }
         }
 
 
@@ -104,11 +176,27 @@ namespace KingmakerAI
             library.AddAsset(ac_consideration, "");
 
             var attack_actions = library.GetAllBlueprints().Where<BlueprintScriptableObject>(f => f.name.Contains("AttackAiAction")).Cast<BlueprintAiAction>().ToArray();
-
+            var charge_action = library.Get<BlueprintAiCastSpell>("05003725a881c10419530387b6de5c9a");
+            charge_action.BaseScore = 1.5f;
+            attack_actions.AddToArray(charge_action);
             foreach (var attack_action in attack_actions)
             {
                 attack_action.TargetConsiderations = attack_action.TargetConsiderations.AddToArray(ac_consideration);
             }
+            var brains = library.GetAllBlueprints().OfType<BlueprintBrain>().ToArray();
+            attack_actions = attack_actions.RemoveFromArray(charge_action);
+            foreach (var b in brains)
+            {
+                var first_attack = b.Actions.Where(a => attack_actions.Contains(a)).FirstOrDefault();
+
+                if (first_attack != null && !attack_actions.Contains(charge_action))
+                {
+                    b.Actions = b.Actions.AddToArray(charge_action);
+                }
+            }
+
+
+
         }
 
         static void fixBanditTransmuters()
@@ -214,6 +302,13 @@ namespace KingmakerAI
                 f.RemoveComponents<AddFacts>();
                 f.AddComponent(Helpers.CreateAddFacts(dragon_srocerer.getFeatures(old_acl.Levels)));
             }
+
+
+            var tartuk_tartucio = library.Get<BlueprintUnit>("203d8959cd0b23b46b20014d8e537255");
+            tartuk_tartucio.Brain.Actions = dragon_srocerer.brain.Actions;
+            var tartuk_acl = tartuk_tartucio.GetComponent<AddClassLevels>();
+            Profiles.ProfileManager.replaceAcl(tartuk_acl, dragon_srocerer.getAcl(tartuk_acl.Levels));
+            tartuk_tartucio.AddFacts = tartuk_tartucio.AddFacts.AddToArray(dragon_srocerer.getFeatures(tartuk_acl.Levels));
         }
 
 

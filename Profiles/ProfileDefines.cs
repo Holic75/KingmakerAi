@@ -74,12 +74,14 @@ namespace KingmakerAI.Profiles
              public static CommandCooldownConsideration no_standard_action = library.Get<CommandCooldownConsideration>("eb52264e87de14842b44b362da4e0673");
              public static UnitsAroundConsideration avoid_friends = library.Get<UnitsAroundConsideration>("8e6f34026b34c3d4ba831bb94548904a");
              public static UnitsAroundConsideration choose_more_friends;
-             public static Consideration[] harmful_enemy_ally_aoe_target_consideration = new Consideration[] {avoid_friends, aoe_at_least_one_enemy_considertion, aoe_more_enemies_considertion, attack_target_prioriteis };
-            public static Consideration[] harmful_enemy_ally_aoe_target_consideration_small = new Consideration[] { avoid_friends, aoe_at_least_one_enemy_considertion, attack_target_prioriteis };
-            public static Consideration[] harmful_enemy_aoe_target_consideration = new Consideration[] { aoe_at_least_one_enemy_considertion, aoe_more_enemies_considertion, attack_target_prioriteis};
-            public static Consideration[] harmful_enemy_aoe_target_consideration_small = new Consideration[] { aoe_at_least_one_enemy_considertion, attack_target_prioriteis };
+             public static Consideration injury_around_consideration = library.Get<HealthAroundConsideration>("2a2cfff1d585f3142aadaafe0c1a74e6");
 
-            public static ArmorTypeConsideration light_armor_consideration;
+             public static Consideration[] harmful_enemy_ally_aoe_target_consideration = new Consideration[] {avoid_friends, aoe_at_least_one_enemy_considertion, aoe_more_enemies_considertion, attack_target_prioriteis };
+             public static Consideration[] harmful_enemy_ally_aoe_target_consideration_small = new Consideration[] { avoid_friends, aoe_at_least_one_enemy_considertion, attack_target_prioriteis };
+             public static Consideration[] harmful_enemy_aoe_target_consideration = new Consideration[] { aoe_at_least_one_enemy_considertion, aoe_more_enemies_considertion, attack_target_prioriteis};
+             public static Consideration[] harmful_enemy_aoe_target_consideration_small = new Consideration[] { aoe_at_least_one_enemy_considertion, attack_target_prioriteis };
+
+             public static ArmorTypeConsideration light_armor_consideration;
              public static ArmorTypeConsideration heavy_armor_consideration;
              public static Consideration light_armor_around_enemies_consideration;
              public static Consideration heavy_armor_around_enemies_consideration;
@@ -121,15 +123,67 @@ namespace KingmakerAI.Profiles
             public static BlueprintAbility faerie_fire = library.Get<BlueprintAbility>("4d9bf81b7939b304185d58a09960f589");
             public static BlueprintAbility entnagle = library.Get<BlueprintAbility>("0fd00984a2c0e0a429cf1a911b4ec5ca");
 
+            public static BlueprintAbility ear_piercing_scream = library.Get<BlueprintAbility>("8e7cfa5f213a90549aadd18f8f6f4664");
+            public static BlueprintAbility hideous_laughter = library.Get<BlueprintAbility>("fd4d9fd7f87575d47aafe2a64a6e2d8d");
+            public static BlueprintAbility bless = library.Get<BlueprintAbility>("90e59f4a4ada87243b7b3535a06d0638");
+            public static BlueprintAbility divine_favor = library.Get<BlueprintAbility>("9d5d2d3ffdd73c648af3eb3e585b1113");
+            public static BlueprintAbility remove_fear = library.Get<BlueprintAbility>("55a037e514c0ee14a8e3ed14b47061de");
+            public static BlueprintAbility haze_of_dreams = library.Get<BlueprintAbility>("40ec382849b60504d88946df46a10f2d");
+            public static BlueprintAbility shield_of_faith = library.Get<BlueprintAbility>("183d5bb91dea3a1489a6db6c9cb64445");
+            public static BlueprintAbility stunning_barrier = library.Get<BlueprintAbility>("a5ec7892fb1c2f74598b3a82f3fd679f");
+
+
+            public static BlueprintAbility aid = library.Get<BlueprintAbility>("03a9630394d10164a9410882d31572f0");
+            public static BlueprintAbility hold_person = library.Get<BlueprintAbility>("c7104f7526c4c524f91474614054547e");
+            public static BlueprintAbility sound_burst = library.Get<BlueprintAbility>("c3893092a333b93499fd0a21845aa265");
+
+            public static BlueprintAbility good_hope = library.Get<BlueprintAbility>("a5e23522eda32dc45801e32c05dc9f96");
+            public static BlueprintAbility archons_aura = library.Get<BlueprintAbility>("e67efd8c84f69d24ab472c9f546fff7e");
+            public static BlueprintAbility bestow_curse = library.Get<BlueprintAbility>("989ab5c44240907489aba0a8568d0603");
+            public static BlueprintAbility prayer = library.Get<BlueprintAbility>("faabd2cc67efa4646ac58c7bb3e40fcc");
+            public static BlueprintAbility resist_energy_communal = library.Get<BlueprintAbility>("7bb0c402f7f789d4d9fae8ca87b4c7e2");
+
+            public static BlueprintAbility divine_power = library.Get<BlueprintAbility>("ef16771cb05d1344989519e87f25b3c5");
+            public static BlueprintAbility freedom_of_movement = library.Get<BlueprintAbility>("0087fc2d64b6095478bc7b8d7d512caf");
+            public static BlueprintAbility shield_of_dawn = library.Get<BlueprintAbility>("62888999171921e4dafb46de83f4d67d");
+            public static BlueprintAbility dismissal = library.Get<BlueprintAbility>("95f7cdcec94e293489a85afdf5af1fd7");
+            public static BlueprintAbility protection_from_energy_communal = library.Get<BlueprintAbility>("76a629d019275b94184a1a8733cac45e");
+
+            public static BlueprintAbility angleic_aspect = library.Get<BlueprintAbility>("75a10d5a635986641bfbcceceec87217");
+            public static BlueprintAbility serenity = library.Get<BlueprintAbility>("d316d3d94d20c674db2c24d7de96f6a7");
+            public static BlueprintAbility burst_of_glory = library.Get<BlueprintAbility>("1bc83efec9f8c4b42a46162d72cbf494");
+            public static BlueprintAbility constricting_coils = library.Get<BlueprintAbility>("3fce8e988a51a2a4ea366324d6153001");
+            public static BlueprintAbility true_seeing = library.Get<BlueprintAbility>("4cf3d0fae3239ec478f51e86f49161cb");
+            public static BlueprintAbility see_invisibility_communal = library.Get<BlueprintAbility>("1a045f845778dc54db1c2be33a8c3c0a");
+
+            public static BlueprintAbility shout = library.Get<BlueprintAbility>("f09453607e683784c8fca646eec49162");
+            public static BlueprintAbility dominate_person = library.Get<BlueprintAbility>("d7cbd2004ce66a042aeab2e95a3c5c61");
+            public static BlueprintAbility chains_of_light = library.Get<BlueprintAbility>("f8cea58227f59c64399044a82c9735c4");
+            public static BlueprintAbility eaglesoul = library.Get<BlueprintAbility>("332ad68273db9704ab0e92518f2efd1c");
+            public static BlueprintAbility blade_barrier = library.Get<BlueprintAbility>("36c8971e91f1745418cc3ffdfac17b74");
+            public static BlueprintAbility harm = library.Get<BlueprintAbility>("cc09224ecc9af79449816c45bc5be218");
+            public static BlueprintAbility cacaphonous_call_mass = library.Get<BlueprintAbility>("1262284b6fa45b9458b8c3693edbd676");
+
+            public static BlueprintAbility destruction = library.Get<BlueprintAbility>("3b646e1db3403b940bf620e01d2ce0c7");
+            public static BlueprintAbility waves_of_ecstasy = library.Get<BlueprintAbility>("1e2d1489781b10a45a3b70192bba9be3");
+            public static BlueprintAbility shout_greater = library.Get<BlueprintAbility>("fd0d3840c48cafb44bb29e8eb74df204");
+
+            public static BlueprintAbility fire_storm = library.Get<BlueprintAbility>("e3d0dfe1c8527934294f241e0ae96a8d");
+            public static BlueprintAbility euphoric_tranquility = library.Get<BlueprintAbility>("740d943e42b60f64a8de74926ba6ddf7");
+            public static BlueprintAbility death_clutch = library.Get<BlueprintAbility>("c3d2294a6740bc147870fff652f3ced5");
+            public static BlueprintAbility frightful_aspect = library.Get<BlueprintAbility>("e788b02f8d21014488067bdd3ba7b325");
+            public static BlueprintAbility rift_of_ruin = library.Get<BlueprintAbility>("dd3dacafcf40a0145a5824c838e2698d");
+            public static BlueprintAbility strom_bolts = library.Get<BlueprintAbility>("7cfbefe0931257344b2cb7ddc4cdff6f");
+
+            public static BlueprintAbility heal_mass = library.Get<BlueprintAbility>("867524328b54f25488d371214eea0d90");
+            public static BlueprintAbility polar_midnight = library.Get<BlueprintAbility>("ba48abb52b142164eba309fd09898856");
+
             public static BlueprintAbility color_spray = library.Get<BlueprintAbility>("91da41b9793a4624797921f221db653c");
             public static BlueprintAbility cause_fear = library.Get<BlueprintAbility>("bd81a3931aa285a4f9844585b5d97e51");
             public static BlueprintAbility ray_of_enfeeblement = library.Get<BlueprintAbility>("450af0402422b0b4980d9c2175869612");
             public static BlueprintAbility magic_missile = library.Get<BlueprintAbility>("4ac47ddb9fa1eaf43a1b6809980cfbd2");
-            public static BlueprintAbility bless = library.Get<BlueprintAbility>("90e59f4a4ada87243b7b3535a06d0638");
-            public static BlueprintAbility shield_of_faith = library.Get<BlueprintAbility>("183d5bb91dea3a1489a6db6c9cb64445");
             public static BlueprintAbility enlarge_person = library.Get<BlueprintAbility>("c60969e7f264e6d4b84a1499fdcf9039");
-            public static BlueprintAbility reduce_person = library.Get<BlueprintAbility>("4e0e9aba6447d514f88eff1464cc4763");
-            public static BlueprintAbility divine_favor = library.Get<BlueprintAbility>("9d5d2d3ffdd73c648af3eb3e585b1113");
+            public static BlueprintAbility reduce_person = library.Get<BlueprintAbility>("4e0e9aba6447d514f88eff1464cc4763");          
             public static BlueprintAbility mage_armor = library.Get<BlueprintAbility>("9e1ad5d6f87d19e4d8883d63a6e35568");
             public static BlueprintAbility mage_shield = library.Get<BlueprintAbility>("ef768022b0785eb43a18969903c537c4");
             public static BlueprintAbility grease = library.Get<BlueprintAbility>("95851f6e85fe87d4190675db0419d112");
@@ -140,6 +194,7 @@ namespace KingmakerAI.Profiles
             public static BlueprintAbility sickening_entnaglement = library.Get<BlueprintAbility>("6c7467f0344004d48848a43d8c078bf8");
 
             public static BlueprintAbility bulls_strength = library.Get<BlueprintAbility>("4c3d08935262b6544ae97599b3a9556d");
+            public static BlueprintAbility bears_endurance = library.Get<BlueprintAbility>("a900628aea19aa74aad0ece0e65d091a");
             public static BlueprintAbility foxs_cunning = library.Get<BlueprintAbility>("ae4d3ad6a8fda1542acf2e9bbc13d113");
             public static BlueprintAbility owls_wisdom = library.Get<BlueprintAbility>("f0455c9295b53904f9e02fc571dd2ce1");
             public static BlueprintAbility cats_grace = library.Get<BlueprintAbility>("de7a025d48ad5da4991e7d3c682cf69d");
@@ -159,8 +214,7 @@ namespace KingmakerAI.Profiles
             public static BlueprintAbility feather_step_mass = library.Get<BlueprintAbility>("d219494150ac1f24f9ce14a3d4f66d26");
 
             public static BlueprintAbility displacement = library.Get<BlueprintAbility>("903092f6488f9ce45a80943923576ab3");
-            public static BlueprintAbility divine_power = library.Get<BlueprintAbility>("ef16771cb05d1344989519e87f25b3c5");
-            public static BlueprintAbility prayer = library.Get<BlueprintAbility>("faabd2cc67efa4646ac58c7bb3e40fcc");
+            
             public static BlueprintAbility haste = library.Get<BlueprintAbility>("486eaff58293f6441a5c2759c4872f98");
             public static BlueprintAbility slow = library.Get<BlueprintAbility>("f492622e473d34747806bdb39356eb89");
             public static BlueprintAbility spiked_pit = library.Get<BlueprintAbility>("46097f610219ac445b4d6403fc596b9f");
@@ -174,7 +228,6 @@ namespace KingmakerAI.Profiles
             public static BlueprintAbility rainbow_pattern = library.Get<BlueprintAbility>("4b8265132f9c8174f87ce7fa6d0fe47b");
             public static BlueprintAbility heroism = library.Get<BlueprintAbility>("5ab0d42fb68c9e34abae4921822b9d63");
             public static BlueprintAbility dispel_magic = library.Get<BlueprintAbility>("92681f181b507b34ea87018e8f7a528a");
-            public static BlueprintAbility resist_energy_communal = library.Get<BlueprintAbility>("96c9d98b6a9a7c249b6c4572e4977157");
             public static BlueprintAbility stone_skin = library.Get<BlueprintAbility>("c66e86905f7606c4eaa5c774f0357b2b");
             public static BlueprintAbility protection_from_arrows_communal = library.Get<BlueprintAbility>("96c9d98b6a9a7c249b6c4572e4977157");
 
@@ -222,12 +275,11 @@ namespace KingmakerAI.Profiles
             public static BlueprintAbility fireball = library.Get<BlueprintAbility>("2d81362af43aeac4387a3d4fced489c3");
             public static BlueprintAbility acid_fog = library.Get<BlueprintAbility>("dbf99b00cd35d0a4491c6cc9e771b487");
             public static BlueprintAbility sirocco = library.Get<BlueprintAbility>("093ed1d67a539ad4c939d9d05cfe192c");
-            public static BlueprintAbility chains_of_light = library.Get<BlueprintAbility>("f8cea58227f59c64399044a82c9735c4");
             public static BlueprintAbility plague_storm = library.Get<BlueprintAbility>("82a5b848c05e3f342b893dedb1f9b446");
             public static BlueprintAbility waves_of_exhaustion = library.Get<BlueprintAbility>("3e4d3b9a5bd03734d9b053b9067c2f38");
             public static BlueprintAbility finger_of_death = library.Get<BlueprintAbility>("6f1dcf6cfa92d1948a740195707c0dbe");
 
-            public static BlueprintAbility serenity = library.Get<BlueprintAbility>("d316d3d94d20c674db2c24d7de96f6a7");
+            public static BlueprintAbility thudnering_drums = library.Get<BlueprintAbility>("c26eeeeabf732914ba723f2b67fe9b9d");
             public static BlueprintAbility cloak_of_dreams = library.Get<BlueprintAbility>("7f71a70d822af94458dc1a235507e972");
             public static BlueprintAbility confusion = library.Get<BlueprintAbility>("cf6c901fb7acc904e85c63b342e9c949");
             public static BlueprintAbility fear = library.Get<BlueprintAbility>("d2aeac47450c76347aebbc02e4f463e0");
@@ -239,14 +291,12 @@ namespace KingmakerAI.Profiles
             public static BlueprintAbility resonating_word = library.Get<BlueprintAbility>("df7d13c967bce6a40bec3ba7c9f0e64c");
             public static BlueprintAbility bears_endurance_mass = library.Get<BlueprintAbility>("f6bcea6db14f0814d99b54856e918b92");
             public static BlueprintAbility bulls_Strength_mass = library.Get<BlueprintAbility>("6a234c6dcde7ae94e94e9c36fd1163a7");
+            public static BlueprintAbility cats_grace_mass = library.Get<BlueprintAbility>("1f6c94d56f178b84ead4c02f1b1e1c48");
             public static BlueprintAbility hell_fire_ray = library.Get<BlueprintAbility>("700cfcbd0cb2975419bcab7dbb8c6210");
             public static BlueprintAbility heroism_greater = library.Get<BlueprintAbility>("e15e5e7045fda2244b98c8f010adfe31");
             public static BlueprintAbility heroic_invocation = library.Get<BlueprintAbility>("43740dab07286fe4aa00a6ee104ce7c1");
             public static BlueprintAbility creeping_doom = library.Get<BlueprintAbility>("b974af13e45639a41a04843ce1c9aa12");
-            public static BlueprintAbility fire_storm = library.Get<BlueprintAbility>("e3d0dfe1c8527934294f241e0ae96a8d");
 
-            public static BlueprintAbility frightful_aspect = library.Get<BlueprintAbility>("e788b02f8d21014488067bdd3ba7b325");
-            public static BlueprintAbility rift_of_ruin = library.Get<BlueprintAbility>("dd3dacafcf40a0145a5824c838e2698d");
             public static BlueprintAbility sea_mantle = library.Get<BlueprintAbility>("7ef49f184922063499b8f1346fb7f521");
             public static BlueprintAbility legendary_proportions = library.Get<BlueprintAbility>("da1b292d91ba37948893cdbe9ea89e28");
             public static BlueprintAbility summon_elemental_greater = library.Get<BlueprintAbility>("8eb769e3b583f594faabe1cfdb0bb696");
@@ -259,7 +309,6 @@ namespace KingmakerAI.Profiles
             public static BlueprintAbility slowing_mud = library.Get<BlueprintAbility>("6b30813c3709fc44b92dc8fd8191f345");
             public static BlueprintAbility obsidian_flow = library.Get<BlueprintAbility>("e48638596c955a74c8a32dbc90b518c1");
             public static BlueprintAbility horrid_wilting = library.Get<BlueprintAbility>("08323922485f7e246acb3d2276515526");
-            public static BlueprintAbility death_clutch = library.Get<BlueprintAbility>("c3d2294a6740bc147870fff652f3ced5");
             public static BlueprintAbility shadow_evcation_greater = library.Get<BlueprintAbility>("3c4a2d4181482e84d9cd752ef8edc3b6");
             public static BlueprintAbility shadow_evcation = library.Get<BlueprintAbility>("237427308e48c3341b3d532b9d3a001f");
             public static BlueprintAbility prismatic_spray = library.Get<BlueprintAbility>("b22fd434bdb60fb4ba1068206402c4cf");
@@ -268,7 +317,6 @@ namespace KingmakerAI.Profiles
             public static BlueprintAbility power_word_stun = library.Get<BlueprintAbility>("f958ef62eea5050418fb92dfa944c631");
 
             public static BlueprintAbility fire_snake = library.Get<BlueprintAbility>("ebade19998e1f8542a1b55bd4da766b3");
-            public static BlueprintAbility polar_midnight = library.Get<BlueprintAbility>("ba48abb52b142164eba309fd09898856");
             public static BlueprintAbility storm_bolts = library.Get<BlueprintAbility>("7cfbefe0931257344b2cb7ddc4cdff6f");
 
             public static BlueprintAbility fiery_body = library.Get<BlueprintAbility>("08ccad78cac525040919d51963f9ac39");
@@ -279,6 +327,7 @@ namespace KingmakerAI.Profiles
             public static BlueprintAbility wail_of_banshee = library.Get<BlueprintAbility>("b24583190f36a8442b212e45226c54fc");
             public static BlueprintAbility energy_drain = library.Get<BlueprintAbility>("37302f72b06ced1408bf5bb965766d46");
             public static BlueprintAbility weird = library.Get<BlueprintAbility>("870af83be6572594d84d276d7fc583e0");
+            public static BlueprintAbility overwhelming_presence = library.Get<BlueprintAbility>("41cf93453b027b94886901dbfc680cb9");
 
             public static BlueprintAbility heal = library.Get<BlueprintAbility>("5da172c4c89f9eb4cbb614f3a67357d3");
         }
@@ -291,7 +340,10 @@ namespace KingmakerAI.Profiles
             public static BlueprintFeature toughness = library.Get<BlueprintFeature>("d09b20029e9abfe4480b356c92095623");
             public static BlueprintFeature combat_casting = library.Get<BlueprintFeature>("06964d468fde1dc4aa71a92ea04d930d");
             public static BlueprintFeature dodge = library.Get<BlueprintFeature>("97e216dbb46ae3c4faef90cf6bbe6fd5");
+            public static BlueprintFeature power_attack = library.Get<BlueprintFeature>("9972f33f977fc724c838e59641b2fca5");
+            public static BlueprintFeature cornugon_smash = library.Get<BlueprintFeature>("ceea53555d83f2547ae5fc47e0399e14");
             public static BlueprintFeature improved_initiative = library.Get<BlueprintFeature>("797f25d709f559546b29e7bcb181cc74");
+            public static BlueprintFeature arcane_strike = library.Get<BlueprintFeature>("0ab2f21a922feee4dab116238e3150b4");
             public static BlueprintParametrizedFeature spell_focus = library.Get<BlueprintParametrizedFeature>("16fa59cc9a72a6043b566b49184f53fe");
             public static BlueprintParametrizedFeature greater_spell_focus = library.Get<BlueprintParametrizedFeature>("5b04b45b228461c43bad768eb0f7c7bf");
             public static BlueprintFeature spell_penetration = library.Get<BlueprintFeature>("ee7dc126939e4d9438357fbd5980d459");
@@ -311,6 +363,7 @@ namespace KingmakerAI.Profiles
             public static BlueprintFeature empower_spell = library.Get<BlueprintFeature>("a1de1e4f92195b442adb946f0e2b9d4e");
             public static BlueprintFeature point_blank_shot = library.Get<BlueprintFeature>("0da0c194d6e1d43419eb8d990b28e0ab");
             public static BlueprintFeature precise_shot = library.Get<BlueprintFeature>("8f3d1e6b4be006f4d896081f2f889665");
+            public static BlueprintFeature improved_precise_shot = library.Get<BlueprintFeature>("46f970a6b9b5d2346b10892673fe6e74");
 
             public static BlueprintFeature great_fortitude = library.Get<BlueprintFeature>("79042cb55f030614ea29956177977c52");
             public static BlueprintFeature iron_will = library.Get<BlueprintFeature>("175d1577bb6c9a04baf88eec99c66334");
@@ -319,11 +372,17 @@ namespace KingmakerAI.Profiles
             public static BlueprintFeature rapid_shot = library.Get<BlueprintFeature>("9c928dc570bb9e54a9649b3ebfe47a41");
             public static BlueprintFeature extra_bombs = library.Get<BlueprintFeature>("54c57ce67fa1d9044b1b3edc459e05e2");
             public static BlueprintParametrizedFeature weapon_focus = library.Get<BlueprintParametrizedFeature>("1e1f627d26ad36f43bbd26cc2bf8ac7e");
+
+            public static BlueprintFeature selective_channel = library.Get<BlueprintFeature>("fd30c69417b434d47b6b03b9c1f568ff");
+            public static BlueprintFeature extra_channel_cleric = library.Get<BlueprintFeature>("cd9f19775bd9d3343a31a065e93f0c47");
         }
 
 
         static public class FeatSelections
         {
+            public static BlueprintFeatureSelection deity_selection = library.Get<BlueprintFeatureSelection>("59e7a76987fe3b547b9cce045f4db3e4");
+            public static BlueprintFeatureSelection channel_energy_selection = library.Get<BlueprintFeatureSelection>("d332c1748445e8f4f9e92763123e31bd");
+
             public static BlueprintFeatureSelection alchemist_discovery = library.Get<BlueprintFeatureSelection>("cd86c437488386f438dcc9ae727ea2a6");
             public static BlueprintFeatureSelection grand_discovery = library.Get<BlueprintFeatureSelection>("2729af328ab46274394cedc3582d6e98");
             public static BlueprintFeatureSelection bloodlines = library.Get<BlueprintFeatureSelection>("24bef8d1bee12274686f6da6ccbc8914");
@@ -363,7 +422,11 @@ namespace KingmakerAI.Profiles
         {
             public static BlueprintFeature chaos = library.Get<BlueprintFeature>("5a5d19c246961484a97e1e5dded98ab2");
             public static BlueprintFeature evil = library.Get<BlueprintFeature>("a8936d29b6051a1418682da1878b644e");
-            public static BlueprintFeature war = library.Get<BlueprintFeature>("82b654d68ea6ce143be5f7df646d6385");
+            public static BlueprintFeature war = library.Get<BlueprintFeature>("8d454cbb7f25070419a1c8eaf89b5be5");
+            public static BlueprintFeature glory = library.Get<BlueprintFeature>("f0a61a043bcdf0f4c8efc59962afafb8");
+
+            public static BlueprintFeature war2 = library.Get<BlueprintFeature>("82b654d68ea6ce143be5f7df646d6385");
+            public static BlueprintFeature chaos2 = library.Get<BlueprintFeature>("85e8db7e938d4f947a084a21d3535adf");
         }
 
         static public class ClassAbilities
@@ -376,7 +439,9 @@ namespace KingmakerAI.Profiles
             public static BlueprintFeature opposition_necromancy = library.Get<BlueprintFeature>("a9bb3dcb2e8d44a49ac36c393c114bd9");
             public static BlueprintFeature opposition_divination = library.Get<BlueprintFeature>("09595544116fe5349953f939aeba7611");
             public static BlueprintFeature opposition_enchantment = library.Get<BlueprintFeature>("875fff6feb84f5240bf4375cb497e395");
-            
+
+            public static BlueprintFeature channel_positive = library.Get<BlueprintFeature>("a79013ff4bcd4864cb669622a29ddafb");
+            public static BlueprintFeature channel_negative = library.Get<BlueprintFeature>("3adb2c906e031ee41a01bfc1d5fb7eea");
         }
 
 
@@ -395,6 +460,13 @@ namespace KingmakerAI.Profiles
             public static BlueprintFeature mummification = library.Get<BlueprintFeature>("daf854d84d442e941aa3a2fdc041b37c");
 
             public static BlueprintFeature awakened_intellect = library.Get<BlueprintFeature>("d5378cb816b0c7a4cb47500e6ccf8702");
+        }
+
+
+        static public class Deities
+        {
+            public static BlueprintFeature gorum = library.Get<BlueprintFeature>("8f49a5d8528a82c44b8c117a89f6b68c");
+            public static BlueprintFeature callistria = library.Get<BlueprintFeature>("c7531715a3f046d4da129619be63f44c");
         }
 
 
