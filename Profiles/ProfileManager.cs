@@ -373,6 +373,7 @@ namespace KingmakerAI.Profiles
             createIllusionistProfile();
             createRedDragonSorcerer();
             createUndeadSorcerer();
+            createFeySorcerer();
             createDruidProfile();
             createAlchemistProfile();
             createClericCasterPositive();

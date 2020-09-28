@@ -327,16 +327,16 @@ namespace KingmakerAI
             class_levels.Selections = class_levels.Selections.AddToArray(createGreaterSpellFocusSelection(SpellSchool.Evocation));
             class_levels.Selections = class_levels.Selections.AddToArray(createSpellFocusSelection(SpellSchool.Conjuration));
             class_levels.Selections = class_levels.Selections.AddToArray(createSpellFocusSelection(SpellSchool.Enchantment));
-            var auto_quicken_metamagic = library.Get<BlueprintFeature>("d26acdac8ded95b44b787c9700634fc9");
-            auto_quicken_metamagic.GetComponent<AutoMetamagic>().Abilities.AddRange(new BlueprintAbility[] { Spells.fireball, NewSpells.sheet_lightning });
-            auto_quicken_metamagic.AddComponent(Helpers.Create<IncreaseSpellDC>(i => { i.BonusDC = 2; i.Spell = Spells.confusion; }));
+            //var auto_quicken_metamagic = library.Get<BlueprintFeature>("d26acdac8ded95b44b787c9700634fc9");
+           // auto_quicken_metamagic.GetComponent<AutoMetamagic>().Abilities.AddRange(new BlueprintAbility[] { Spells.fireball, NewSpells.sheet_lightning });
+           // auto_quicken_metamagic.AddComponent(Helpers.Create<IncreaseSpellDC>(i => { i.BonusDC = 2; i.Spell = Spells.confusion; }));
             var brain = unit.Brain;
             brain.Actions = brain.Actions.AddToArray(AiActions.cast_fireball_quicken, 
                                                      AiActions.cast_cloudkill_once,
                                                      AiActions.cast_confusion_plus2_once,
                                                      AiActions.cast_acid_fog_once,
                                                      AiActions.cast_phantasmal_killer);
-            unit.Body.QuickSlots[0] = library.Get<BlueprintItemEquipmentUsable>("55a059b32df920c4abe65b8ee8b56056"); //rod of quicken metamagic lesser
+           // unit.Body.QuickSlots[0] = library.Get<BlueprintItemEquipmentUsable>("55a059b32df920c4abe65b8ee8b56056"); //rod of quicken metamagic lesser
             //unit.Body.QuickSlots[0] = library.Get<BlueprintItemEquipmentUsable>("651b0460f600d5f42b0467e7186aab80"); //rod of lesser maximize
         }
 

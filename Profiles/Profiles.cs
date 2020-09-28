@@ -42,7 +42,7 @@ namespace KingmakerAI.Profiles
                 getSingleTargetAiSpell(Spells.bulls_strength, 3, is_ally: true, is_precast: true, extra_target_consideration: new Consideration[] { Considerations.heavy_armor_consideration }, combat_count: 2),
                 getSelfSpell(Spells.mirror_image, 3, is_precast: true, combat_count: 1),
                 getSelfSpell(Spells.foxs_cunning, 3, is_precast: true, combat_count: 1),
-                getSingleTargetAiSpell(Spells.cats_grace, 3, is_ally: true, is_precast: true, extra_target_consideration: new Consideration[] { Considerations.light_armor_consideration }),
+                getSingleTargetAiSpell(Spells.cats_grace, 3, is_ally: true, is_precast: true, extra_target_consideration: new Consideration[] { Considerations.light_armor_consideration }, combat_count: 2),
                 //3
                 getAoeAiSpell(Spells.haste, 54, is_ally: true, combat_count: 1),
                 getAoeAiSpell(Spells.slow, 4.5f, is_ally: false, affects_allies: false, combat_count: 1),
@@ -477,7 +477,7 @@ namespace KingmakerAI.Profiles
                 //9
                 getAoeAiSpell(CallOfTheWild.NewSpells.meteor_swarm, 10f, is_ally: false, affects_allies: true),
                 getSelfSpell(Spells.fiery_body, 10f, is_precast: true, combat_count: 1),
-                getSingleTargetAiSpell(Spells.heroic_invocation, 10f, is_precast: true, is_ally: true, combat_count: 1, extra_target_consideration: new Consideration[] { Considerations.higher_bab })
+                getSingleTargetAiSpell(Spells.heroic_invocation, 10f, is_precast: true, is_ally: true, combat_count: 2, extra_target_consideration: new Consideration[] { Considerations.higher_bab })
                 );
 
             var free_spells = new BlueprintAbility[]
@@ -514,6 +514,7 @@ namespace KingmakerAI.Profiles
             profile.addFeatureSelection(FeatSelections.bloodlines, Bloodlines.red_dragon);
             profile.addFeatureSelection(Bloodlines.red_dragon_claws, CallOfTheWild.BloodlinesFix.blood_havoc);
             profile.addFeatureSelection(Bloodlines.red_dragon_resistance_selection, Bloodlines.red_dragon_resistance);
+            profile.addFeatureSelection(Bloodlines.red_dragon_breath_selection, BloodlinesFix.blood_piercing);
 
             //bonus feat
             profile.addFeatureSelection(FeatSelections.sorcerer_feat, FeatSelections.elemental_focus);//1
@@ -528,7 +529,6 @@ namespace KingmakerAI.Profiles
 
             registerProfile(profile);
         }
-        //add undead bloodline sorcerer
 
         static void createUndeadSorcerer()
         {
@@ -537,7 +537,7 @@ namespace KingmakerAI.Profiles
                                       StatType.Charisma,
                                       new StatType[] { StatType.SkillKnowledgeArcana, StatType.SkillLoreReligion, StatType.SkillUseMagicDevice, StatType.SkillPersuasion });
 
-            profile.addSelectedSpells(Spells.mage_shield, Spells.cause_fear, Spells.magic_missile, Spells.enlarge_person, Spells.mage_shield, //+chill touch
+            profile.addSelectedSpells(Spells.mage_shield, Spells.cause_fear, Spells.magic_missile, Spells.enlarge_person, Spells.mage_armor, //+chill touch
                                        Spells.scare, Spells.bone_shatter, Spells.mirror_image, Spells.eagles_splendor, Spells.blur,// + false life
                                        CallOfTheWild.NewSpells.howling_agony, Spells.slow, CallOfTheWild.NewSpells.accursed_glare, Spells.dispel_magic, //+vampyric touch
                                        Spells.fear, Spells.bone_shatter, Spells.false_life_greater, Spells.enervation,//+ animate dead
@@ -628,6 +628,7 @@ namespace KingmakerAI.Profiles
             profile.addFeatureSelection(Bloodlines.undead_grave_touch, CallOfTheWild.BloodlinesFix.bloodline_familiar);
             profile.addFeatureSelection(CallOfTheWild.BloodlinesFix.bloodline_familiar, ClassAbilities.hare_familiar);
             profile.addFeatureSelection(Bloodlines.deaths_gift_selection, Bloodlines.deaths_gift);
+            profile.addFeatureSelection(Bloodlines.grasp_of_the_dead_selection, Bloodlines.grasp_of_the_dead);
 
             //bonus feat
             profile.addFeatureSelection(FeatSelections.sorcerer_feat, Feats.quicken_spell);//1
@@ -635,8 +636,133 @@ namespace KingmakerAI.Profiles
             profile.addFeatureSelection(Bloodlines.bloodline_undead_feat_selection, Feats.toughness);
             profile.addFeatureSelection(Bloodlines.bloodline_feat, Bloodlines.bloodline_undead_feat_selection);//13
             profile.addFeatureSelection(Bloodlines.bloodline_undead_feat_selection, Feats.iron_will);
-            profile.addFeatureSelection(Bloodlines.bloodline_feat, Bloodlines.bloodline_draconic_feat_selection);//19
-            profile.addFeatureSelection(Bloodlines.bloodline_draconic_feat_selection, Feats.great_fortitude);
+            profile.addFeatureSelection(Bloodlines.bloodline_feat, Bloodlines.bloodline_undead_feat_selection);//19
+            profile.addFeatureSelection(Bloodlines.bloodline_undead_feat_selection, Feats.great_fortitude);
+
+
+
+            registerProfile(profile);
+        }
+
+
+        static void createFeySorcerer()
+        {
+            var profile = new Profile("SorcererFey",
+                                      Classes.sorceror,
+                                      StatType.Charisma,
+                                      new StatType[] { StatType.SkillKnowledgeArcana, StatType.SkillMobility, StatType.SkillLoreReligion, StatType.SkillUseMagicDevice, StatType.SkillPersuasion });
+
+            profile.addSelectedSpells(Spells.mage_shield, Spells.sleep, Spells.magic_missile, Spells.enlarge_person, Spells.mage_armor, //+entangle
+                                       NewSpells.hypnotic_pattern, Spells.eagles_splendor, Spells.mirror_image, Spells.cats_grace, Spells.blur,// + hideous laughter
+                                       Spells.slow, Spells.haste, Spells.heroism, Spells.fireball, Spells.dispel_magic, //+deep slumber
+                                       Spells.confusion, Spells.crashing_despair, Spells.phantasmal_killer, Spells.false_life_greater, Spells.controlled_fireball,//+ poison
+                                       Spells.dominate_person, Spells.phantasmal_web, Spells.stoneskin_communal, Spells.cloudkill,//+vinetrap
+                                       Spells.serenity, Spells.phantasmal_putrefaction, Spells.heroism_greater, Spells.bears_endurance_mass, //+ dispel greater
+                                       NewSpells.hold_person_mass, Spells.waves_of_ecstasy, Spells.legendary_proportions, //+ changestaff
+                                       Spells.power_word_stun, Spells.storm_bolts, Spells.sea_mantle,// + irresistible dance
+                                       Spells.overwhelming_presence, Spells.weird, Spells.heroic_invocation //+ shapechange
+                                       );
+
+            profile.setAiActions(AiActions.acid_splash_ai_action,
+                //1
+                getSelfSpell(Spells.mage_armor, 2, is_precast: true, combat_count: 1),
+                getSelfSpell(Spells.mage_shield, 2, is_precast: true, combat_count: 1),
+                getAoeAiSpell(Spells.sleep, 2.5f, is_ally: false, affects_allies: false, combat_count: 1),
+                getSingleTargetAiSpell(Spells.enlarge_person, 2, is_ally: true, is_precast: true, extra_target_consideration: new Consideration[] { Considerations.heavy_armor_consideration }, combat_count: 2),
+                getSingleTargetAiSpell(Spells.magic_missile, 2, is_ally: false),
+                //2
+                getSelfSpell(Spells.mirror_image, 3, is_precast: true, combat_count: 1),
+                getSelfSpell(Spells.eagles_splendor, 3, is_precast: true, combat_count: 1),
+                getSingleTargetAiSpell(Spells.cats_grace, 3, is_ally: true, is_precast: true, extra_target_consideration: new Consideration[] { Considerations.light_armor_consideration }, combat_count: 2),
+                getSelfSpell(Spells.blur, 3, is_precast: true, combat_count: 1),
+                getAoeAiSpell(NewSpells.hypnotic_pattern, 3.5f, is_ally: false, affects_allies: false, combat_count: 1),
+                getSingleTargetAiSpell(Spells.hideous_laughter, 3f, is_ally: false, extra_target_consideration: new Consideration[] { getNoBuffFromSpell(Spells.hideous_laughter, false, extractBuffFromSpell(NewSpells.hypnotic_pattern)) }),
+                //3
+                getAoeAiSpell(Spells.haste, 54, is_ally: true, combat_count: 1),
+                getSingleTargetAiSpell(Spells.heroism, 4, is_precast: true, is_ally: true, combat_count: 2, extra_target_consideration: new Consideration[] { getNoBuffFromSpell(Spells.heroism, false, extractBuffFromSpell(Spells.heroism_greater)), getNoBuffFromSpell(Spells.heroism, false, extractBuffFromSpell(Spells.good_hope)) }),
+                getAoeAiSpell(Spells.slow, 4.5f, is_ally: false, affects_allies: false, combat_count: 1),
+                getAoeAiSpell(Spells.fireball, 4f, is_ally: false, affects_allies: true),
+                getAoeAiSpell(Spells.deep_slumber, 4.5f, is_ally: false, affects_allies: false, combat_count: 1),
+                //4
+                getAoeAiSpell(Spells.confusion, 5.5f, is_ally: false, affects_allies: true, combat_count: 1),
+                getAoeAiSpell(Spells.crashing_despair, 5f, is_ally: false, affects_allies: true, combat_count: 1),
+                getSingleTargetAiSpell(Spells.phantasmal_killer, 5, is_ally: false),
+                getAoeAiSpell(Spells.controlled_fireball, 5f, is_ally: false, affects_allies: false),
+                getSelfSpell(Spells.false_life_greater, 5f, is_precast: true, combat_count: 1),
+                //5  
+                getAoeAiSpell(Spells.phantasmal_web, 6.5f, is_ally: false, affects_allies: false, combat_count: 1),
+                getSingleTargetAiSpell(Spells.dominate_person, 6f, is_ally: false),
+                getAoeAiSpell(Spells.stoneskin_communal, 6f, is_precast: true, is_ally: true, combat_count: 1),
+                getAoeAiSpell(Spells.cloudkill, 6f, is_ally: false, affects_allies: true, combat_count: 1),
+                 //6
+                getSingleTargetAiSpell(Spells.heroism_greater, 7, is_ally: true, is_precast: true, combat_count: 2),
+                getAoeAiSpell(Spells.phantasmal_putrefaction, 7.5f, is_ally: false, affects_allies: false, combat_count: 1),
+                getAoeAiSpell(Spells.serenity, 7.5f, is_ally: false, affects_allies: true, combat_count: 1),
+                getAoeAiSpell(Spells.bears_endurance_mass, 7f, is_precast: true, is_ally: true, combat_count: 1),
+                //7
+                getSelfSpell(Spells.change_staff, 8f, is_precast: true, combat_count: 1),
+                getAoeAiSpell(NewSpells.hold_person_mass, 8.5f, is_ally: false, affects_allies: false, combat_count: 1),
+                getAoeAiSpell(Spells.waves_of_ecstasy, 8.5f, is_ally: false, affects_allies: true, combat_count: 1),
+                getSingleTargetAiSpell(Spells.legendary_proportions, 8, is_precast: true, is_ally: true, extra_target_consideration: new Consideration[] { Considerations.heavy_armor_consideration }, combat_count: 2),
+                //8
+                getAoeAiSpell(Spells.storm_bolts, 9.5f, is_ally: false, affects_allies: false),
+                getSelfSpell(Spells.sea_mantle, 9f, is_precast: true, combat_count: 1),
+                //9
+                getAoeAiSpell(Spells.overwhelming_presence, 10.5f, is_ally: false, affects_allies: false, combat_count: 1),
+                getSingleTargetAiSpell(Spells.heroic_invocation, 10f, is_precast: true, is_ally: true, combat_count: 1, extra_target_consideration: new Consideration[] { Considerations.higher_bab }),
+                getAoeAiSpell(Spells.weird, 10f, is_ally: false, affects_allies: false),
+                getSelfSpell(Wildshape.shapechange, 10f, is_precast: true, combat_count: 1),
+                getSelfSpell(Spells.shapechange_ability, 15f, combat_count: 1, variant: Spells.shapechange_ability_silver_dragon_variant)
+
+                );
+
+            var free_spells = new BlueprintAbility[]
+            {
+                Spells.mage_armor, Spells.mage_shield, Spells.false_life, Spells.mirror_image, Spells.blur, Spells.false_life_greater,
+                Spells.eagles_splendor, Spells.bears_endurance_mass, Spells.cats_grace, Spells.stoneskin_communal,
+                Spells.sea_mantle, Spells.change_staff, Wildshape.shapechange, Spells.legendary_proportions, Spells.heroic_invocation
+            };
+            profile.addFeatureComponent(0,
+                Helpers.Create<CallOfTheWild.TurnActionMechanics.UseAbilitiesAsFreeAction>(u => u.abilities = free_spells)
+                );
+            profile.addFeatureComponent(13,
+                Helpers.Create<AutoMetamagic>(a => a.Abilities = new BlueprintAbility[] { Spells.haste }.ToList())
+            );
+
+            //feats
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.spell_focus); //1
+            profile.addParametrizedFeatureSelection(Feats.spell_focus, SpellSchool.Enchantment);
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.improved_initiative); //3
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.combat_casting); //5
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.greater_spell_focus); //7
+            profile.addParametrizedFeatureSelection(Feats.greater_spell_focus, SpellSchool.Enchantment);
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.spell_penetration); //9
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.spell_focus); //11
+            profile.addParametrizedFeatureSelection(Feats.spell_focus, SpellSchool.Illusion);
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.greater_spell_focus); //13
+            profile.addParametrizedFeatureSelection(Feats.greater_spell_focus, SpellSchool.Illusion);
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.greater_spell_penetration); //15
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.spell_focus); //17
+            profile.addParametrizedFeatureSelection(Feats.spell_focus, SpellSchool.Evocation);
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.greater_spell_focus); //19
+            profile.addParametrizedFeatureSelection(Feats.greater_spell_focus, SpellSchool.Evocation);
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.toughness); //21
+
+
+            profile.addFeatureSelection(FeatSelections.bloodlines, Bloodlines.bloodline_fey);
+            profile.addFeatureSelection(Bloodlines.laughing_touch_selection, CallOfTheWild.BloodlinesFix.bloodline_familiar);
+            profile.addFeatureSelection(CallOfTheWild.BloodlinesFix.bloodline_familiar, ClassAbilities.hare_familiar);
+            profile.addFeatureSelection(Bloodlines.woodland_stride_selection, Bloodlines.woodland_stride);
+            profile.addFeatureSelection(Bloodlines.fleeting_glance_selection, Bloodlines.fleeting_glance);
+
+            //bonus feat
+            profile.addFeatureSelection(FeatSelections.sorcerer_feat, Feats.combat_casting);//1
+            profile.addFeatureSelection(Bloodlines.bloodline_feat, Bloodlines.bloodline_fey_feat_selection);//7
+            profile.addFeatureSelection(Bloodlines.bloodline_fey_feat_selection, Feats.dodge);
+            profile.addFeatureSelection(Bloodlines.bloodline_feat, Bloodlines.bloodline_fey_feat_selection);//13
+            profile.addFeatureSelection(Bloodlines.bloodline_fey_feat_selection, Feats.quicken_spell);
+            profile.addFeatureSelection(Bloodlines.bloodline_feat, Bloodlines.bloodline_fey_feat_selection);//19
+            profile.addFeatureSelection(Bloodlines.bloodline_fey_feat_selection, Feats.dodge);
 
 
 

@@ -2,7 +2,10 @@
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Experience;
+using Kingmaker.Blueprints.Items.Equipment;
 using Kingmaker.Controllers.Brain.Blueprints;
+using Kingmaker.Designers.Mechanics.Facts;
+using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.FactLogic;
 using System;
 using System.Collections.Generic;
@@ -28,10 +31,40 @@ namespace KingmakerAI
             fixDruids();
             fixKoboldsDragonSorcerers();
             fixKoboldsUndeadSorcerers();
-
+            fixDryads();
             fixAlchemists();
             fixClerics();
             fixBards();
+        }
+
+
+        static void fixDryads()
+        {
+            var fey_sorcerer = Profiles.ProfileManager.getProfile("SorcererFey");
+            {
+                var bloodmoon_dryad = library.Get<BlueprintUnit>("82a6be0ba1d061243848871ce2feda27");   
+                bloodmoon_dryad.Brain.Actions = fey_sorcerer.brain.Actions;
+
+                var acl = bloodmoon_dryad.GetComponents<AddClassLevels>().Where(a => a.CharacterClass == Profiles.ProfileManager.Classes.sorceror).FirstOrDefault();
+                bloodmoon_dryad.AddFacts = bloodmoon_dryad.AddFacts.AddToArray(fey_sorcerer.getFeatures(acl.Levels));
+                Profiles.ProfileManager.replaceAcl(acl, fey_sorcerer.getAcl(acl.Levels));
+            }
+
+            {
+                var lady_of_shallows = library.Get<BlueprintUnit>("ac131b0101870b6489609a7f33b5e576");
+                lady_of_shallows.Brain.Actions = fey_sorcerer.brain.Actions;
+
+                var acl = lady_of_shallows.GetComponents<AddClassLevels>().Where(a => a.CharacterClass == Profiles.ProfileManager.Classes.sorceror).FirstOrDefault();
+                lady_of_shallows.AddFacts = lady_of_shallows.AddFacts.AddToArray(fey_sorcerer.getFeatures(acl.Levels));
+                Profiles.ProfileManager.replaceAcl(acl, fey_sorcerer.getAcl(acl.Levels));
+                lady_of_shallows.Body.QuickSlots[0] = library.Get<BlueprintItemEquipmentUsable>("55a059b32df920c4abe65b8ee8b56056"); //rod of quicken metamagic lesser
+                var auto_quicken_metamagic = library.Get<BlueprintFeature>("d26acdac8ded95b44b787c9700634fc9");
+                auto_quicken_metamagic.GetComponent<AutoMetamagic>().Abilities.AddRange(new BlueprintAbility[] { Profiles.ProfileManager.Spells.fireball, Profiles.ProfileManager.Spells.slow });
+                auto_quicken_metamagic.AddComponent(Helpers.Create<IncreaseSpellDC>(i => { i.BonusDC = 2; i.Spell = Profiles.ProfileManager.Spells.confusion; }));
+            }
+         
+
+
         }
 
 
@@ -64,7 +97,7 @@ namespace KingmakerAI
                 f.RemoveComponents<AddFacts>();
                 f.AddComponent(Helpers.CreateAddFacts(bard_ranged.getFeatures(old_acl.Levels)));
             }
-
+            //irovetti?
 
         }
 
