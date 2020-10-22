@@ -391,6 +391,7 @@ namespace KingmakerAI.Profiles
             old_acl.Skills = new_acl.Skills;
             old_acl.SelectSpells = new_acl.SelectSpells;
             old_acl.Selections = new_acl.Selections;
+            old_acl.LevelsStat = new_acl.LevelsStat;
         }
 
         static public SelectionEntry createFeatureSelection(BlueprintFeatureSelection selection, params BlueprintFeature[] features)

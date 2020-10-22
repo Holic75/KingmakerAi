@@ -342,6 +342,14 @@ namespace KingmakerAI
             var tartuk_acl = tartuk_tartucio.GetComponent<AddClassLevels>();
             Profiles.ProfileManager.replaceAcl(tartuk_acl, dragon_srocerer.getAcl(tartuk_acl.Levels));
             tartuk_tartucio.AddFacts = tartuk_tartucio.AddFacts.AddToArray(dragon_srocerer.getFeatures(tartuk_acl.Levels));
+
+
+            var tartuk_troll_fortress = library.Get<BlueprintUnit>("f2d11f187f76f6a4eb23f0ec1395f888");
+            tartuk_troll_fortress.Brain.Actions = dragon_srocerer.brain.Actions;
+            var tartuk_troll_fortress_acl = tartuk_troll_fortress.GetComponent<AddClassLevels>();
+            Profiles.ProfileManager.replaceAcl(tartuk_troll_fortress_acl, dragon_srocerer.getAcl(tartuk_troll_fortress_acl.Levels));
+            tartuk_troll_fortress.AddFacts = tartuk_troll_fortress.AddFacts.AddToArray(dragon_srocerer.getFeatures(tartuk_troll_fortress_acl.Levels));
+            tartuk_troll_fortress.RemoveComponents<AddAbilityToCharacterComponent>(); //remove abilities since they will be cast as spells
         }
 
 
