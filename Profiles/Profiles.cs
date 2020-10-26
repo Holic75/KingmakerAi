@@ -5,6 +5,7 @@ using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.EntitySystem.Stats;
 using Kingmaker.Enums;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
+using Kingmaker.UnitLogic.ActivatableAbilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -942,10 +943,10 @@ namespace KingmakerAI.Profiles
             registerProfile(profile);
 
             melee_profile.addFeatureSelection(FeatSelections.basic_feat, Feats.toughness);//1
-            melee_profile.addFeatureSelection(FeatSelections.basic_feat, Feats.power_attack); //3
-            melee_profile.addFeatureSelection(FeatSelections.basic_feat, NewFeats.furious_focus); //5
-            melee_profile.addFeatureSelection(FeatSelections.basic_feat, Feats.improved_initiative); //7
-            melee_profile.addFeatureSelection(FeatSelections.basic_feat, Feats.arcane_strike); //9
+            melee_profile.addFeatureSelection(FeatSelections.basic_feat, Feats.improved_initiative); //3
+            melee_profile.addFeatureSelection(FeatSelections.basic_feat, Feats.arcane_strike); //5
+            melee_profile.addFeatureSelection(FeatSelections.basic_feat, Feats.power_attack); //7
+            melee_profile.addFeatureSelection(FeatSelections.basic_feat, NewFeats.furious_focus); //9
             melee_profile.addParametrizedFeatureSelection(Feats.spell_focus, SpellSchool.Enchantment);//11
             melee_profile.addFeatureSelection(FeatSelections.basic_feat, Feats.spell_focus); //
             melee_profile.addFeatureSelection(FeatSelections.basic_feat, NewFeats.discordant_voice); //13
@@ -956,6 +957,10 @@ namespace KingmakerAI.Profiles
             melee_profile.addFeatureSelection(FeatSelections.basic_feat, Feats.dodge); //21
 
             registerProfile(melee_profile);
+
+            var inspire_courage = library.Get<BlueprintActivatableAbility>("5250fe10c377fdb49be449dfe050ba70");
+            inspire_courage.IsOnByDefault = true;
+            inspire_courage.DeactivateIfCombatEnded = true;
         }
 
         static void createAlchemistProfile()
