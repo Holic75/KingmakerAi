@@ -31,8 +31,8 @@ using Kingmaker.Blueprints;
  * activate ability_name
  * deactivate ability_name
  * 
- * target_descriptor = [1][2][3][4][5][6][7][8][9][s][p]
- * 1 - 9 - correspond to unit tags (i.e action will be applied to all unit that have at least one tag, so 123 will be applied to anyone who has tag 1, 2 or 3)
+ * target_descriptor = [1][2][3][4][5][6][7][8][9][A][B][C][D][E][F][s][p]
+ * [1 - 9, A - F] - correspond to unit tags (i.e action will be applied to all unit that have at least one tag, so 123 will be applied to anyone who has tag 1, 2 or 3)
  * s - apply on self
  * p - apply on own pet
  * 
@@ -373,13 +373,13 @@ namespace KingmakerAI.Scripting
                 {
                     mask.self = true;
                 }
-                else if (c== 'p')
+                else if (c == 'p')
                 {
                     mask.pet = true;
                 }
                 else
                 {
-                    int num = c - '0';
+                    int num = Array.FindIndex(ScriptController.unit_tags_char, val => val == c);
                     if (num > 0 && num < all_tags.Length )
                     {
                         mask.tags = mask.tags | all_tags[num];
@@ -440,28 +440,7 @@ namespace KingmakerAI.Scripting
                 return;
             }
             is_ok = true;
-            /*var shield = Main.library.Get<BlueprintAbility>("ef768022b0785eb43a18969903c537c4");
-            var cast_shield = new UseAbilityProvider(unit, unit, shield, null);
-            var move_command = new MoveToTargetProvider(unit, unit.Descriptor.Pet);
 
-            var barkskin = Main.library.Get<BlueprintAbility>("5b77d7cc65b8ab74688e74a37fc2f553");
-            var cast_barkskin_self = new UseAbilityProvider(unit, unit, barkskin, null);
-
-            var enlarge = Main.library.Get<BlueprintAbility>("c60969e7f264e6d4b84a1499fdcf9039");
-            var cast_enlarge_pet = new UseAbilityProvider(unit, unit.Descriptor.Pet, enlarge, null);
-            var cast_enlarge = new UseAbilityProvider(unit, unit, enlarge, null);
-
-            var improved_spell_sharing_toggle = Main.library.Get<BlueprintActivatableAbility>("7460c271afc545a89480b559ecfba81f");
-            var activate_iss = new ActivateAbilityProvider(unit, improved_spell_sharing_toggle);
-            var deactivate_iss = new DeactivateAbilityProvider(unit, improved_spell_sharing_toggle);
-
-            command_providers.Add(cast_shield);
-            command_providers.Add(cast_enlarge);
-            command_providers.Add(move_command);
-            command_providers.Add(activate_iss);
-            command_providers.Add(cast_barkskin_self);
-            command_providers.Add(deactivate_iss);
-            command_providers.Add(cast_enlarge_pet);*/
         }
 
         public void run()
@@ -594,7 +573,15 @@ namespace KingmakerAI.Scripting
             Custom7 = 64,
             Custom8 = 128,
             Custom9 = 256,
+            CustomA = 512,
+            CustomB = 1024,
+            CustomC = 2048,
+            CustomD = 4096,
+            CustomE = 8192,
+            CustomF = 16384
         }
+
+        public static char[] unit_tags_char = new char[] {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
         public class TargetMask
         {

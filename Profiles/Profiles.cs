@@ -27,7 +27,7 @@ namespace KingmakerAI.Profiles
                                        Spells.bulls_strength, Spells.bulls_strength, Spells.mirror_image, Spells.foxs_cunning, Spells.cats_grace, Spells.cats_grace,
                                        Spells.haste, Spells.slow, CallOfTheWild.NewSpells.earth_tremor, CallOfTheWild.NewSpells.earth_tremor, CallOfTheWild.NewSpells.earth_tremor, CallOfTheWild.NewSpells.earth_tremor,
                                        Spells.elemental_body1, Spells.obsidian_flow, CallOfTheWild.NewSpells.rigor_mortis, CallOfTheWild.NewSpells.rigor_mortis, CallOfTheWild.NewSpells.rigor_mortis, CallOfTheWild.NewSpells.rigor_mortis,
-                                       Spells.fire_snake, Spells.baleful_polymorph, Spells.baleful_polymorph, Spells.baleful_polymorph, Spells.baleful_polymorph, Spells.baleful_polymorph,
+                                       Spells.fire_snake, NewSpells.fickle_winds, Spells.baleful_polymorph, Spells.baleful_polymorph, Spells.baleful_polymorph, Spells.baleful_polymorph,
                                        Spells.tar_pool, Spells.bears_endurance_mass, Spells.chain_lightning, Spells.chain_lightning, Spells.chain_lightning,
                                        CallOfTheWild.NewSpells.fly_mass, CallOfTheWild.NewSpells.particulate_form, Spells.resonating_word, Spells.resonating_word, Spells.resonating_word,
                                        Spells.frightful_aspect, Spells.storm_bolts, Spells.storm_bolts, Spells.storm_bolts, Spells.storm_bolts,
@@ -55,6 +55,7 @@ namespace KingmakerAI.Profiles
                 getAoeAiSpell(Spells.obsidian_flow, 5.5f, is_ally: false, affects_allies: true, combat_count: 1),
                 getSingleTargetAiSpell(CallOfTheWild.NewSpells.rigor_mortis, 5, is_ally: false),
                 //5
+                getAoeAiSpell(NewSpells.fickle_winds, 6, is_ally: true, is_precast: true, combat_count: 1),
                 getAoeAiSpell(Spells.fire_snake, 6, is_ally: false, affects_allies: false),
                 getSingleTargetAiSpell(Spells.baleful_polymorph, 6, is_ally: false),
                 //6
@@ -80,7 +81,8 @@ namespace KingmakerAI.Profiles
                 CallOfTheWild.NewSpells.fly_mass, Spells.frightful_aspect, Spells.fiery_body
             };
             profile.addFeatureComponent(0,
-                Helpers.Create<CallOfTheWild.TurnActionMechanics.UseAbilitiesAsFreeAction>(u => u.abilities = free_spells)
+                Helpers.Create<CallOfTheWild.TurnActionMechanics.UseAbilitiesAsFreeAction>(u => u.abilities = free_spells),
+                Helpers.Create<AutoMetamagic>(u => { u.Abilities = free_spells.ToList(); u.Metamagic = Kingmaker.UnitLogic.Abilities.Metamagic.Reach; })
                 );
 
             profile.addFeatureComponent(13,
@@ -184,7 +186,8 @@ namespace KingmakerAI.Profiles
                 Spells.sea_mantle
             };
             profile.addFeatureComponent(0,
-                Helpers.Create<CallOfTheWild.TurnActionMechanics.UseAbilitiesAsFreeAction>(u => u.abilities = free_spells)
+                Helpers.Create<CallOfTheWild.TurnActionMechanics.UseAbilitiesAsFreeAction>(u => u.abilities = free_spells),
+                Helpers.Create<AutoMetamagic>(u => { u.Abilities = free_spells.ToList(); u.Metamagic = Kingmaker.UnitLogic.Abilities.Metamagic.Reach; })
                 );
 
             //feats
@@ -284,7 +287,8 @@ namespace KingmakerAI.Profiles
                 Spells.mage_armor, Spells.mirror_image, Spells.false_life, Spells.false_life_greater
             };
             profile.addFeatureComponent(0,
-                Helpers.Create<CallOfTheWild.TurnActionMechanics.UseAbilitiesAsFreeAction>(u => u.abilities = free_spells)
+                Helpers.Create<CallOfTheWild.TurnActionMechanics.UseAbilitiesAsFreeAction>(u => u.abilities = free_spells),
+                Helpers.Create<AutoMetamagic>(u => { u.Abilities = free_spells.ToList(); u.Metamagic = Kingmaker.UnitLogic.Abilities.Metamagic.Reach; })
                 );
 
             //feats
@@ -374,7 +378,8 @@ namespace KingmakerAI.Profiles
                 Spells.mage_armor, Spells.mirror_image, Spells.blur, Spells.displacement
             };
             profile.addFeatureComponent(0,
-                Helpers.Create<CallOfTheWild.TurnActionMechanics.UseAbilitiesAsFreeAction>(u => u.abilities = free_spells)
+                Helpers.Create<CallOfTheWild.TurnActionMechanics.UseAbilitiesAsFreeAction>(u => u.abilities = free_spells),
+                Helpers.Create<AutoMetamagic>(u => { u.Abilities = free_spells.ToList(); u.Metamagic = Kingmaker.UnitLogic.Abilities.Metamagic.Reach; })
                 );
 
             //feats
@@ -421,7 +426,7 @@ namespace KingmakerAI.Profiles
 
             profile.addSelectedSpells(Spells.mage_shield, Spells.burning_hands, Spells.magic_missile, Spells.enlarge_person, Spells.reduce_person, //+mage armor
                                        Spells.burning_arc, Spells.mirror_image, Spells.eagles_splendor, Spells.scorching_ray, Spells.blur,// + resist energy
-                                       Spells.fireball, Spells.haste, Spells.heroism, Spells.dispel_magic, //+fly
+                                       Spells.fireball, Spells.heroism, Spells.dispel_magic, Spells.haste,//+fly
                                        Spells.controlled_fireball, Spells.dragon_breath, Spells.obsidian_flow, Spells.false_life_greater,//+ fear
                                        Spells.fire_snake, Spells.elemental_body2, Spells.stoneskin_communal, Spells.echolocation,//+spell resistance
                                        Spells.sirocco, Spells.cold_ice_strike, Spells.bulls_Strength_mass, //+ form of the dragon
@@ -488,7 +493,8 @@ namespace KingmakerAI.Profiles
                 Spells.fiery_body, Spells.legendary_proportions, Spells.form_of_the_dragon1, Spells.form_of_the_dragon2, Spells.form_of_the_dragon3
             };
             profile.addFeatureComponent(0,
-                Helpers.Create<CallOfTheWild.TurnActionMechanics.UseAbilitiesAsFreeAction>(u => u.abilities = free_spells)
+                Helpers.Create<CallOfTheWild.TurnActionMechanics.UseAbilitiesAsFreeAction>(u => u.abilities = free_spells),
+                Helpers.Create<AutoMetamagic>(u => { u.Abilities = free_spells.ToList(); u.Metamagic = Kingmaker.UnitLogic.Abilities.Metamagic.Reach; })
                 );
             profile.addFeatureComponent(13,
                                        Helpers.Create<AutoMetamagic>(a => a.Abilities = new BlueprintAbility[] { Spells.haste }.ToList())
@@ -604,7 +610,8 @@ namespace KingmakerAI.Profiles
                 Spells.frightful_aspect
             };
             profile.addFeatureComponent(0,
-                Helpers.Create<CallOfTheWild.TurnActionMechanics.UseAbilitiesAsFreeAction>(u => u.abilities = free_spells)
+                Helpers.Create<CallOfTheWild.TurnActionMechanics.UseAbilitiesAsFreeAction>(u => u.abilities = free_spells),
+                Helpers.Create<AutoMetamagic>(u => { u.Abilities = free_spells.ToList(); u.Metamagic = Kingmaker.UnitLogic.Abilities.Metamagic.Reach; })
                 );
 
             //feats
@@ -655,7 +662,7 @@ namespace KingmakerAI.Profiles
 
             profile.addSelectedSpells(Spells.mage_shield, Spells.sleep, Spells.magic_missile, Spells.enlarge_person, Spells.mage_armor, //+entangle
                                        NewSpells.hypnotic_pattern, Spells.eagles_splendor, Spells.mirror_image, Spells.cats_grace, Spells.blur,// + hideous laughter
-                                       Spells.slow, Spells.haste, Spells.heroism, Spells.fireball, Spells.dispel_magic, //+deep slumber
+                                       Spells.slow, Spells.heroism, Spells.fireball, Spells.haste, Spells.dispel_magic, //+deep slumber
                                        Spells.confusion, Spells.crashing_despair, Spells.phantasmal_killer, Spells.false_life_greater, Spells.controlled_fireball,//+ poison
                                        Spells.dominate_person, Spells.phantasmal_web, Spells.stoneskin_communal, Spells.cloudkill,//+vinetrap
                                        Spells.serenity, Spells.phantasmal_putrefaction, Spells.heroism_greater, Spells.bears_endurance_mass, //+ dispel greater
@@ -720,11 +727,12 @@ namespace KingmakerAI.Profiles
             var free_spells = new BlueprintAbility[]
             {
                 Spells.mage_armor, Spells.mage_shield, Spells.false_life, Spells.mirror_image, Spells.blur, Spells.false_life_greater,
-                Spells.eagles_splendor, Spells.bears_endurance_mass, Spells.cats_grace, Spells.stoneskin_communal,
+                Spells.eagles_splendor, Spells.bears_endurance_mass, Spells.cats_grace, Spells.stoneskin_communal, Spells.heroism, Spells.heroism_greater, Spells.heroic_invocation,
                 Spells.sea_mantle, Spells.change_staff, Wildshape.shapechange, Spells.legendary_proportions, Spells.heroic_invocation
             };
             profile.addFeatureComponent(0,
-                Helpers.Create<CallOfTheWild.TurnActionMechanics.UseAbilitiesAsFreeAction>(u => u.abilities = free_spells)
+                Helpers.Create<CallOfTheWild.TurnActionMechanics.UseAbilitiesAsFreeAction>(u => u.abilities = free_spells),
+                Helpers.Create<AutoMetamagic>(u => { u.Abilities = free_spells.ToList(); u.Metamagic = Kingmaker.UnitLogic.Abilities.Metamagic.Reach; } )
                 );
             profile.addFeatureComponent(13,
                 Helpers.Create<AutoMetamagic>(a => a.Abilities = new BlueprintAbility[] { Spells.haste }.ToList())
@@ -782,7 +790,7 @@ namespace KingmakerAI.Profiles
                                        CallOfTheWild.NewSpells.burst_of_radiance, CallOfTheWild.NewSpells.flurry_of_snowballs, Spells.barkskin, Spells.owls_wisdom, Spells.barkskin, CallOfTheWild.NewSpells.flurry_of_snowballs,
                                        CallOfTheWild.NewSpells.burning_entanglement, CallOfTheWild.NewSpells.earth_tremor, CallOfTheWild.NewSpells.earth_tremor, Spells.feather_step_mass, CallOfTheWild.NewSpells.earth_tremor, CallOfTheWild.NewSpells.earth_tremor,
                                        Spells.obsidian_flow, Spells.slowing_mud, Spells.flame_strike, Spells.flame_strike, CallOfTheWild.NewSpells.explosion_of_rot, CallOfTheWild.NewSpells.explosion_of_rot,
-                                       Spells.fire_snake, Spells.fire_snake, Spells.fire_snake, Spells.stone_skin, Spells.baleful_polymorph, Spells.baleful_polymorph,
+                                       NewSpells.fickle_winds, Spells.fire_snake, Spells.fire_snake, Spells.fire_snake, Spells.baleful_polymorph, Spells.baleful_polymorph,
                                        Spells.tar_pool, Spells.sirocco, Spells.stoneskin_communal, Spells.plague_storm, Spells.bears_endurance_mass,
                                        Spells.creeping_doom, Spells.legendary_proportions, Spells.fire_storm, Spells.fire_storm, Spells.fire_storm, Spells.fire_storm,
                                        Spells.frightful_aspect, Spells.sea_mantle, Spells.storm_bolts, Spells.storm_bolts, Spells.storm_bolts,
@@ -814,6 +822,7 @@ namespace KingmakerAI.Profiles
                 getAoeAiSpell(Spells.flame_strike, 5, is_ally: false, affects_allies: true),
                 getAoeAiSpell(CallOfTheWild.NewSpells.explosion_of_rot, 5, is_ally: false, affects_allies: true),
                 //5
+                getAoeAiSpell(NewSpells.fickle_winds, 6, is_ally: true, is_precast: true, combat_count: 1),
                 getAoeAiSpell(Spells.fire_snake, 6, is_ally: false, affects_allies: false),
                 getSingleTargetAiSpell(Spells.baleful_polymorph, 6, is_ally: false),
                 //6
@@ -842,7 +851,8 @@ namespace KingmakerAI.Profiles
                 Spells.stone_skin, Spells.stoneskin_communal,  Spells.summon_elder_worm, Spells.sea_mantle, Spells.frightful_aspect, Spells.fiery_body
             };
             profile.addFeatureComponent(0,
-                Helpers.Create<CallOfTheWild.TurnActionMechanics.UseAbilitiesAsFreeAction>(u => u.abilities = free_spells)
+                Helpers.Create<CallOfTheWild.TurnActionMechanics.UseAbilitiesAsFreeAction>(u => u.abilities = free_spells),
+                Helpers.Create<AutoMetamagic>(u => { u.Abilities = free_spells.ToList(); u.Metamagic = Kingmaker.UnitLogic.Abilities.Metamagic.Reach; })
                 );
 
             //feats
@@ -921,7 +931,8 @@ namespace KingmakerAI.Profiles
                 Spells.echolocation, Spells.see_invisibility_communal, Spells.heroism_greater, Spells.cats_grace_mass
             };
             profile.addFeatureComponent(0,
-                Helpers.Create<CallOfTheWild.TurnActionMechanics.UseAbilitiesAsFreeAction>(u => u.abilities = free_spells)
+                Helpers.Create<CallOfTheWild.TurnActionMechanics.UseAbilitiesAsFreeAction>(u => u.abilities = free_spells),
+                Helpers.Create<AutoMetamagic>(u => { u.Abilities = free_spells.ToList(); u.Metamagic = Kingmaker.UnitLogic.Abilities.Metamagic.Reach; })
                 );
 
             var melee_profile = profile.getCopy("BardMelee");
@@ -1025,7 +1036,8 @@ namespace KingmakerAI.Profiles
                 AlchemistAbilities.dex_mutagen, AlchemistAbilities.int_cognatogen, AlchemistAbilities.int_greater_cognatogen, AlchemistAbilities.int_grand_cognatogen
             };
             profile.addFeatureComponent(0,
-                Helpers.Create<CallOfTheWild.TurnActionMechanics.UseAbilitiesAsFreeAction>(u => u.abilities = free_spells)
+                Helpers.Create<CallOfTheWild.TurnActionMechanics.UseAbilitiesAsFreeAction>(u => u.abilities = free_spells),
+                Helpers.Create<AutoMetamagic>(u => { u.Abilities = free_spells.ToList(); u.Metamagic = Kingmaker.UnitLogic.Abilities.Metamagic.Reach; })
                 );
 
             //feats
@@ -1071,7 +1083,7 @@ namespace KingmakerAI.Profiles
                                        Spells.owls_wisdom, Spells.sound_burst, Spells.bulls_strength, Spells.bulls_strength, Spells.bears_endurance,
                                        Spells.archons_aura, Spells.delay_poison_communal, Spells.prayer, Spells.blindness, Spells.blindness,
                                        NewSpells.aura_of_doom, Spells.protection_from_energy_communal, Spells.protection_from_energy_communal, Spells.freedom_of_movement,
-                                       Spells.angleic_aspect, NewSpells.command_greater, Spells.flame_strike, Spells.flame_strike, Spells.flame_strike,
+                                       NewSpells.fickle_winds, NewSpells.command_greater, Spells.flame_strike, Spells.flame_strike, Spells.flame_strike, Spells.angleic_aspect,
                                        Spells.blade_barrier, Spells.cold_ice_strike, Spells.cold_ice_strike, Spells.cold_ice_strike, Spells.heal,
                                        Spells.waves_of_ecstasy, Spells.destruction, Spells.destruction, Spells.destruction, Spells.destruction,
                                        Spells.frightful_aspect, Spells.fire_storm, Spells.rift_of_ruin, Spells.storm_bolts, Spells.strom_bolts,
@@ -1104,6 +1116,7 @@ namespace KingmakerAI.Profiles
                 getSelfSpell(Spells.protection_from_energy_communal, 5, is_precast: true, variant: Spells.protection_from_energy_communal.Variants[3]), //elec
                 getSelfSpell(Spells.freedom_of_movement, 5, is_precast: true),
                 //5
+                getAoeAiSpell(NewSpells.fickle_winds, 6, is_ally: true, is_precast: true, combat_count: 1),
                 getSelfSpell(Spells.angleic_aspect, 6, is_precast: true, combat_count: 1),
                 getAoeAiSpell(NewSpells.command_greater, 6.5f, is_ally: false, affects_allies: false, combat_count: 1),
                 getAoeAiSpell(Spells.flame_strike, 6, is_ally: false),
@@ -1131,10 +1144,11 @@ namespace KingmakerAI.Profiles
             {
                 Spells.bless, Spells.shield_of_faith, Spells.owls_wisdom, Spells.bulls_strength, Spells.bears_endurance, Spells.archons_aura,
                 Spells.protection_from_energy_communal, Spells.freedom_of_movement, Spells.delay_poison_communal, NewSpells.aura_of_doom,
-                Spells.angleic_aspect, Spells.frightful_aspect
+                Spells.angleic_aspect, Spells.frightful_aspect, NewSpells.fickle_winds,
             };
             profile.addFeatureComponent(0,
-                Helpers.Create<CallOfTheWild.TurnActionMechanics.UseAbilitiesAsFreeAction>(u => u.abilities = free_spells)
+                Helpers.Create<CallOfTheWild.TurnActionMechanics.UseAbilitiesAsFreeAction>(u => u.abilities = free_spells),
+                Helpers.Create<AutoMetamagic>(u => { u.Abilities = free_spells.ToList(); u.Metamagic = Kingmaker.UnitLogic.Abilities.Metamagic.Reach; })
                 );
 
             //feats

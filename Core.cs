@@ -62,7 +62,17 @@ namespace KingmakerAI
                 auto_quicken_metamagic.GetComponent<AutoMetamagic>().Abilities.AddRange(new BlueprintAbility[] { Profiles.ProfileManager.Spells.fireball, Profiles.ProfileManager.Spells.slow });
                 auto_quicken_metamagic.AddComponent(Helpers.Create<IncreaseSpellDC>(i => { i.BonusDC = 2; i.Spell = Profiles.ProfileManager.Spells.confusion; }));
             }
-         
+
+  
+            {
+                var nixie_sorcerer = library.Get<BlueprintUnit>("7fd2ae7369b28e3489861407df3984ae");
+                nixie_sorcerer.Brain.Actions = fey_sorcerer.brain.Actions;
+
+                var acl = nixie_sorcerer.GetComponents<AddClassLevels>().Where(a => a.CharacterClass == Profiles.ProfileManager.Classes.sorceror).FirstOrDefault();
+                nixie_sorcerer.AddFacts = nixie_sorcerer.AddFacts.AddToArray(fey_sorcerer.getFeatures(acl.Levels));
+                Profiles.ProfileManager.replaceAcl(acl, fey_sorcerer.getAcl(acl.Levels));
+            }
+
 
 
         }

@@ -133,6 +133,7 @@
   <ItemGroup>
     <Compile Include="Considerations.cs" />
     <Compile Include="Core.cs" />
+    <Compile Include="EndlessDungeon.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Profiles\Profile.cs" />
     <Compile Include="Profiles\ProfileDefines.cs" />

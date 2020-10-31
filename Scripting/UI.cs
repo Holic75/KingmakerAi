@@ -60,9 +60,7 @@ namespace KingmakerAI.Scripting
                 {
                     if ((tag & all_tags[i]) != 0)
                     {
-                        var chr = '0';
-                        chr += (char)i; 
-                        ce.tags = ce.tags + chr;
+                        ce.tags = ce.tags + ScriptController.unit_tags_char[i];
                     }
                 }
                 char_entries.Add(ce);
@@ -100,7 +98,7 @@ namespace KingmakerAI.Scripting
 
                     foreach (var chr in tag_string)
                     {
-                        int num = chr - '0';
+                        int num = Array.FindIndex(ScriptController.unit_tags_char, val => val == chr);
                         if (num > 0 && num < all_tags.Length)
                         {
                             tag = tag | all_tags[num];
@@ -185,7 +183,7 @@ namespace KingmakerAI.Scripting
                             var tags = character_tags_map[unit_name];
                             for (int i = 1; i < all_tags.Length; i++)
                             {
-                                bool val = GUILayout.Toggle((tags & all_tags[i]) != 0, i.ToString());
+                                bool val = GUILayout.Toggle((tags & all_tags[i]) != 0, ScriptController.unit_tags_char[i].ToString());
                                 if (val)
                                 {
                                     tags = tags | all_tags[i];

@@ -25,6 +25,10 @@ namespace KingmakerAI
             internal string scripts_working_folder { get; set; }
             [JsonProperty]
             internal string party_info_file { get; set; }
+            internal int dungeon_hard_encounters_per_stage { get; set; }
+            internal int dungeon_corrupted_unit_chance { get; set; }
+            internal float dungeon_experience_reward_per_stage_scaling { get; set; }
+            internal float dungeon_cr_scaling { get; set; }
 
             internal Settings()
             {
@@ -35,6 +39,10 @@ namespace KingmakerAI
                     JObject jo = (JObject)JToken.ReadFrom(reader);
                     scripts_working_folder = (string)jo["scripts_working_folder"];
                     party_info_file = (string)jo["party_info_file"];
+                    dungeon_hard_encounters_per_stage = Math.Max(Math.Min(6, (int)jo["dungeon_hard_encounters_per_stage"]), 0);
+                    dungeon_corrupted_unit_chance = Math.Max(Math.Min(100, (int)jo["dungeon_corrupted_unit_chance"]), 0);
+                    dungeon_experience_reward_per_stage_scaling = Math.Max((float)jo["dungeon_experience_reward_per_stage_scaling"], 0.0f);
+                    dungeon_cr_scaling = Math.Max((float)jo["dungeon_cr_scaling"], 0.0f);
                 }
             }
         }
@@ -100,6 +108,7 @@ namespace KingmakerAI
 
                     UpdateAi.load();
                     Core.load();
+                    EndlessDungeon.load();
 
 #if DEBUG
                     string guid_file_name = @"C:\Repositories\KingmakerAI\KingmakerAI\blueprints.txt";

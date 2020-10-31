@@ -16,9 +16,9 @@ Script examples are provide in /ScriptExamples folder
  
 ability_name and variant are defined by their internal names (you can use Spacehamster BlueprintDump, DataViewer or Bag of Tricks mods to find them).
 
-target_descriptor = [1][2][3][4][5][6][7][8][9][s][p]
+target_descriptor = [1][2][3][4][5][6][7][8][9][A][B][C][D][E][F][s][p]
 
-1 - 9 - correspond to unit tags (i.e action will be applied to all unit that have at least one tag, so 123 will be applied to anyone who has tag 1, 2 or 3)
+[1 - 9, A - F] - correspond to unit tags (i.e action will be applied to all unit that have at least one tag, so 123C will be applied to anyone who has tag 1, 2, 3 or C)
 
 s - apply on self
 
