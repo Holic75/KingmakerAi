@@ -1171,5 +1171,115 @@ namespace KingmakerAI.Profiles
             profile.addFeatureSelection(FeatSelections.channel_energy_selection, ClassAbilities.channel_positive); //21
             registerProfile(profile);
         }
+
+
+        static void createClericFighter()
+        {
+            var profile = new Profile("ClericMelee",
+                                      Classes.cleric,
+                                      StatType.Strength,
+                                      new StatType[] { StatType.SkillLoreReligion, StatType.SkillPerception, StatType.SkillMobility, StatType.SkillLoreNature });
+
+            profile.addMemorizedSpells(Spells.enlarge_person, Spells.bless, Spells.shield_of_faith, Spells.shield_of_faith, Spells.shield_of_faith,  Spells.divine_favor,
+                                       NewSpells.savage_maw, Spells.bulls_strength, Spells.bulls_strength, Spells.bears_endurance, 
+                                       NewSpells.deadly_juggernaut, Spells.magical_vestement, Spells.delay_poison_communal, Spells.archons_aura,
+                                       Spells.enlarge_person_mass, NewSpells.magic_weapon_greater, NewSpells.aura_of_doom, NewSpells.wrathful_weapon, Spells.protection_from_energy_communal, Spells.freedom_of_movement,
+                                       NewSpells.fickle_winds, Spells.righteous_might, Spells.angleic_aspect, Spells.spell_resistance, Spells.burst_of_glory,
+                                       Spells.bulls_Strength_mass, Spells.bears_endurance_mass, Spells.owls_wisdom, Spells.heal, Spells.heal,
+                                       Spells.summon_monster7, Spells.summon_monster7, 
+                                       Spells.frightful_aspect, Spells.angleic_aspect_greater, Spells.summon_monster8, Spells.summon_monster8,
+                                       Spells.heal_mass, Spells.summon_monster9, Spells.polar_midnight, Spells.heal_mass
+                                      );
+
+            var quick_channel = ChannelEnergyEngine.getQuickChannelVariant(library.Get<BlueprintAbility>("f5fc9a1a2a3c1a946a31b320d1dd31b2"));
+
+
+            profile.setAiActions(//no cantrips
+                AiActions.attack_action,
+                 //1
+                getSelfSpell(Spells.enlarge_person, 2, is_precast: true,  combat_count: 2),
+                getSelfSpell(Spells.divine_favor, 51, combat_count: 1),
+                getAoeAiSpell(Spells.bless, 2, is_ally: true, is_precast: true, combat_count: 1),
+                getAoeAiSpell(Spells.remove_fear, 2, is_ally: true, is_precast: true, combat_count: 1),
+                getSingleTargetAiSpell(Spells.shield_of_faith, 2, is_ally: true, is_precast: true, combat_count: 2),
+                 //2
+                getSelfSpell(NewSpells.savage_maw, 3, is_precast: true, combat_count: 1),
+                getSelfSpell(Spells.owls_wisdom, 3, is_precast: true, combat_count: 1),
+                getSelfSpell(Spells.bears_endurance, 3, is_precast: true, combat_count: 1),
+                getSingleTargetAiSpell(Spells.bulls_strength, 3, is_ally: true, is_precast: true, extra_target_consideration: new Consideration[] { Considerations.heavy_armor_consideration }, combat_count: 2),
+                //3
+                getSelfSpell(NewSpells.deadly_juggernaut, 4, is_precast: true, combat_count: 1),
+                getSelfSpell(Spells.magical_vestement, 4, is_precast: true, combat_count: 1, variant: Spells.magical_vestement_armor),
+                getSelfSpell(Spells.archons_aura, 4, is_precast: true),
+                getAoeAiSpell(Spells.delay_poison_communal, 4, is_ally: true, is_precast: true, combat_count: 1),
+                //4
+                getSelfSpell(NewSpells.magic_weapon_greater, 5, is_precast: true, combat_count: 1),
+                getSelfSpell(NewSpells.wrathful_weapon, 5, is_precast: true, combat_count: 1, variant: NewSpells.wrathful_weapon.Variants[2]),
+                getAoeAiSpell(Spells.enlarge_person_mass, 5, is_ally: true, is_precast: true, combat_count: 1),
+                getSelfSpell(NewSpells.aura_of_doom, 5, is_precast: true),
+                getSelfSpell(Spells.protection_from_energy_communal, 5, is_precast: true, variant: Spells.protection_from_energy_communal.Variants[3]), //fire
+                getSelfSpell(Spells.freedom_of_movement, 5, is_precast: true),
+                //5
+                getAoeAiSpell(NewSpells.fickle_winds, 6, is_ally: true, is_precast: true, combat_count: 1),
+                getSelfSpell(Spells.angleic_aspect, 6, is_precast: true, combat_count: 1),
+                getSelfSpell(Spells.righteous_might, 6, is_precast: true, combat_count: 1),
+                getSelfSpell(Spells.spell_resistance, 6, is_precast: true, combat_count: 1),
+                //6
+                getAoeAiSpell(Spells.bulls_Strength_mass, 7f, is_precast: true, is_ally: true, combat_count: 1),
+                getAoeAiSpell(Spells.bears_endurance_mass, 7f, is_precast: true, is_ally: true, combat_count: 1),
+                getAoeAiSpell(Spells.owls_strength_mass, 7f, is_precast: true, is_ally: true, combat_count: 1),
+                //heal
+                //7
+                getSelfSpell(Spells.summon_monster7, 8f, variant: Spells.summon_monster7_d3, is_precast: true, combat_count: 1),
+                //8
+                getSelfSpell(Spells.frightful_aspect, 9, is_precast: true, combat_count: 1),
+                getSelfSpell(Spells.angleic_aspect_greater, 9, is_precast: true, combat_count: 1),
+                getSelfSpell(Spells.summon_monster8, 9f, variant: Spells.summon_monster8_d3, is_precast: true, combat_count: 1),
+
+                //9
+                getSelfSpell(Spells.summon_monster9, 10f, variant: Spells.summon_monster9_d3, is_precast: true, combat_count: 1)
+                //heal mass
+
+                );
+
+            var free_spells = new BlueprintAbility[]
+            {
+                Spells.enlarge_person, Spells.bless, Spells.shield_of_faith, Spells.owls_wisdom, Spells.bulls_strength, Spells.bears_endurance, Spells.archons_aura,
+                NewSpells.savage_maw, Spells.remove_fear, NewSpells.deadly_juggernaut, Spells.magical_vestement, NewSpells.magic_weapon_greater, NewSpells.wrathful_weapon,
+                Spells.protection_from_energy_communal, Spells.freedom_of_movement, Spells.delay_poison_communal, NewSpells.aura_of_doom,
+                Spells.righteous_might, Spells.spell_resistance, Spells.bulls_Strength_mass, Spells.bears_endurance_mass, Spells.owls_strength_mass,
+                Spells.summon_monster7, Spells.summon_monster8, Spells.summon_monster9, Spells.angleic_aspect_greater,
+                Spells.angleic_aspect, Spells.frightful_aspect, NewSpells.fickle_winds,
+            };
+            profile.addFeatureComponent(0,
+                Helpers.Create<CallOfTheWild.TurnActionMechanics.UseAbilitiesAsFreeAction>(u => u.abilities = free_spells),
+                Helpers.Create<AutoMetamagic>(u => { u.Abilities = free_spells.ToList(); u.Metamagic = Kingmaker.UnitLogic.Abilities.Metamagic.Reach; })
+                );
+
+            profile.addFeatureComponent(9,
+                Helpers.Create<AutoMetamagic>(a => a.Abilities = new BlueprintAbility[] { Spells.divine_favor }.ToList())
+            );
+
+            //feats
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.martial_weapon_proficiency);//0
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.improved_initiative);//1
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.combat_casting); //3
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.toughness); //5
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.spell_focus);//7
+            profile.addParametrizedFeatureSelection(Feats.spell_focus, SpellSchool.Conjuration);
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.quicken_spell);//9
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.spell_focus); //11
+            profile.addParametrizedFeatureSelection(Feats.spell_focus, SpellSchool.Necromancy);
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.dodge); //13
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.augment_summoning); //15
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.superior_summoning); //17
+            profile.addFeatureSelection(FeatSelections.basic_feat, NewFeats.scales_and_skin); //19
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.power_attack); //21
+            profile.addFeatureSelection(FeatSelections.basic_feat, NewFeats.furious_focus); //23
+
+            profile.addFeatureSelection(FeatSelections.channel_energy_selection, ClassAbilities.channel_positive);
+            profile.addFeatureSelection(FeatSelections.channel_energy_selection, ClassAbilities.channel_negative);
+            registerProfile(profile);
+        }
     }
 }

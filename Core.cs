@@ -33,7 +33,8 @@ namespace KingmakerAI
             fixKoboldsUndeadSorcerers();
             fixDryads();
             fixAlchemists();
-            fixClerics();
+            fixClericCasters();
+            fixMeleeClerics();
             fixBards();
         }
 
@@ -112,7 +113,35 @@ namespace KingmakerAI
         }
 
 
-        static void fixClerics()
+        static void fixMeleeClerics()
+        {
+            var cleric_melee = Profiles.ProfileManager.getProfile("ClericMelee");
+            var cyclops = library.GetAllBlueprints().OfType<BlueprintUnit>().Where(f => f.name.Contains("CyclopCleric")).ToArray();
+
+            var brain = library.Get<BlueprintBrain>("57e33f7b6b629454ba8144b600816379");
+            brain.Actions = cleric_melee.brain.Actions;
+
+            var cleric_selections1 = new SelectionEntry[]
+            {
+               Profiles.ProfileManager.createFeatureSelection(Profiles.ProfileManager.FeatSelections.deity_selection, Profiles.ProfileManager.Deities.gorum),
+               Profiles.ProfileManager.createFeatureSelection(Profiles.ProfileManager.FeatSelections.domain_selection, Profiles.ProfileManager.Domains.war),
+               Profiles.ProfileManager.createFeatureSelection(Profiles.ProfileManager.FeatSelections.domain_selection2, Profiles.ProfileManager.Domains.strength2),
+            };
+
+            foreach (var u in cyclops)
+            {
+                var old_acl = u.GetComponents<AddClassLevels>().Where(a => a.CharacterClass == library.Get<BlueprintCharacterClass>("67819271767a9dd4fbfd4ae700befea0")).FirstOrDefault();
+                if (old_acl == null)
+                {
+                    continue;
+                }
+                Profiles.ProfileManager.replaceAcl(old_acl, cleric_melee.getAcl(old_acl.Levels, cleric_selections1));
+               
+                u.AddFacts = u.AddFacts.AddToArray(cleric_melee.getFeatures(old_acl.Levels));
+            }
+        }
+
+        static void fixClericCasters()
         {
             var cleric_caster = Profiles.ProfileManager.getProfile("ClericCasterPositive");
             var features = library.GetAllBlueprints().Where<BlueprintScriptableObject>(f => f.name.Contains("BanditPositiveClericFeatureListLevel")).Cast<BlueprintFeature>().ToArray();

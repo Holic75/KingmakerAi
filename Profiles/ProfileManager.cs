@@ -378,6 +378,7 @@ namespace KingmakerAI.Profiles
             createAlchemistProfile();
             createClericCasterPositive();
             createBardProfile();
+            createClericFighter();
         }
 
 
