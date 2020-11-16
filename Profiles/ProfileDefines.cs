@@ -32,7 +32,7 @@ namespace KingmakerAI.Profiles
             Precast = 16
         }
 
-        static float aoe_boost = 0.25f;
+        static float aoe_multiplier = 1.25f;
         static float precast_boost = 100.0f;
 
 
@@ -170,6 +170,7 @@ namespace KingmakerAI.Profiles
             public static BlueprintAbility destruction = library.Get<BlueprintAbility>("3b646e1db3403b940bf620e01d2ce0c7");
             public static BlueprintAbility waves_of_ecstasy = library.Get<BlueprintAbility>("1e2d1489781b10a45a3b70192bba9be3");
             public static BlueprintAbility shout_greater = library.Get<BlueprintAbility>("fd0d3840c48cafb44bb29e8eb74df204");
+            public static BlueprintAbility blasphemy = library.Get<BlueprintAbility>("bd10c534a09f44f4ea632c8b8ae97145");
 
             public static BlueprintAbility fire_storm = library.Get<BlueprintAbility>("e3d0dfe1c8527934294f241e0ae96a8d");
             public static BlueprintAbility euphoric_tranquility = library.Get<BlueprintAbility>("740d943e42b60f64a8de74926ba6ddf7");
@@ -278,7 +279,8 @@ namespace KingmakerAI.Profiles
             public static BlueprintAbility phantasmal_putrefaction = library.Get<BlueprintAbility>("1f2e6019ece86d64baa5effa15e81ecc");
             public static BlueprintAbility cold_ice_strike = library.Get<BlueprintAbility>("5ef85d426783a5347b420546f91a677b");
             public static BlueprintAbility mind_fog = library.Get<BlueprintAbility>("eabf94e4edc6e714cabd96aa69f8b207");
-            
+
+            public static BlueprintAbility circle_of_death = library.Get<BlueprintAbility>("a89dcbbab8f40e44e920cc60636097cf");
             public static BlueprintAbility phantasmal_web = library.Get<BlueprintAbility>("12fb4a4c22549c74d949e2916a2f0b6a");
             public static BlueprintAbility fireball = library.Get<BlueprintAbility>("2d81362af43aeac4387a3d4fced489c3");
             public static BlueprintAbility acid_fog = library.Get<BlueprintAbility>("dbf99b00cd35d0a4491c6cc9e771b487");

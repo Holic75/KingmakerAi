@@ -236,8 +236,8 @@ namespace KingmakerAI.Profiles
                                        Spells.scare, Spells.mirror_image, Spells.false_life, Spells.blindness, Spells.blindness, Spells.blindness,
                                        CallOfTheWild.NewSpells.howling_agony, CallOfTheWild.NewSpells.accursed_glare, CallOfTheWild.NewSpells.accursed_glare, Spells.fireball, Spells.fireball,
                                        Spells.fear, Spells.false_life_greater, Spells.enervation, Spells.enervation, Spells.bone_shatter, Spells.bone_shatter,
-                                       Spells.waves_of_fatigue, Spells.acidic_spray, Spells.acidic_spray, Spells.cloudkill,
-                                       Spells.banshee_blast, Spells.banshee_blast, CallOfTheWild.NewSpells.suffocation, CallOfTheWild.NewSpells.suffocation, CallOfTheWild.NewSpells.suffocation,
+                                       Spells.waves_of_fatigue, Spells.acidic_spray, CallOfTheWild.NewSpells.suffocation, CallOfTheWild.NewSpells.suffocation, CallOfTheWild.NewSpells.suffocation,
+                                       Spells.banshee_blast, Spells.banshee_blast, Spells.circle_of_death, Spells.circle_of_death, Spells.circle_of_death,
                                        Spells.plague_storm, Spells.waves_of_exhaustion, Spells.finger_of_death, Spells.finger_of_death, Spells.finger_of_death, Spells.finger_of_death,
                                        Spells.horrid_wilting, Spells.horrid_wilting, Spells.death_clutch, Spells.death_clutch, Spells.death_clutch,
                                        CallOfTheWild.NewSpells.mass_suffocation, Spells.wail_of_banshee, Spells.energy_drain, Spells.energy_drain, Spells.energy_drain);
@@ -267,7 +267,8 @@ namespace KingmakerAI.Profiles
                 getAoeAiSpell(Spells.acidic_spray, 6f, is_ally: false, affects_allies: true),
                 getAoeAiSpell(Spells.cloudkill, 6f, is_ally: false, affects_allies: true, combat_count: 1),
                 //6
-                getAoeAiSpell(Spells.banshee_blast, 7, is_ally: false, affects_allies: true),
+                getAoeAiSpell(Spells.banshee_blast, 7.5f, is_ally: false, affects_allies: true),
+                getAoeAiSpell(Spells.circle_of_death, 7.5f, is_ally: false, affects_allies: true, combat_count: 3),
                 getSingleTargetAiSpell(CallOfTheWild.NewSpells.suffocation, 7, is_ally: false, extra_target_consideration: new Consideration[] { Considerations.light_armor_consideration }),
                 //7
                 getAoeAiSpell(Spells.plague_storm, 8.5f, is_ally: false, affects_allies: true, variant: Spells.plague_storm.Variants[0], combat_count: 1),
@@ -547,9 +548,9 @@ namespace KingmakerAI.Profiles
             profile.addSelectedSpells(Spells.mage_shield, Spells.cause_fear, Spells.magic_missile, Spells.enlarge_person, Spells.mage_armor, //+chill touch
                                        Spells.scare, Spells.bone_shatter, Spells.mirror_image, Spells.eagles_splendor, Spells.blur,// + false life
                                        CallOfTheWild.NewSpells.howling_agony, Spells.slow, CallOfTheWild.NewSpells.accursed_glare, Spells.dispel_magic, //+vampyric touch
-                                       Spells.fear, Spells.bone_shatter, Spells.false_life_greater, Spells.enervation,//+ animate dead
-                                       Spells.acidic_spray, Spells.hungry_pit, Spells.stoneskin_communal,//+waves of fatigue
-                                       Spells.banshee_blast, CallOfTheWild.NewSpells.suffocation, Spells.bears_endurance_mass, //+ undeath to death
+                                       Spells.fear, Spells.false_life_greater, Spells.bone_shatter, Spells.enervation,//+ animate dead
+                                       Spells.acidic_spray, CallOfTheWild.NewSpells.suffocation, Spells.hungry_pit, Spells.stoneskin_communal,//+waves of fatigue
+                                       Spells.banshee_blast, Spells.circle_of_death, Spells.bears_endurance_mass, //+ undeath to death
                                        Spells.plague_storm, Spells.waves_of_exhaustion, Spells.create_undead, //+ finger of death
                                        Spells.death_clutch, Spells.frightful_aspect, Spells.power_word_stun,// + horrid wilting
                                        CallOfTheWild.NewSpells.mass_suffocation, Spells.wail_of_banshee //+ energy drain
@@ -584,6 +585,7 @@ namespace KingmakerAI.Profiles
                 getAoeAiSpell(Spells.hungry_pit, 6.5f, is_ally: false, affects_allies: true, combat_count: 1),
                 //elemental
                 //6
+                getAoeAiSpell(Spells.circle_of_death, 7.5f, is_ally: false, affects_allies: true, combat_count: 3),
                 getAoeAiSpell(Spells.banshee_blast, 7.5f, is_ally: false, affects_allies: true, combat_count: 1),
                 getAoeAiSpell(Spells.bears_endurance_mass, 7f, is_precast: true, is_ally: true, combat_count: 1),
                 getSingleTargetAiSpell(CallOfTheWild.NewSpells.suffocation, 7f, is_ally: false, extra_target_consideration: new Consideration[] { Considerations.light_armor_consideration }),
@@ -1080,14 +1082,14 @@ namespace KingmakerAI.Profiles
                                       new StatType[] { StatType.SkillLoreReligion, StatType.SkillPerception, StatType.SkillMobility, StatType.SkillLoreNature });
 
             profile.addMemorizedSpells(Spells.bless, Spells.shield_of_faith, Spells.shield_of_faith, Spells.remove_fear, Spells.haze_of_dreams,
-                                       Spells.owls_wisdom, Spells.sound_burst, Spells.bulls_strength, Spells.bulls_strength, Spells.bears_endurance,
+                                       Spells.owls_wisdom, NewSpells.burst_of_radiance, Spells.bulls_strength, Spells.bulls_strength, Spells.bears_endurance,
                                        Spells.archons_aura, Spells.delay_poison_communal, Spells.prayer, Spells.blindness, Spells.blindness,
                                        NewSpells.aura_of_doom, Spells.protection_from_energy_communal, Spells.protection_from_energy_communal, Spells.freedom_of_movement,
                                        NewSpells.fickle_winds, NewSpells.command_greater, Spells.flame_strike, Spells.flame_strike, Spells.flame_strike, Spells.angleic_aspect,
                                        Spells.blade_barrier, Spells.cold_ice_strike, Spells.cold_ice_strike, Spells.cold_ice_strike, Spells.heal,
                                        Spells.waves_of_ecstasy, Spells.destruction, Spells.destruction, Spells.destruction, Spells.destruction,
                                        Spells.frightful_aspect, Spells.fire_storm, Spells.rift_of_ruin, Spells.storm_bolts, Spells.strom_bolts,
-                                       Spells.heal_mass, Spells.overwhelming_presence, Spells.polar_midnight, Spells.heal_mass
+                                       Spells.summon_monster9, Spells.overwhelming_presence, Spells.polar_midnight, Spells.heal_mass
                                       );
 
             var quick_channel = ChannelEnergyEngine.getQuickChannelVariant(library.Get<BlueprintAbility>("f5fc9a1a2a3c1a946a31b320d1dd31b2"));
@@ -1105,7 +1107,8 @@ namespace KingmakerAI.Profiles
                 getSelfSpell(Spells.bears_endurance, 3, is_precast: true, combat_count: 1),
                 getSingleTargetAiSpell(Spells.bulls_strength, 3, is_ally: true, is_precast: true, extra_target_consideration: new Consideration[] { Considerations.heavy_armor_consideration }, combat_count: 2),
                 getAoeAiSpell(Spells.sound_burst, 3, is_ally: false, affects_allies: true),
-                 //3
+                getAoeAiSpell(CallOfTheWild.NewSpells.burst_of_radiance, 3.5f, is_ally: false, affects_allies: true, combat_count: 1),
+                //3
                 getSelfSpell(Spells.archons_aura, 4, is_precast: true),
                 getAoeAiSpell(Spells.delay_poison_communal, 4, is_ally: true, is_precast: true, combat_count: 1),
                 getAoeAiSpell(Spells.prayer, 4.5f, is_ally: true),
@@ -1118,7 +1121,7 @@ namespace KingmakerAI.Profiles
                 //5
                 getAoeAiSpell(NewSpells.fickle_winds, 6, is_ally: true, is_precast: true, combat_count: 1),
                 getSelfSpell(Spells.angleic_aspect, 6, is_precast: true, combat_count: 1),
-                getAoeAiSpell(NewSpells.command_greater, 6.5f, is_ally: false, affects_allies: false, combat_count: 1),
+                getAoeAiSpell(NewSpells.command_greater, 8.2f, is_ally: false, affects_allies: false, combat_count: 1),
                 getAoeAiSpell(Spells.flame_strike, 6, is_ally: false),
                 //6
                 getAoeAiSpell(Spells.cold_ice_strike, 57f, is_ally: true, extra_actor_consideration: new Consideration[] { Considerations.no_standard_action, Considerations.swift_action_available }),
@@ -1135,16 +1138,17 @@ namespace KingmakerAI.Profiles
                 //9
                 getAoeAiSpell(Spells.overwhelming_presence, 10.5f, is_ally: false, affects_allies: false),
                 getAoeAiSpell(Spells.polar_midnight, 10, is_ally: false, affects_allies: true),
+                getSelfSpell(Spells.summon_monster9, 10f, variant: Spells.summon_monster9_d3, is_precast: true, combat_count: 1),
                 //heal mass
 
-                getSelfSpell(quick_channel.Parent, 20.0f, quick_channel, extra_actor_consideration: new Consideration[] {Considerations.injury_around_consideration })
+                getSelfSpell(quick_channel.Parent, 20.0f, quick_channel, extra_actor_consideration: new Consideration[] {Considerations.no_standard_action, Considerations.injury_around_consideration })
                 );
 
             var free_spells = new BlueprintAbility[]
             {
                 Spells.bless, Spells.shield_of_faith, Spells.owls_wisdom, Spells.bulls_strength, Spells.bears_endurance, Spells.archons_aura,
                 Spells.protection_from_energy_communal, Spells.freedom_of_movement, Spells.delay_poison_communal, NewSpells.aura_of_doom,
-                Spells.angleic_aspect, Spells.frightful_aspect, NewSpells.fickle_winds,
+                Spells.angleic_aspect, Spells.frightful_aspect, NewSpells.fickle_winds, Spells.summon_monster9,
             };
             profile.addFeatureComponent(0,
                 Helpers.Create<CallOfTheWild.TurnActionMechanics.UseAbilitiesAsFreeAction>(u => u.abilities = free_spells),
@@ -1171,6 +1175,113 @@ namespace KingmakerAI.Profiles
             profile.addFeatureSelection(FeatSelections.channel_energy_selection, ClassAbilities.channel_positive); //21
             registerProfile(profile);
         }
+
+
+        static void createClericCasterNegative()
+        {
+            var profile = new Profile("ClericCasterNegative",
+                                      Classes.cleric,
+                                      StatType.Wisdom,
+                                      new StatType[] { StatType.SkillLoreReligion, StatType.SkillPerception, StatType.SkillMobility, StatType.SkillLoreNature });
+
+            profile.addMemorizedSpells(Spells.bless, Spells.shield_of_faith, Spells.shield_of_faith, Spells.remove_fear, Spells.haze_of_dreams,
+                                       Spells.owls_wisdom, Spells.sound_burst, Spells.bulls_strength, Spells.bulls_strength, Spells.bears_endurance,
+                                       Spells.archons_aura, Spells.delay_poison_communal, Spells.prayer, Spells.blindness, Spells.blindness,
+                                       NewSpells.aura_of_doom, Spells.protection_from_energy_communal, Spells.protection_from_energy_communal, Spells.freedom_of_movement,
+                                       NewSpells.fickle_winds, NewSpells.command_greater, Spells.flame_strike, Spells.flame_strike, Spells.flame_strike, Spells.angleic_aspect,
+                                       Spells.blade_barrier, Spells.cold_ice_strike, Spells.cold_ice_strike, Spells.cold_ice_strike, Spells.cold_ice_strike,
+                                       Spells.blasphemy, Spells.destruction, Spells.destruction, Spells.destruction, Spells.destruction,
+                                       Spells.frightful_aspect, Spells.fire_storm, Spells.rift_of_ruin, Spells.storm_bolts, Spells.strom_bolts,
+                                       Spells.summon_monster9, Spells.overwhelming_presence, Spells.polar_midnight, Spells.heal_mass
+                                      );
+
+            var quick_channel = ChannelEnergyEngine.getQuickChannelVariant(library.Get<BlueprintAbility>("89df18039ef22174b81052e2e419c728"));
+
+
+            profile.setAiActions(//no cantrips
+                AiActions.attack_action,
+                //1
+                getAoeAiSpell(Spells.bless, 2, is_ally: true, is_precast: true, combat_count: 1),
+                getAoeAiSpell(Spells.remove_fear, 2, is_ally: true, is_precast: true, combat_count: 1),
+                getSingleTargetAiSpell(Spells.shield_of_faith, 2, is_ally: true, is_precast: true, combat_count: 2),
+                getSingleTargetAiSpell(Spells.haze_of_dreams, 2, is_ally: false, extra_target_consideration: new Consideration[] { Considerations.heavy_armor_consideration }),
+                //2
+                getSelfSpell(Spells.owls_wisdom, 3, is_precast: true, combat_count: 1),
+                getSelfSpell(Spells.bears_endurance, 3, is_precast: true, combat_count: 1),
+                getSingleTargetAiSpell(Spells.bulls_strength, 3, is_ally: true, is_precast: true, extra_target_consideration: new Consideration[] { Considerations.heavy_armor_consideration }, combat_count: 2),
+                getAoeAiSpell(Spells.sound_burst, 3.5f, is_ally: false, affects_allies: true),
+                //3
+                getSelfSpell(Spells.archons_aura, 4, is_precast: true),
+                getAoeAiSpell(Spells.delay_poison_communal, 4, is_ally: true, is_precast: true, combat_count: 1),
+                getAoeAiSpell(Spells.prayer, 4.5f, is_ally: true),
+                getSingleTargetAiSpell(Spells.blindness, 4, is_precast: true, is_ally: true),
+                //4
+                getSelfSpell(NewSpells.aura_of_doom, 5, is_precast: true),
+                getSelfSpell(Spells.protection_from_energy_communal, 5, is_precast: true, variant: Spells.protection_from_energy_communal.Variants[3]), //fire
+                getSelfSpell(Spells.protection_from_energy_communal, 5, is_precast: true, variant: Spells.protection_from_energy_communal.Variants[3]), //elec
+                getSelfSpell(Spells.freedom_of_movement, 5, is_precast: true),
+                //5
+                getAoeAiSpell(NewSpells.fickle_winds, 6, is_ally: true, is_precast: true, combat_count: 1),
+                getSelfSpell(Spells.angleic_aspect, 6, is_precast: true, combat_count: 1),
+                getAoeAiSpell(NewSpells.command_greater, 8.2f, is_ally: false, affects_allies: false, combat_count: 1),
+                getAoeAiSpell(Spells.flame_strike, 6, is_ally: false),
+                //6
+                getAoeAiSpell(Spells.cold_ice_strike, 57f, is_ally: true, extra_actor_consideration: new Consideration[] { Considerations.no_standard_action, Considerations.swift_action_available }),
+                getAoeAiSpell(Spells.blade_barrier, 7.5f, is_ally: false),
+                //heal
+                //7
+                getAoeAiSpell(Spells.blasphemy, 8.5f, is_ally: false, affects_allies: false),
+                getSingleTargetAiSpell(Spells.destruction, 8, is_ally: false, extra_target_consideration: new Consideration[] { Considerations.light_armor_consideration }),
+                //8
+                getSelfSpell(Spells.frightful_aspect, 9, is_precast: true, combat_count: 1),
+                getAoeAiSpell(Spells.storm_bolts, 9, is_ally: false, affects_allies: false),
+                getAoeAiSpell(Spells.fire_storm, 9, is_ally: false, affects_allies: false),
+
+                //9
+                getAoeAiSpell(Spells.overwhelming_presence, 10.5f, is_ally: false, affects_allies: false),
+                getAoeAiSpell(Spells.polar_midnight, 10, is_ally: false, affects_allies: true),
+                getSelfSpell(Spells.summon_monster9, 10f, variant: Spells.summon_monster9_d3, is_precast: true, combat_count: 1),
+                //heal mass
+
+                getSelfSpell(quick_channel.Parent, 20.0f, quick_channel, extra_actor_consideration: new Consideration[] {Considerations.no_standard_action, Considerations.aoe_more_enemies_considertion })
+                );
+
+            var free_spells = new BlueprintAbility[]
+            {
+                Spells.bless, Spells.shield_of_faith, Spells.owls_wisdom, Spells.bulls_strength, Spells.bears_endurance, Spells.archons_aura,
+                Spells.protection_from_energy_communal, Spells.freedom_of_movement, Spells.delay_poison_communal, NewSpells.aura_of_doom,
+                Spells.angleic_aspect, Spells.frightful_aspect, NewSpells.fickle_winds, Spells.summon_monster9
+            };
+            profile.addFeatureComponent(0,
+                Helpers.Create<CallOfTheWild.TurnActionMechanics.UseAbilitiesAsFreeAction>(u => u.abilities = free_spells),
+                Helpers.Create<AutoMetamagic>(u => { u.Abilities = free_spells.ToList(); u.Metamagic = Kingmaker.UnitLogic.Abilities.Metamagic.Reach; })
+                );
+
+            //feats
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.improved_initiative);//1
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.spell_focus); //3
+            profile.addParametrizedFeatureSelection(Feats.spell_focus, SpellSchool.Enchantment);
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.selective_channel);//5
+            profile.addFeatureSelection(FeatSelections.basic_feat, ChannelEnergyEngine.quick_channel);//7
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.spell_focus); //9
+            profile.addParametrizedFeatureSelection(Feats.spell_focus, SpellSchool.Evocation);
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.greater_spell_focus); //11
+            profile.addParametrizedFeatureSelection(Feats.greater_spell_focus, SpellSchool.Enchantment);
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.greater_spell_focus); //13
+            profile.addParametrizedFeatureSelection(Feats.greater_spell_focus, SpellSchool.Evocation);
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.spell_penetration); //15
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.greater_spell_penetration); //17
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.spell_focus); //19
+            profile.addParametrizedFeatureSelection(Feats.spell_focus, SpellSchool.Necromancy);
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.greater_spell_focus); //21
+            profile.addParametrizedFeatureSelection(Feats.greater_spell_focus, SpellSchool.Necromancy);
+
+            profile.addFeatureSelection(FeatSelections.channel_energy_selection, ClassAbilities.channel_negative);
+            registerProfile(profile);
+        }
+
+
+
 
 
         static void createClericFighter()
@@ -1237,7 +1348,8 @@ namespace KingmakerAI.Profiles
                 getSelfSpell(Spells.summon_monster8, 9f, variant: Spells.summon_monster8_d3, is_precast: true, combat_count: 1),
 
                 //9
-                getSelfSpell(Spells.summon_monster9, 10f, variant: Spells.summon_monster9_d3, is_precast: true, combat_count: 1)
+                getSelfSpell(Spells.summon_monster9, 10f, variant: Spells.summon_monster9_d3, is_precast: true, combat_count: 1),
+                getAoeAiSpell(Spells.polar_midnight, 10, is_ally: false, affects_allies: true)
                 //heal mass
 
                 );

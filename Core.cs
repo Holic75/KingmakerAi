@@ -74,6 +74,17 @@ namespace KingmakerAI
                 Profiles.ProfileManager.replaceAcl(acl, fey_sorcerer.getAcl(acl.Levels));
             }
 
+            var undead_sorcerer = Profiles.ProfileManager.getProfile("SorcererUndead");
+            {
+                var bloodmoon_nymph = library.Get<BlueprintUnit>("0bdeff53fd8249d478ff8276eb8a1658");
+                bloodmoon_nymph.Brain.Actions = undead_sorcerer.brain.Actions.AddToArray(library.Get<BlueprintAiCastSpell>("4aa53873b28d3d148bde2f3828758d33"));
+
+                var acl = bloodmoon_nymph.GetComponents<AddClassLevels>().Where(a => a.CharacterClass == Profiles.ProfileManager.Classes.sorceror).FirstOrDefault();
+                acl.Levels = 9; //increase from 6
+                bloodmoon_nymph.AddFacts = bloodmoon_nymph.AddFacts.AddToArray(undead_sorcerer.getFeatures(acl.Levels));
+                Profiles.ProfileManager.replaceAcl(acl, undead_sorcerer.getAcl(acl.Levels));
+            }
+
 
 
         }
@@ -144,6 +155,7 @@ namespace KingmakerAI
         static void fixClericCasters()
         {
             var cleric_caster = Profiles.ProfileManager.getProfile("ClericCasterPositive");
+            var cleric_caster_negative = Profiles.ProfileManager.getProfile("ClericCasterNegative");
             var features = library.GetAllBlueprints().Where<BlueprintScriptableObject>(f => f.name.Contains("BanditPositiveClericFeatureListLevel")).Cast<BlueprintFeature>().ToArray();
 
             var brain = library.Get<BlueprintBrain>("a19c889be3392b24a9890ffe5a196f0e");
@@ -163,6 +175,34 @@ namespace KingmakerAI
                 f.RemoveComponents<AddFacts>();
                 f.AddComponent(Helpers.CreateAddFacts(cleric_caster.getFeatures(old_acl.Levels)));
             }
+
+
+            //tsanna
+            {
+                var tsanna_units = new BlueprintUnit[] {library.Get<BlueprintUnit>("7c3e0ecea7956be46ad5d74e9b3fd4fb"),
+                                             library.Get<BlueprintUnit>("07e607f30d7de6c49a002339211d074f"),
+                                             library.Get<BlueprintUnit>("bd4bace18805d9f4e89821e7a4f0b173"),
+                                             library.Get<BlueprintUnit>("cf68a7bc6251d754d8ccd27f4dc59be8"),
+                                             library.Get<BlueprintUnit>("61bc44f3224a0c7449dc8e28c7cf3b9b")
+                                            };
+                var tsanna_brain = tsanna_units[0].Brain;
+
+                var tsanna_selections1 = new SelectionEntry[]
+                {
+                    Profiles.ProfileManager.createFeatureSelection(Profiles.ProfileManager.FeatSelections.deity_selection, CallOfTheWild.Deities.lamashtu),
+                    Profiles.ProfileManager.createFeatureSelection(Profiles.ProfileManager.FeatSelections.domain_selection, Profiles.ProfileManager.Domains.evil),
+                    Profiles.ProfileManager.createFeatureSelection(Profiles.ProfileManager.FeatSelections.domain_selection2, Profiles.ProfileManager.Domains.chaos2),
+                };
+
+                foreach (var u in tsanna_units)
+                {
+                    var old_acl = u.GetComponent<AddClassLevels>();
+                    Profiles.ProfileManager.replaceAcl(old_acl, cleric_caster_negative.getAcl(old_acl.Levels, tsanna_selections1));
+                    u.RemoveComponents<AddFacts>();
+                    u.AddComponent(Helpers.CreateAddFacts(cleric_caster.getFeatures(old_acl.Levels)));
+                }
+            }
+
         }
 
 
