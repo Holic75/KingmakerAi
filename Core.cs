@@ -2,6 +2,7 @@
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Experience;
+using Kingmaker.Blueprints.Items.Armors;
 using Kingmaker.Blueprints.Items.Equipment;
 using Kingmaker.Controllers.Brain.Blueprints;
 using Kingmaker.Designers.Mechanics.Facts;
@@ -179,14 +180,16 @@ namespace KingmakerAI
 
             //tsanna
             {
+                var cunning_initiative = library.Get<BlueprintFeature>("6be8b4031d8b9fc4f879b72b5428f1e0");
                 var tsanna_units = new BlueprintUnit[] {library.Get<BlueprintUnit>("7c3e0ecea7956be46ad5d74e9b3fd4fb"),
                                              library.Get<BlueprintUnit>("07e607f30d7de6c49a002339211d074f"),
                                              library.Get<BlueprintUnit>("bd4bace18805d9f4e89821e7a4f0b173"),
                                              library.Get<BlueprintUnit>("cf68a7bc6251d754d8ccd27f4dc59be8"),
-                                             library.Get<BlueprintUnit>("61bc44f3224a0c7449dc8e28c7cf3b9b")
+                                             library.Get<BlueprintUnit>("61bc44f3224a0c7449dc8e28c7cf3b9b"),
+                                              library.Get<BlueprintUnit>("546e1f3739476cd43aeb160cb2344320")
                                             };
                 var tsanna_brain = tsanna_units[0].Brain;
-
+                tsanna_brain.Actions = cleric_caster_negative.brain.Actions;
                 var tsanna_selections1 = new SelectionEntry[]
                 {
                     Profiles.ProfileManager.createFeatureSelection(Profiles.ProfileManager.FeatSelections.deity_selection, CallOfTheWild.Deities.lamashtu),
@@ -199,7 +202,11 @@ namespace KingmakerAI
                     var old_acl = u.GetComponent<AddClassLevels>();
                     Profiles.ProfileManager.replaceAcl(old_acl, cleric_caster_negative.getAcl(old_acl.Levels, tsanna_selections1));
                     u.RemoveComponents<AddFacts>();
-                    u.AddComponent(Helpers.CreateAddFacts(cleric_caster.getFeatures(old_acl.Levels)));
+                    u.AddFacts = u.AddFacts.AddToArray(cleric_caster_negative.getFeatures(old_acl.Levels));
+                    u.AddFacts = u.AddFacts.AddToArray(cunning_initiative);
+                    u.Body.Armor = library.Get<BlueprintItemArmor>("ef5ee1c481c0139438a7097868685a88");//replace her standard breastpalte with mithral brestplate +3
+                    u.Body.Neck = library.Get<BlueprintItemEquipmentNeck>("081a2ffe763320a469de20f1e9b1cd71"); //amulet of natural armor +3
+                    u.Body.Shoulders = library.Get<BlueprintItemEquipmentShoulders>("9f3c56d5247154e47b5ca9500f4d86ce"); //cloak of resistance +3
                 }
             }
 

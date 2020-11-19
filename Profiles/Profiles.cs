@@ -1121,7 +1121,7 @@ namespace KingmakerAI.Profiles
                 //5
                 getAoeAiSpell(NewSpells.fickle_winds, 6, is_ally: true, is_precast: true, combat_count: 1),
                 getSelfSpell(Spells.angleic_aspect, 6, is_precast: true, combat_count: 1),
-                getAoeAiSpell(NewSpells.command_greater, 8.2f, is_ally: false, affects_allies: false, combat_count: 1),
+                getAoeAiSpell(NewSpells.command_greater, 8.2f, is_ally: false, affects_allies: false, combat_count: 1, variant: NewSpells.command_greater.Variants[0]),
                 getAoeAiSpell(Spells.flame_strike, 6, is_ally: false),
                 //6
                 getAoeAiSpell(Spells.cold_ice_strike, 57f, is_ally: true, extra_actor_consideration: new Consideration[] { Considerations.no_standard_action, Considerations.swift_action_available }),
@@ -1148,7 +1148,7 @@ namespace KingmakerAI.Profiles
             {
                 Spells.bless, Spells.shield_of_faith, Spells.owls_wisdom, Spells.bulls_strength, Spells.bears_endurance, Spells.archons_aura,
                 Spells.protection_from_energy_communal, Spells.freedom_of_movement, Spells.delay_poison_communal, NewSpells.aura_of_doom,
-                Spells.angleic_aspect, Spells.frightful_aspect, NewSpells.fickle_winds, Spells.summon_monster9,
+                Spells.angleic_aspect, Spells.frightful_aspect, NewSpells.fickle_winds, Spells.summon_monster9, Spells.remove_fear
             };
             profile.addFeatureComponent(0,
                 Helpers.Create<CallOfTheWild.TurnActionMechanics.UseAbilitiesAsFreeAction>(u => u.abilities = free_spells),
@@ -1223,7 +1223,7 @@ namespace KingmakerAI.Profiles
                 //5
                 getAoeAiSpell(NewSpells.fickle_winds, 6, is_ally: true, is_precast: true, combat_count: 1),
                 getSelfSpell(Spells.angleic_aspect, 6, is_precast: true, combat_count: 1),
-                getAoeAiSpell(NewSpells.command_greater, 8.2f, is_ally: false, affects_allies: false, combat_count: 1),
+                getAoeAiSpell(NewSpells.command_greater, 8.2f, is_ally: false, affects_allies: false, combat_count: 1, variant: NewSpells.command_greater.Variants[0]),
                 getAoeAiSpell(Spells.flame_strike, 6, is_ally: false),
                 //6
                 getAoeAiSpell(Spells.cold_ice_strike, 57f, is_ally: true, extra_actor_consideration: new Consideration[] { Considerations.no_standard_action, Considerations.swift_action_available }),
@@ -1246,11 +1246,12 @@ namespace KingmakerAI.Profiles
                 getSelfSpell(quick_channel.Parent, 20.0f, quick_channel, extra_actor_consideration: new Consideration[] {Considerations.no_standard_action, Considerations.aoe_more_enemies_considertion })
                 );
 
+            getAoeAiSpell(NewSpells.command_greater, 8.2f, is_ally: false, affects_allies: false, combat_count: 1); //for compatibility
             var free_spells = new BlueprintAbility[]
             {
-                Spells.bless, Spells.shield_of_faith, Spells.owls_wisdom, Spells.bulls_strength, Spells.bears_endurance, Spells.archons_aura,
+                Spells.bless, Spells.shield_of_faith, Spells.owls_wisdom, Spells.bulls_strength, Spells.bears_endurance, Spells.archons_aura, Spells.remove_fear,
                 Spells.protection_from_energy_communal, Spells.freedom_of_movement, Spells.delay_poison_communal, NewSpells.aura_of_doom,
-                Spells.angleic_aspect, Spells.frightful_aspect, NewSpells.fickle_winds, Spells.summon_monster9
+                Spells.angleic_aspect, Spells.frightful_aspect, NewSpells.fickle_winds, Spells.summon_monster9,
             };
             profile.addFeatureComponent(0,
                 Helpers.Create<CallOfTheWild.TurnActionMechanics.UseAbilitiesAsFreeAction>(u => u.abilities = free_spells),

@@ -1064,7 +1064,7 @@ namespace KingmakerAI
             var inflict_critical_wounds = library.Get<BlueprintAbility>("651110ed4f117a948b41c05c5c7624c0");
             foreach (var u in units)
             {
-                u.AddFacts = u.AddFacts.AddToArray(AiActions.cleric_free_cast_long_spells);
+                //u.AddFacts = u.AddFacts.AddToArray(AiActions.cleric_free_cast_long_spells);
                 var class_levels = u.GetComponent<AddClassLevels>();
                 class_levels.Skills = new StatType[] { StatType.SkillLoreReligion, StatType.SkillLoreNature, StatType.SkillPerception };
                 var spells = class_levels.MemorizeSpells.ToList();
