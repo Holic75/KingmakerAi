@@ -1292,20 +1292,21 @@ namespace KingmakerAI.Profiles
                                       StatType.Strength,
                                       new StatType[] { StatType.SkillLoreReligion, StatType.SkillPerception, StatType.SkillMobility, StatType.SkillLoreNature });
 
-            profile.addMemorizedSpells(Spells.enlarge_person, Spells.bless, Spells.shield_of_faith, Spells.shield_of_faith, Spells.shield_of_faith,  Spells.divine_favor,
+            profile.addMemorizedSpells(Spells.enlarge_person, Spells.bless, Spells.shield_of_faith, Spells.shield_of_faith, Spells.remove_fear,  Spells.divine_favor,
                                        NewSpells.savage_maw, Spells.bulls_strength, Spells.bulls_strength, Spells.bears_endurance, 
                                        NewSpells.deadly_juggernaut, Spells.magical_vestement, Spells.delay_poison_communal, Spells.archons_aura,
                                        Spells.enlarge_person_mass, NewSpells.magic_weapon_greater, NewSpells.aura_of_doom, NewSpells.wrathful_weapon, Spells.protection_from_energy_communal, Spells.freedom_of_movement,
                                        NewSpells.fickle_winds, Spells.righteous_might, Spells.angleic_aspect, Spells.spell_resistance, Spells.burst_of_glory,
                                        Spells.bulls_Strength_mass, Spells.bears_endurance_mass, Spells.owls_wisdom, Spells.heal, Spells.heal,
-                                       Spells.summon_monster7, Spells.summon_monster7, 
+                                       Spells.summon_monster7, Spells.summon_monster7, NewSpells.particulate_form,
                                        Spells.frightful_aspect, Spells.angleic_aspect_greater, Spells.summon_monster8, Spells.summon_monster8,
                                        Spells.heal_mass, Spells.summon_monster9, Spells.polar_midnight, Spells.heal_mass
                                       );
 
             var quick_channel = ChannelEnergyEngine.getQuickChannelVariant(library.Get<BlueprintAbility>("f5fc9a1a2a3c1a946a31b320d1dd31b2"));
 
-
+            getSelfSpell(NewSpells.magic_weapon_greater, 5, is_precast: true, combat_count: 1);
+            getSelfSpell(NewSpells.wrathful_weapon, 5, is_precast: true, combat_count: 1, variant: NewSpells.wrathful_weapon.Variants[2]);
             profile.setAiActions(//no cantrips
                 AiActions.attack_action,
                  //1
@@ -1325,8 +1326,8 @@ namespace KingmakerAI.Profiles
                 getSelfSpell(Spells.archons_aura, 4, is_precast: true),
                 getAoeAiSpell(Spells.delay_poison_communal, 4, is_ally: true, is_precast: true, combat_count: 1),
                 //4
-                getSelfSpell(NewSpells.magic_weapon_greater, 5, is_precast: true, combat_count: 1),
-                getSelfSpell(NewSpells.wrathful_weapon, 5, is_precast: true, combat_count: 1, variant: NewSpells.wrathful_weapon.Variants[2]),
+                getSelfSpell(NewSpells.magic_weapon_greater, 5, is_precast: true, combat_count: 1, variant: NewSpells.magic_weapon_greater.Variants[0]),
+                getSelfSpell(NewSpells.wrathful_weapon, 5, is_precast: true, combat_count: 1, variant: NewSpells.wrathful_weapon.Variants[0]),
                 getAoeAiSpell(Spells.enlarge_person_mass, 5, is_ally: true, is_precast: true, combat_count: 1),
                 getSelfSpell(NewSpells.aura_of_doom, 5, is_precast: true),
                 getSelfSpell(Spells.protection_from_energy_communal, 5, is_precast: true, variant: Spells.protection_from_energy_communal.Variants[3]), //fire
@@ -1343,6 +1344,7 @@ namespace KingmakerAI.Profiles
                 //heal
                 //7
                 getSelfSpell(Spells.summon_monster7, 8f, variant: Spells.summon_monster7_d3, is_precast: true, combat_count: 1),
+                getAoeAiSpell(NewSpells.particulate_form, 8.5f, is_ally: true, combat_count: 1),
                 //8
                 getSelfSpell(Spells.frightful_aspect, 9, is_precast: true, combat_count: 1),
                 getSelfSpell(Spells.angleic_aspect_greater, 9, is_precast: true, combat_count: 1),
@@ -1381,11 +1383,11 @@ namespace KingmakerAI.Profiles
             profile.addFeatureSelection(FeatSelections.basic_feat, Feats.spell_focus);//7
             profile.addParametrizedFeatureSelection(Feats.spell_focus, SpellSchool.Conjuration);
             profile.addFeatureSelection(FeatSelections.basic_feat, Feats.quicken_spell);//9
-            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.spell_focus); //11
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.augment_summoning); //11
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.superior_summoning); //13
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.spell_focus); //15
             profile.addParametrizedFeatureSelection(Feats.spell_focus, SpellSchool.Necromancy);
-            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.dodge); //13
-            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.augment_summoning); //15
-            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.superior_summoning); //17
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.dodge); //17
             profile.addFeatureSelection(FeatSelections.basic_feat, NewFeats.scales_and_skin); //19
             profile.addFeatureSelection(FeatSelections.basic_feat, Feats.power_attack); //21
             profile.addFeatureSelection(FeatSelections.basic_feat, NewFeats.furious_focus); //23

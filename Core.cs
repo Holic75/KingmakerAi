@@ -37,6 +37,32 @@ namespace KingmakerAI
             fixClericCasters();
             fixMeleeClerics();
             fixBards();
+            fixGoblinShaman();
+        }
+
+
+        static void fixGoblinShaman()
+        {
+            var cleric_fighter = Profiles.ProfileManager.getProfile("ClericMelee");
+            var goblin_shaman = library.Get<BlueprintUnit>("8421b6137d7765947958973526b5249b");
+            goblin_shaman.Brain.Actions = cleric_fighter.brain.Actions;
+
+            var shaman_selections1 = new SelectionEntry[]
+            {
+                Profiles.ProfileManager.createFeatureSelection(Profiles.ProfileManager.FeatSelections.deity_selection, CallOfTheWild.Deities.lamashtu),
+                Profiles.ProfileManager.createFeatureSelection(Profiles.ProfileManager.FeatSelections.domain_selection, Profiles.ProfileManager.Domains.strength),
+                Profiles.ProfileManager.createFeatureSelection(Profiles.ProfileManager.FeatSelections.domain_selection2, Profiles.ProfileManager.Domains.chaos2),
+            };
+
+            goblin_shaman.Body.Armor = library.Get<BlueprintItemArmor>("fb2664f7d8534dc40aeb23392dc58c0c"); //mithral chainshirt +3 to make use of high dex
+            goblin_shaman.Strength = 16;
+            goblin_shaman.Constitution = 16;
+            var old_acl = goblin_shaman.GetComponent<AddClassLevels>();
+            Profiles.ProfileManager.replaceAcl(old_acl, cleric_fighter.getAcl(old_acl.Levels, shaman_selections1));
+            goblin_shaman.RemoveComponents<AddFacts>();
+            goblin_shaman.AddFacts = goblin_shaman.AddFacts.AddToArray(cleric_fighter.getFeatures(old_acl.Levels));
+            goblin_shaman.Body.Neck = library.Get<BlueprintItemEquipmentNeck>("081a2ffe763320a469de20f1e9b1cd71"); //amulet of natural armor +3
+            goblin_shaman.Body.Shoulders = library.Get<BlueprintItemEquipmentShoulders>("9f3c56d5247154e47b5ca9500f4d86ce"); //cloak of resistance +3
         }
 
 

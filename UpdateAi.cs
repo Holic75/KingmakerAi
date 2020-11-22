@@ -549,11 +549,11 @@ namespace KingmakerAI
         static void updateGoblinShaman()
         {
             var goblin_shaman = library.Get<BlueprintUnit>("8421b6137d7765947958973526b5249b");
-            goblin_shaman.AddFacts = new Kingmaker.Blueprints.Facts.BlueprintUnitFact[] { library.Get<BlueprintFeature>("9d168ca7100e9314385ce66852385451"),
-                                                                                          library.Get<BlueprintBuff>("33d5368d93d949ecbd82b3528750b5a0"), //saura of doom
+            /*goblin_shaman.AddFacts = new Kingmaker.Blueprints.Facts.BlueprintUnitFact[] { library.Get<BlueprintFeature>("9d168ca7100e9314385ce66852385451"),
+                                                                                          library.Get<BlueprintBuff>("33d5368d93d949ecbd82b3528750b5a0"), //aura of doom
                                                                                           library.Get<BlueprintBuff>("5274ddc289f4a7447b7ace68ad8bebb0"), //shield of faith
                                                                                           library.Get<BlueprintFeature>("3adb2c906e031ee41a01bfc1d5fb7eea"), //channel negative
-                                                                                        };
+                                                                                        };*/
             //will change to shaman (speaker for the past?)
             var spell_focus = library.Get<BlueprintParametrizedFeature>("16fa59cc9a72a6043b566b49184f53fe");
             var class_levels = goblin_shaman.GetComponent<AddClassLevels>();
@@ -935,13 +935,13 @@ namespace KingmakerAI
             }
             Main.logger.Log("Found acls: " + acls.Length.ToString());
             //add new facts
-            foreach (BlueprintUnitFact bf in (u.Blueprint.AddFacts).EmptyIfNull<BlueprintUnitFact>())
+            /*foreach (BlueprintUnitFact bf in (u.Blueprint.AddFacts).EmptyIfNull<BlueprintUnitFact>())
             {
                 if (bf != null && !u.HasFact(bf))
                 {
                     u.AddFact(bf, (MechanicsContext)null, (FeatureParam)null);
                 }
-            }
+            }*/
 
             foreach (var acl in acls)
             {
