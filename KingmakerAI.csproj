@@ -47,6 +47,14 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ReleaseInstallEE|AnyCPU'">
+    <OutputPath>..\..\..\GOG Games\PathfinderKingmaker2.0\Pathfinder Kingmaker\Mods\KingmakerAI\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony12">
       <HintPath>..\..\..\Users\DenisPc\Downloads\UnityModManager-21-0-13-1-1551447200\UnityModManager\0Harmony12.dll</HintPath>
@@ -147,6 +155,7 @@
     <Compile Include="Scripting\Scripts.cs" />
     <Compile Include="Scripting\UI.cs" />
     <Compile Include="TurnBased.cs" />
+    <Compile Include="TurnBasedOwlcats.cs" />
     <Compile Include="UpdateAi.cs" />
   </ItemGroup>
   <ItemGroup>

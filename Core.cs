@@ -320,9 +320,19 @@ namespace KingmakerAI
             ac_consideration.name = "ACConsideration";
             library.AddAsset(ac_consideration, "");
 
+            var unit_far_consideration = Helpers.Create<Kingmaker.Controllers.Brain.Blueprints.Considerations.DistanceConsideration>();
+            unit_far_consideration.name = "TargetIsFarConsideration";
+            unit_far_consideration.BaseScoreModifier = 1.0f;
+            unit_far_consideration.MinDistance = 2.0f; //~6 feet
+            unit_far_consideration.MaxDistance = 6.0f; //~18 feet
+            unit_far_consideration.MinDistanceScore = 0.0f;
+            unit_far_consideration.MaxDistanceScore = 1.0f;
+            library.AddAsset(unit_far_consideration, "2e7554ef535d4485960424c779b5de58");
+
             var attack_actions = library.GetAllBlueprints().Where<BlueprintScriptableObject>(f => f.name.Contains("AttackAiAction")).Cast<BlueprintAiAction>().ToArray();
             var charge_action = library.Get<BlueprintAiCastSpell>("05003725a881c10419530387b6de5c9a");
             charge_action.BaseScore = 1.5f;
+            charge_action.TargetConsiderations = charge_action.TargetConsiderations.AddToArray(unit_far_consideration);
             attack_actions.AddToArray(charge_action);
             foreach (var attack_action in attack_actions)
             {

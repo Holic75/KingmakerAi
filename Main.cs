@@ -118,6 +118,7 @@ namespace KingmakerAI
                     Scripting.UI.initialize(Main.settings.scripts_working_folder, Main.settings.party_info_file);
 
                     Type TurnController = Type.GetType("TurnBased.Controllers.TurnController, TurnBased");
+                    Type TurnControllerOwlcat = Type.GetType("TurnBased.Controllers.TurnController, Assembly-CSharp");
                     if (TurnController != null)
                     {
                         logger.Log("Found TurnBased mod, patching...");
@@ -127,6 +128,17 @@ namespace KingmakerAI
                         harmony.Patch(Harmony12.AccessTools.Method(TurnController, "ContinueWaiting"),
                                         postfix: new Harmony12.HarmonyMethod(typeof(TurnBasedPatches.TurnController_ContinueWaiting_Patch), "Postfix")
                                     );
+                    }
+                    else if (TurnControllerOwlcat != null)
+                    {
+                        logger.Log("Found Official TurnBased, patching...");
+                        harmony.Patch(Harmony12.AccessTools.Method(TurnControllerOwlcat, "ContinueActing"),
+                                    postfix: new Harmony12.HarmonyMethod(typeof(TurnBasedOwlcatsPatches.TurnController_ContinueActing_Patch), "Postfix")
+                                );
+
+                        harmony.Patch(Harmony12.AccessTools.Method(TurnControllerOwlcat, "ContinueWaiting"),
+                                     prefix: new Harmony12.HarmonyMethod(typeof(TurnBasedOwlcatsPatches.TurnController_ContinueWaiting_Patch), "Prefix")
+                        );
                     }
                     else
                     {

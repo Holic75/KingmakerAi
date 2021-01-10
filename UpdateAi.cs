@@ -924,8 +924,8 @@ namespace KingmakerAI
                 return;
             }
             
-            var tr = Harmony12.Traverse.Create(u);
-            tr.Property("Brain").SetValue(new UnitBrain(u));
+            //var tr = Harmony12.Traverse.Create(u);
+            //tr.Property("Brain").SetValue(new UnitBrain(u));
             //u.Initialize();
 
             var acls = u.Blueprint.GetComponents<AddClassLevels>().ToArray();
