@@ -122,6 +122,7 @@ namespace KingmakerAI.Profiles
             public static BlueprintAbility longstrider = library.Get<BlueprintAbility>("14c90900b690cac429b229efdf416127");
             public static BlueprintAbility faerie_fire = library.Get<BlueprintAbility>("4d9bf81b7939b304185d58a09960f589");
             public static BlueprintAbility entnagle = library.Get<BlueprintAbility>("0fd00984a2c0e0a429cf1a911b4ec5ca");
+            public static BlueprintAbility magic_fang = library.Get<BlueprintAbility>("403cf599412299a4f9d5d925c7b9fb33");
 
             public static BlueprintAbility ear_piercing_scream = library.Get<BlueprintAbility>("8e7cfa5f213a90549aadd18f8f6f4664");
             public static BlueprintAbility hideous_laughter = library.Get<BlueprintAbility>("fd4d9fd7f87575d47aafe2a64a6e2d8d");
@@ -131,7 +132,7 @@ namespace KingmakerAI.Profiles
             public static BlueprintAbility haze_of_dreams = library.Get<BlueprintAbility>("40ec382849b60504d88946df46a10f2d");
             public static BlueprintAbility shield_of_faith = library.Get<BlueprintAbility>("183d5bb91dea3a1489a6db6c9cb64445");
             public static BlueprintAbility stunning_barrier = library.Get<BlueprintAbility>("a5ec7892fb1c2f74598b3a82f3fd679f");
-
+            
 
             public static BlueprintAbility aid = library.Get<BlueprintAbility>("03a9630394d10164a9410882d31572f0");
             public static BlueprintAbility hold_person = library.Get<BlueprintAbility>("c7104f7526c4c524f91474614054547e");
@@ -166,6 +167,10 @@ namespace KingmakerAI.Profiles
             public static BlueprintAbility harm = library.Get<BlueprintAbility>("cc09224ecc9af79449816c45bc5be218");
             public static BlueprintAbility cacaphonous_call_mass = library.Get<BlueprintAbility>("1262284b6fa45b9458b8c3693edbd676");
             public static BlueprintAbility righteous_might = library.Get<BlueprintAbility>("90810e5cf53bf854293cbd5ea1066252");
+            public static BlueprintAbility magic_fang_greater = library.Get<BlueprintAbility>("f1100650705a69c4384d3edd88ba0f52");
+            public static BlueprintAbility thorn_body = library.Get<BlueprintAbility>("2daf9c5112f16d54ab3cd6904c705c59");
+            public static BlueprintAbility cape_of_wasps = library.Get<BlueprintAbility>("e418c20c8ce362943a8025d82c865c1c");
+            public static BlueprintAbility blessing_of_the_salamander = library.Get<BlueprintAbility>("9256a86aec14ad14e9497f6b60e26f3f");
 
             public static BlueprintAbility destruction = library.Get<BlueprintAbility>("3b646e1db3403b940bf620e01d2ce0c7");
             public static BlueprintAbility waves_of_ecstasy = library.Get<BlueprintAbility>("1e2d1489781b10a45a3b70192bba9be3");
@@ -344,6 +349,8 @@ namespace KingmakerAI.Profiles
             public static BlueprintAbility heal = library.Get<BlueprintAbility>("5da172c4c89f9eb4cbb614f3a67357d3");
             public static BlueprintAbility change_staff = library.Get<BlueprintAbility>("26be70c4664d07446bdfe83504c1d757");
 
+            public static BlueprintAbility foresight = library.Get<BlueprintAbility>("1f01a098d737ec6419aedc4e7ad61fdd");
+            public static BlueprintAbility elemental_swarm = library.Get<BlueprintAbility>("0340fe43f35e7a448981b646c638c83d");
 
             public static BlueprintAbility shapechange_ability = library.Get<BlueprintAbility>("a8237e938cc946688eb7606804b27b3c");
             public static BlueprintAbility shapechange_ability_silver_dragon_variant = library.Get<BlueprintAbility>("c31bdfd64235410aaae4fb552ef31ce3");
@@ -352,6 +359,7 @@ namespace KingmakerAI.Profiles
 
         static public class Feats
         {
+            public static BlueprintFeature natural_spell = library.Get<BlueprintFeature>("c806103e27cce6f429e5bf47067966cf");
             public static BlueprintFeature martial_weapon_proficiency = library.Get<BlueprintFeature>("203992ef5b35c864390b4e4a1e200629");
             public static BlueprintFeature augment_summoning = library.Get<BlueprintFeature>("38155ca9e4055bb48a89240a2055dcc3");
             public static BlueprintFeature superior_summoning = library.Get<BlueprintFeature>("0477936c0f74841498b5c8753a8062a3");
@@ -500,6 +508,21 @@ namespace KingmakerAI.Profiles
         {
             public static BlueprintFeature gorum = library.Get<BlueprintFeature>("8f49a5d8528a82c44b8c117a89f6b68c");
             public static BlueprintFeature callistria = library.Get<BlueprintFeature>("c7531715a3f046d4da129619be63f44c");
+        }
+
+
+        static class Wildshapes
+        {
+            public static BlueprintAbility wolf = library.Get<BlueprintAbility>("ac8811714a45a5948b27208538ce4f03");
+            public static BlueprintAbility leopard = library.Get<BlueprintAbility>("92c47b04f6c9aa44abf1693b32554804");
+            public static BlueprintAbility bear = library.Get<BlueprintAbility>("3f7873efe4ca499bae86489d1d993442");
+            public static BlueprintAbility dire_wolf = library.Get<BlueprintAbility>("aa0f3e6715e74416b7f5cfb05fab3040");
+            public static BlueprintAbility mastodon = library.Get<BlueprintAbility>("aa6e7d52069d40af969520d5cccf349e");
+            public static BlueprintAbility mandragora = library.Get<BlueprintAbility>("3e91b07a95cb42efb352492a80bd3637");
+            public static BlueprintAbility giant_flytrap = library.Get<BlueprintAbility>("f5e3fe2fdb5c434caa4a83a7d2bb6cc8");
+            public static BlueprintAbility smilodon = library.Get<BlueprintAbility>("32f1f208ad635224f89ef158140ab509");
+            public static BlueprintAbility shambling_mound = library.Get<BlueprintAbility>("943d41b6aaef1dc4e82f115118dbf902");
+            public static BlueprintAbility treant = library.Get<BlueprintAbility>("6356f85d679148dd8bb064aebf85aa37");
         }
 
 

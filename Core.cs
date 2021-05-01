@@ -38,6 +38,15 @@ namespace KingmakerAI
             fixMeleeClerics();
             fixBards();
             fixGoblinShaman();
+
+            fixAbilities();
+        }
+
+        static void fixAbilities()
+        {
+            //imitate a potion
+            var enlarge_self = library.Get<BlueprintAbility>("549e9fcaadc861348b05bf01624387aa");
+            enlarge_self.ActionType = Kingmaker.UnitLogic.Commands.Base.UnitCommand.CommandType.Free;
         }
 
 
@@ -121,7 +130,7 @@ namespace KingmakerAI
         static void fixBards()
         {
             var bard_melee = Profiles.ProfileManager.getProfile("BardMelee");
-            var features = library.GetAllBlueprints().Where<BlueprintScriptableObject>(f => f.name.Contains("BanditBardFeatureListLevel")).Cast<BlueprintFeature>().ToArray();
+            var features = library.GetAllBlueprints().OfType<BlueprintFeature>().Where<BlueprintScriptableObject>(f => f.name.Contains("BanditBardFeatureListLevel")).ToArray();
             var brain = library.Get<BlueprintBrain>("424d2726bc862a04bb31180be3661013");
             brain.Actions = bard_melee.brain.Actions;
 
@@ -135,7 +144,7 @@ namespace KingmakerAI
 
 
             var bard_ranged = Profiles.ProfileManager.getProfile("BardArcher");
-            features = library.GetAllBlueprints().Where<BlueprintScriptableObject>(f => f.name.Contains("KoboldBardFeatureListLevel")).Cast<BlueprintFeature>().ToArray();
+            features = library.GetAllBlueprints().OfType<BlueprintFeature>().Where<BlueprintScriptableObject>(f => f.name.Contains("KoboldBardFeatureListLevel")).ToArray();
             brain = library.Get<BlueprintBrain>("542f43821b9db194d987c23bbff3e664");
             brain.Actions = bard_ranged.brain.Actions;
 
@@ -154,7 +163,7 @@ namespace KingmakerAI
         static void fixMeleeClerics()
         {
             var cleric_melee = Profiles.ProfileManager.getProfile("ClericMelee");
-            var cyclops = library.GetAllBlueprints().OfType<BlueprintUnit>().Where(f => f.name.Contains("CyclopCleric")).ToArray();
+            var cyclops = library.GetAllBlueprints().OfType<BlueprintUnit>().OfType<BlueprintUnit>().Where(f => f.name.Contains("CyclopCleric")).ToArray();
 
             var brain = library.Get<BlueprintBrain>("57e33f7b6b629454ba8144b600816379");
             brain.Actions = cleric_melee.brain.Actions;
@@ -183,7 +192,7 @@ namespace KingmakerAI
         {
             var cleric_caster = Profiles.ProfileManager.getProfile("ClericCasterPositive");
             var cleric_caster_negative = Profiles.ProfileManager.getProfile("ClericCasterNegative");
-            var features = library.GetAllBlueprints().Where<BlueprintScriptableObject>(f => f.name.Contains("BanditPositiveClericFeatureListLevel")).Cast<BlueprintFeature>().ToArray();
+            var features = library.GetAllBlueprints().OfType<BlueprintFeature>().Where<BlueprintScriptableObject>(f => f.name.Contains("BanditPositiveClericFeatureListLevel")).ToArray();
 
             var brain = library.Get<BlueprintBrain>("a19c889be3392b24a9890ffe5a196f0e");
             brain.Actions = cleric_caster.brain.Actions;
@@ -242,9 +251,9 @@ namespace KingmakerAI
         static void fixAlchemists()
         {
             var alchemist = Profiles.ProfileManager.getProfile("Alchemist");
-            var features = library.GetAllBlueprints().Where<BlueprintScriptableObject>(f => f.name.Contains("GoblinAlchemistFeatureListLevel")
-                                                                                            || f.name.Contains("BanditAlchemistFeatureListLevel")
-                                                                                            || f.name.Contains("KoboldAlchemistFeatureListLevel")).Cast<BlueprintFeature>().ToArray();
+            var features = library.GetAllBlueprints().OfType<BlueprintFeature>().Where<BlueprintScriptableObject>(f => f.name.Contains("GoblinAlchemistFeatureListLevel")
+                                                                                                                    || f.name.Contains("BanditAlchemistFeatureListLevel")
+                                                                                                                    || f.name.Contains("KoboldAlchemistFeatureListLevel")).ToArray();
 
             var brains = new BlueprintBrain[]
             {
@@ -304,12 +313,13 @@ namespace KingmakerAI
 
             //nugrah
             {
+                var druid_melee = Profiles.ProfileManager.getProfile("DruidMelee");
                 var brain = library.Get<BlueprintBrain>("84889317d828e884ca11d04b213f642a");
-                brain.Actions = druid.brain.Actions;
+                brain.Actions = druid_melee.brain.Actions;
                 var nugrah = library.Get<BlueprintUnit>("f9d8cbf3340d7a24e96bb498732bf531");
                 var old_acl = nugrah.GetComponent<AddClassLevels>();
-                Profiles.ProfileManager.replaceAcl(old_acl, druid.getAcl(old_acl.Levels));
-                nugrah.AddFacts = druid.getFeatures(old_acl.Levels);
+                Profiles.ProfileManager.replaceAcl(old_acl, druid_melee.getAcl(old_acl.Levels));
+                nugrah.AddFacts = druid_melee.getFeatures(old_acl.Levels);
             }
         }
 
@@ -329,9 +339,9 @@ namespace KingmakerAI
             unit_far_consideration.MaxDistanceScore = 1.0f;
             library.AddAsset(unit_far_consideration, "2e7554ef535d4485960424c779b5de58");
 
-            var attack_actions = library.GetAllBlueprints().Where<BlueprintScriptableObject>(f => f.name.Contains("AttackAiAction")).Cast<BlueprintAiAction>().ToArray();
+            var attack_actions = library.GetAllBlueprints().OfType<BlueprintAiAction>().Where(f => f.name.Contains("AttackAiAction")).ToArray();
             var charge_action = library.Get<BlueprintAiCastSpell>("05003725a881c10419530387b6de5c9a");
-            charge_action.BaseScore = 1.5f;
+            charge_action.BaseScore = 1.3f;
             charge_action.TargetConsiderations = charge_action.TargetConsiderations.AddToArray(unit_far_consideration);
             attack_actions.AddToArray(charge_action);
             foreach (var attack_action in attack_actions)
@@ -357,7 +367,7 @@ namespace KingmakerAI
         static void fixBanditTransmuters()
         {
             var transmuter = Profiles.ProfileManager.getProfile("WizardTransmuter");
-            var features = library.GetAllBlueprints().Where<BlueprintScriptableObject>(f => f.name.Contains("BanditTransmuterFeatureListLevel")).Cast<BlueprintFeature>().ToArray();
+            var features = library.GetAllBlueprints().OfType<BlueprintFeature>().Where<BlueprintScriptableObject>(f => f.name.Contains("BanditTransmuterFeatureListLevel")).ToArray();
 
 
             var brain = library.Get<BlueprintBrain>("bf90f2053c06375418c119115122ae3d");
@@ -395,7 +405,7 @@ namespace KingmakerAI
         static void fixBanditConjurers()
         {
             var conjurer = Profiles.ProfileManager.getProfile("WizardConjurer");
-            var features = library.GetAllBlueprints().Where<BlueprintScriptableObject>(f => f.name.Contains("BanditConjurerFeatureListLevel")).Cast<BlueprintFeature>().ToArray();
+            var features = library.GetAllBlueprints().OfType<BlueprintFeature>().Where<BlueprintScriptableObject>(f => f.name.Contains("BanditConjurerFeatureListLevel")).ToArray();
 
             var brain = library.Get<BlueprintBrain>("fde24a9130c94f74baa7f166ca1b8fcb");
             brain.Actions = conjurer.brain.Actions;
@@ -414,7 +424,7 @@ namespace KingmakerAI
         static void fixBanditNecromancers()
         {
             var necromancer = Profiles.ProfileManager.getProfile("WizardNecromancer");
-            var features = library.GetAllBlueprints().Where<BlueprintScriptableObject>(f => f.name.Contains("BanditNecromancerFeatureListLevel")).Cast<BlueprintFeature>().ToArray();
+            var features = library.GetAllBlueprints().OfType<BlueprintFeature>().Where<BlueprintScriptableObject>(f => f.name.Contains("BanditNecromancerFeatureListLevel")).ToArray();
 
             var brain = library.Get<BlueprintBrain>("775dc58da494c1240ab4508697135ebd");
             brain.Actions = necromancer.brain.Actions;
@@ -444,7 +454,7 @@ namespace KingmakerAI
         static void fixKoboldsDragonSorcerers()
         {
             var dragon_srocerer = Profiles.ProfileManager.getProfile("SorcererRedDragon");
-            var features = library.GetAllBlueprints().Where<BlueprintScriptableObject>(f => f.name.Contains("KoboldShamanFeatureListLevel")).Cast<BlueprintFeature>().ToArray();
+            var features = library.GetAllBlueprints().OfType<BlueprintFeature>().Where<BlueprintScriptableObject>(f => f.name.Contains("KoboldShamanFeatureListLevel")).ToArray();
 
             var brain = library.Get<BlueprintBrain>("6b724c3dccf221842925c0abbcc6ad8e");
             brain.Actions = dragon_srocerer.brain.Actions;
@@ -478,7 +488,7 @@ namespace KingmakerAI
         static void fixKoboldsUndeadSorcerers()
         {
             var undead_srocerer = Profiles.ProfileManager.getProfile("SorcererUndead");
-            var features = library.GetAllBlueprints().Where<BlueprintScriptableObject>(f => f.name.Contains("KoboldShamanNecromancerFeatureListLevel")).Cast<BlueprintFeature>().ToArray();
+            var features = library.GetAllBlueprints().OfType<BlueprintFeature>().Where<BlueprintScriptableObject>(f => f.name.Contains("KoboldShamanNecromancerFeatureListLevel")).ToArray();
 
             var brain = library.Get<BlueprintBrain>("434fe616b01681b4f876083046337922");
             brain.Actions = undead_srocerer.brain.Actions;
@@ -511,7 +521,7 @@ namespace KingmakerAI
         static void fixBanditIllusionists()
         {
             var illusionist = Profiles.ProfileManager.getProfile("WizardIllusionist");
-            var features = library.GetAllBlueprints().Where<BlueprintScriptableObject>(f => f.name.Contains("BanditIllusionistFeatureListLevel")).Cast<BlueprintFeature>().ToArray();
+            var features = library.GetAllBlueprints().OfType<BlueprintFeature>().Where<BlueprintScriptableObject>(f => f.name.Contains("BanditIllusionistFeatureListLevel")).ToArray();
 
             var brain = library.Get<BlueprintBrain>("8ab8db551f38f0a48acda15dc00123ad");
             brain.Actions = illusionist.brain.Actions;

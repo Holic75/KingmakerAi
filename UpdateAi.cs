@@ -53,6 +53,8 @@ namespace KingmakerAI
         }
 
 
+
+ 
         static class Spells
         {
             public static BlueprintAbility bless = library.Get<BlueprintAbility>("90e59f4a4ada87243b7b3535a06d0638");
@@ -393,8 +395,8 @@ namespace KingmakerAI
 
         static void fixBanditTransmuter2()
         {
-            var features = library.GetAllBlueprints().Where<BlueprintScriptableObject>(f => f.name.Contains("BanditTransmuterFeatureListLevel")).Cast<BlueprintFeature>().ToArray();
-            var spell_lists = library.GetAllBlueprints().Where<BlueprintScriptableObject>(f => f.name.Contains("BanditTransmuterSpellListLevel")).Cast<BlueprintFeature>().ToArray();
+            var features = library.GetAllBlueprints().OfType<BlueprintFeature>().Where<BlueprintScriptableObject>(f => f.name.Contains("BanditTransmuterFeatureListLevel")).ToArray();
+            var spell_lists = library.GetAllBlueprints().OfType<BlueprintFeature>().Where<BlueprintScriptableObject>(f => f.name.Contains("BanditTransmuterSpellListLevel")).ToArray();
 
             var obsidian_flow = library.Get<BlueprintAbility>("e48638596c955a74c8a32dbc90b518c1");
             var baleful_polymorph = library.Get<BlueprintAbility>("3105d6e9febdc3f41a08d2b7dda1fe74");
@@ -471,8 +473,8 @@ namespace KingmakerAI
 
         static void fixBanditConjurers()
         {
-            var features = library.GetAllBlueprints().Where<BlueprintScriptableObject>(f => f.name.Contains("BanditConjurerFeatureListLevel")).Cast<BlueprintFeature>().ToArray();
-            var spell_lists = library.GetAllBlueprints().Where<BlueprintScriptableObject>(f => f.name.Contains("BanditConjurerSpellList")).Cast<BlueprintFeature>().ToArray();
+            var features = library.GetAllBlueprints().OfType<BlueprintFeature>().Where<BlueprintScriptableObject>(f => f.name.Contains("BanditConjurerFeatureListLevel")).ToArray();
+            var spell_lists = library.GetAllBlueprints().OfType<BlueprintFeature>().Where<BlueprintScriptableObject>(f => f.name.Contains("BanditConjurerSpellList")).ToArray();
 
             var grease = library.Get<BlueprintAbility>("95851f6e85fe87d4190675db0419d112");
             var glitterdust = library.Get<BlueprintAbility>("ce7dad2b25acf85429b6c9550787b2d9");
@@ -668,7 +670,7 @@ namespace KingmakerAI
             ac_consideration.name = "ACConsideration";
             library.AddAsset(ac_consideration, "");
 
-            var attack_actions = library.GetAllBlueprints().Where<BlueprintScriptableObject>(f => f.name.Contains("AttackAiAction")).Cast<BlueprintAiAction>().ToArray();
+            var attack_actions = library.GetAllBlueprints().OfType<BlueprintAiAction>().Where(f => f.name.Contains("AttackAiAction")).ToArray();
 
             foreach (var attack_action in attack_actions)
             {
@@ -678,7 +680,7 @@ namespace KingmakerAI
 
         static void updateGoblinFighter()
         {
-            var features = library.GetAllBlueprints().Where<BlueprintScriptableObject>(f => f.name.Contains("GoblinFighterFeatureListLevel")).Cast<BlueprintFeature>().ToArray();
+            var features = library.GetAllBlueprints().OfType<BlueprintFeature>().Where<BlueprintScriptableObject>(f => f.name.Contains("GoblinFighterFeatureListLevel")).Cast<BlueprintFeature>().ToArray();
 
             var wf = library.Get<BlueprintParametrizedFeature>("1e1f627d26ad36f43bbd26cc2bf8ac7e");
             var ws = library.Get<BlueprintParametrizedFeature>("31470b17e8446ae4ea0dacd6c5817d86");
@@ -729,7 +731,7 @@ namespace KingmakerAI
 
         static void updateGoblinArcher()
         {
-            var features = library.GetAllBlueprints().Where<BlueprintScriptableObject>(f => f.name.Contains("GoblinArcherFeatureListLevel")).Cast<BlueprintFeature>().ToArray();
+            var features = library.GetAllBlueprints().OfType<BlueprintFeature>().Where<BlueprintScriptableObject>(f => f.name.Contains("GoblinArcherFeatureListLevel")).ToArray();
 
             var wf = library.Get<BlueprintParametrizedFeature>("1e1f627d26ad36f43bbd26cc2bf8ac7e");
             var ws = library.Get<BlueprintParametrizedFeature>("31470b17e8446ae4ea0dacd6c5817d86");
@@ -778,7 +780,7 @@ namespace KingmakerAI
 
         static void updateGoblinRogue()
         {
-            var features = library.GetAllBlueprints().Where<BlueprintScriptableObject>(f => f.name.Contains("GoblinRogueFeatureListLevel")).Cast<BlueprintFeature>().ToArray();
+            var features = library.GetAllBlueprints().OfType<BlueprintFeature>().Where<BlueprintScriptableObject>(f => f.name.Contains("GoblinRogueFeatureListLevel")).ToArray();
 
             var combat_trick = library.Get<BlueprintFeatureSelection>("c5158a6622d0b694a99efb1d0025d2c1");
             var slow_reactions = library.Get<BlueprintFeature>("7787030571e87704d9177401c595408e");
@@ -808,7 +810,7 @@ namespace KingmakerAI
                 levels.Selections = levels.Selections.AddToArray(wf_selection);
             }
 
-            var units = library.GetAllBlueprints().Where<BlueprintScriptableObject>(f => f.name.Contains("_GoblinRogue")).Cast<BlueprintUnit>().ToArray();
+            var units = library.GetAllBlueprints().OfType<BlueprintUnit>().Where(f => f.name.Contains("_GoblinRogue")).ToArray();
             foreach (var u in units)
             {
                 var levels = u.GetComponent<AddClassLevels>();
@@ -819,7 +821,7 @@ namespace KingmakerAI
 
         static void updateAlchemist()
         {
-            var spells = library.GetAllBlueprints().Where<BlueprintScriptableObject>(f => f.name.Contains("GoblinAlchemistSpellListLevel") || f.name.Contains("BanditAlchemistSpellListLevel")).Cast<BlueprintFeature>().ToArray();
+            var spells = library.GetAllBlueprints().OfType<BlueprintFeature>().Where<BlueprintScriptableObject>(f => f.name.Contains("GoblinAlchemistSpellListLevel") || f.name.Contains("BanditAlchemistSpellListLevel")).Cast<BlueprintFeature>().ToArray();
 
 
             var haste = library.Get<BlueprintAbility>("486eaff58293f6441a5c2759c4872f98");
@@ -829,7 +831,7 @@ namespace KingmakerAI
                 learn.Spells = learn.Spells.AddToArray(haste);
             }
 
-            var features = library.GetAllBlueprints().Where<BlueprintScriptableObject>(f => f.name.Contains("GoblinAlchemistFeatureListLevel") || f.name.Contains("BanditAlchemistFeatureListLevel")).Cast<BlueprintFeature>().ToArray();
+            var features = library.GetAllBlueprints().OfType<BlueprintFeature>().Where(f => f.name.Contains("GoblinAlchemistFeatureListLevel") || f.name.Contains("BanditAlchemistFeatureListLevel")).ToArray();
 
             var chocking_bombs = library.Get<BlueprintFeature>("b3c6cb76d5b11cf4c8314d7b1c7b9b8b");
 

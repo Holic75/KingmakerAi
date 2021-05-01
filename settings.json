@@ -4,5 +4,8 @@
     "dungeon_hard_encounters_per_stage": 3,
     "dungeon_corrupted_unit_chance": 35,
     "dungeon_experience_reward_per_stage_scaling": 0.5,
-    "dungeon_cr_scaling": 1.25
+    "dungeon_cr_scaling": 1.25,
+    "ai_chance_to_hit_weight": 0.5,
+    "ai_distance_to_target_weight": 0.5,
+    "ai_engaged_by_target_weight":  0.25
 }

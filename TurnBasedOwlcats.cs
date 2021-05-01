@@ -18,7 +18,7 @@ namespace KingmakerAI
             static int attempts;
             internal static void Postfix(object __instance, ref bool __result)
             {
-
+                
                 if (__result)
                 {
                     attempts = 0;
@@ -32,10 +32,13 @@ namespace KingmakerAI
                     return;
                 }
                 attempts++;
+
                 var tr = Harmony12.Traverse.Create(__instance);
                 var t = tr.Field("TimeWaitedForIdleAI ").GetValue<float>();
-                __result = !(unit.CombatState.HasCooldownForCommand(CommandType.Standard) || unit.CombatState.HasCooldownForCommand(CommandType.Swift)
-                                || unit.CombatState.Cooldown.MoveAction > 1) && t < 3.0f || attempts < 50; //3s  max
+                __result = (!(unit.CombatState.HasCooldownForCommand(CommandType.Standard) || unit.CombatState.HasCooldownForCommand(CommandType.Swift)
+                                || unit.CombatState.Cooldown.MoveAction > 1) && t < 3.0f) && attempts < 100; //3s  max
+               
+
                 if (!__result)
                 {
                     attempts = 0;

@@ -78,7 +78,7 @@ namespace KingmakerAI.Profiles
             var free_spells = new BlueprintAbility[]
             {
                 Spells.mage_armor, Spells.enlarge_person, Spells.bulls_strength, Spells.mirror_image, Spells.foxs_cunning, Spells.cats_grace, Spells.elemental_body1, Spells.bears_endurance_mass,
-                CallOfTheWild.NewSpells.fly_mass, Spells.frightful_aspect, Spells.fiery_body
+                CallOfTheWild.NewSpells.fly_mass, Spells.frightful_aspect, Spells.fiery_body, NewSpells.fickle_winds,
             };
             profile.addFeatureComponent(0,
                 Helpers.Create<CallOfTheWild.TurnActionMechanics.UseAbilitiesAsFreeAction>(u => u.abilities = free_spells),
@@ -806,6 +806,7 @@ namespace KingmakerAI.Profiles
                 getSelfSpell(Spells.feather_step, 2, is_precast: true, combat_count: 1),
                 getAoeAiSpell(Spells.flare_burst, 2, is_ally: false, affects_allies: true,  combat_count: 1),
                 //2
+                getSelfSpell(Spells.owls_wisdom, 3, is_precast: true, combat_count: 1),
                 getAoeAiSpell(CallOfTheWild.NewSpells.burst_of_radiance, 3.5f, is_ally: false, affects_allies: true, combat_count: 1),
                 getAoeAiSpell(CallOfTheWild.NewSpells.flurry_of_snowballs, 3f, is_ally: false, affects_allies: true, combat_count: 1),
                 getSingleTargetAiSpell(Spells.bulls_strength, 3, is_ally: true, is_precast: true, extra_target_consideration: new Consideration[] { Considerations.heavy_armor_consideration }, combat_count: 2),
@@ -850,7 +851,7 @@ namespace KingmakerAI.Profiles
             var free_spells = new BlueprintAbility[]
             {
                 Spells.longstrider, Spells.feather_step, Spells.bulls_strength, Spells.mirror_image, Spells.owls_wisdom, Spells.cats_grace, Spells.feather_step_mass, Spells.bears_endurance_mass,
-                Spells.stone_skin, Spells.stoneskin_communal,  Spells.summon_elder_worm, Spells.sea_mantle, Spells.frightful_aspect, Spells.fiery_body
+                Spells.stone_skin, Spells.stoneskin_communal,  Spells.summon_elder_worm, Spells.sea_mantle, Spells.frightful_aspect, Spells.fiery_body, NewSpells.fickle_winds,
             };
             profile.addFeatureComponent(0,
                 Helpers.Create<CallOfTheWild.TurnActionMechanics.UseAbilitiesAsFreeAction>(u => u.abilities = free_spells),
@@ -874,6 +875,107 @@ namespace KingmakerAI.Profiles
             profile.addParametrizedFeatureSelection(Feats.greater_spell_focus, SpellSchool.Evocation);
             profile.addFeatureSelection(FeatSelections.basic_feat, Feats.dodge); //21
            //animal companion can be added separately
+
+            registerProfile(profile);
+        }
+
+
+        static void createMeleeDruidProfile()
+        {
+            var profile = new Profile("DruidMelee",
+                                      Classes.druid,
+                                      StatType.Strength,
+                                      new StatType[] { StatType.SkillLoreNature, StatType.SkillPerception, StatType.SkillMobility, StatType.SkillLoreReligion });
+
+            profile.addMemorizedSpells(Spells.longstrider, Spells.feather_step, Spells.magic_fang,
+                                       Spells.barkskin, Spells.owls_wisdom, Spells.barkskin, Spells.bulls_strength, Spells.cats_grace, Spells.bears_endurance,
+                                       Spells.feather_step_mass, Spells.magic_fang_greater, Spells.resist_energy_communal,
+                                       CallOfTheWild.NewSpells.strong_jaw, Spells.cape_of_wasps, Spells.thorn_body, Spells.echolocation,
+                                       NewSpells.fickle_winds, Spells.stone_skin, Spells.blessing_of_the_salamander,
+                                       Spells.bulls_Strength_mass, Spells.cats_grace_mass, Spells.bears_endurance_mass, Spells.stoneskin_communal,
+                                       Spells.creeping_doom, Spells.legendary_proportions, Spells.legendary_proportions, Spells.true_seeing,
+                                       Spells.frightful_aspect, Spells.sea_mantle, Spells.summon_nature_ally_8,
+                                       Spells.fiery_body, Spells.foresight, Spells.summon_elder_worm, Spells.summon_elder_worm);
+
+
+            profile.setAiActions(//no cantrips
+                AiActions.attack_action,
+                //1
+                getSelfSpell(Spells.longstrider, 2, is_precast: true, combat_count: 1),
+                getSelfSpell(Spells.feather_step, 2, is_precast: true, combat_count: 1),
+                getSelfSpell(Spells.magic_fang, 2, is_precast: true, combat_count: 1),
+                //2
+                getSingleTargetAiSpell(Spells.bears_endurance, 3, is_ally: true, is_precast: true, extra_target_consideration: new Consideration[] { Considerations.heavy_armor_consideration }, combat_count: 1),
+                getSingleTargetAiSpell(Spells.bulls_strength, 3, is_ally: true, is_precast: true, extra_target_consideration: new Consideration[] { Considerations.heavy_armor_consideration }, combat_count: 2),
+                getSelfSpell(Spells.barkskin, 3, is_precast: true, combat_count: 3),
+                getSingleTargetAiSpell(Spells.cats_grace, 3, is_ally: true, is_precast: true, extra_target_consideration: new Consideration[] { Considerations.light_armor_consideration }),
+                //3
+                getAoeAiSpell(Spells.feather_step_mass, 4, is_precast: true, is_ally: true, combat_count: 1),
+                getSelfSpell(Spells.magic_fang_greater, 4, is_precast: true, combat_count: 1),
+                getAoeAiSpell(Spells.resist_energy_communal, 4, is_precast: true, is_ally: true, combat_count: 1, variant: Spells.resist_energy_communal.Variants[3]),
+                //4
+                getSelfSpell(Spells.stone_skin, 5, is_precast: true, combat_count: 1),
+                getSelfSpell(Spells.echolocation, 5, is_precast: true, combat_count: 1),
+                getSelfSpell(NewSpells.strong_jaw, 5, is_precast: true, combat_count: 1),
+                getSelfSpell(Spells.cape_of_wasps, 5, is_precast: true, combat_count: 1),
+                getSelfSpell(Spells.thorn_body, 5, is_precast: true, combat_count: 1),
+                //5
+                getAoeAiSpell(NewSpells.fickle_winds, 6, is_ally: true, is_precast: true, combat_count: 1),
+                getSelfSpell(Spells.stone_skin, 5, is_precast: true, combat_count: 1),
+                getSelfSpell(Spells.blessing_of_the_salamander, 5, is_precast: true, combat_count: 1),
+                //6
+                getAoeAiSpell(Spells.bears_endurance_mass, 7, is_ally: true, is_precast: true, combat_count: 1),
+                getAoeAiSpell(Spells.stoneskin_communal, 7, is_ally: true, is_precast: true, combat_count: 1),
+                getAoeAiSpell(Spells.bulls_Strength_mass, 7f, is_precast: true, is_ally: true, combat_count: 1),
+                getAoeAiSpell(Spells.cats_grace_mass, 7f, is_precast: true, is_ally: true, combat_count: 1),
+                //7
+                getSelfSpell(Spells.creeping_doom, 8, combat_count: 1),
+                getSingleTargetAiSpell(Spells.legendary_proportions, 8, is_precast: true, is_ally: true, extra_target_consideration: new Consideration[] { Considerations.heavy_armor_consideration }, combat_count: 2),
+                getSelfSpell(Spells.true_seeing, 8, is_precast: true, combat_count: 1),
+                //8
+                getSelfSpell(Spells.frightful_aspect, 9, is_precast: true, combat_count: 1),
+                getSelfSpell(Spells.sea_mantle, 9, is_precast: true, combat_count: 1),
+                getSelfSpell(Spells.summon_nature_ally_8, 10f, variant: Spells.summon_nature_ally_8.Variants[1], is_precast: true, combat_count: 1),
+                //9
+                getSelfSpell(Spells.fiery_body, 10, is_precast: true, combat_count: 1),
+                getSelfSpell(Spells.foresight, 10, is_precast: true, combat_count: 1),
+                getSelfSpell(Spells.summon_elder_worm, 10, is_precast: true, combat_count: 1),
+                getSelfSpell(Spells.summon_elder_worm, 10, is_precast: true, combat_count: 1),
+
+
+                //
+                getSelfSpell(Wildshapes.leopard, 21, is_precast: true, combat_count: 1, extra_target_consideration: new Consideration[] {Considerations.not_polymorphed }),
+                getSelfSpell(Wildshapes.bear, 23, is_precast: true, combat_count: 1, extra_target_consideration: new Consideration[] { Considerations.not_polymorphed }),
+                getSelfSpell(Wildshapes.smilodon, 25, is_precast: true, combat_count: 1, extra_target_consideration: new Consideration[] { Considerations.not_polymorphed }),
+                getSelfSpell(Wildshapes.giant_flytrap, 27, is_precast: true, combat_count: 1, extra_target_consideration: new Consideration[] { Considerations.not_polymorphed })
+                );
+
+            var free_spells = new BlueprintAbility[]
+            {
+                Spells.longstrider, Spells.feather_step, Spells.bulls_strength, Spells.bears_endurance, Spells.owls_wisdom, Spells.cats_grace, Spells.feather_step_mass, Spells.bears_endurance_mass,
+                Spells.stone_skin, Spells.stoneskin_communal,  Spells.summon_elder_worm, Spells.summon_nature_ally_8, Spells.sea_mantle, Spells.frightful_aspect, Spells.fiery_body,
+                Spells.foresight, Spells.true_seeing, Spells.cats_grace_mass, Spells.bulls_Strength_mass, Spells.blessing_of_the_salamander, NewSpells.fickle_winds, Spells.echolocation,
+                Spells.thorn_body, Spells.cape_of_wasps,
+                Wildshapes.leopard, Wildshapes.bear, Wildshapes.smilodon, Wildshapes.giant_flytrap
+            };
+            profile.addFeatureComponent(0,
+                Helpers.Create<CallOfTheWild.TurnActionMechanics.UseAbilitiesAsFreeAction>(u => u.abilities = free_spells),
+                Helpers.Create<AutoMetamagic>(u => { u.Abilities = free_spells.ToList(); u.Metamagic = Kingmaker.UnitLogic.Abilities.Metamagic.Reach; })
+                );
+
+            //feats
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.combat_casting);//1
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.improved_initiative); //3
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.natural_spell); //5
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.iron_will); //7
+            profile.addFeatureSelection(FeatSelections.basic_feat, Wildshape.mutated_shape); //9
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.quicken_spell); //11
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.toughness); //13
+            profile.addFeatureSelection(FeatSelections.basic_feat, NewFeats.scales_and_skin); //15
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.dodge); //17
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.great_fortitude); //19
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.lightning_reflexes); //21
+            //animal companion can be added separately
 
             registerProfile(profile);
         }

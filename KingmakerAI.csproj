@@ -167,6 +167,9 @@
     <None Include="info.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="settings - default.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="settings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

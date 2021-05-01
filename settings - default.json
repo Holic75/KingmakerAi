@@ -1,0 +1,8 @@
+{
+    "scripts_working_folder": "C:/KingmakerScripts/",
+    "party_info_file": "party_setup.json",
+    "dungeon_hard_encounters_per_stage": 1,
+    "dungeon_corrupted_unit_chance": 20,
+    "dungeon_experience_reward_per_stage_scaling": 1.0,
+    "dungeon_cr_scaling": 1.0
+}

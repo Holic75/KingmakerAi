@@ -9,7 +9,9 @@ using Kingmaker.PubSubSystem;
 using Kingmaker.RuleSystem;
 using Kingmaker.RuleSystem.Rules;
 using Kingmaker.UnitLogic;
+using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.ActivatableAbilities;
+using Kingmaker.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -144,14 +146,15 @@ namespace KingmakerAI.NewConsiderations
         static System.Random rng = new System.Random();
 
         public float min_score = 0.1f;
-        public float engaged_by_bonus = 0.05f;
-        public float engage_bonus = 0.15f;
         public float max_score = 1.0f;
         public static BlueprintActivatableAbility tumble = Main.library.Get<BlueprintActivatableAbility>("4be5757b85af47545a5789f1d03abda9");
 
         public override float Score(DecisionContext context)
         {
-            
+            float chance_to_hit_weight = Main.settings.ai_chance_to_hit_weight;
+            float engaged_by_weight = Main.settings.ai_engaged_by_target_weight;
+            float distance_weight = Main.settings.ai_distance_to_target_weight;
+
             UnitEntityData attacker = context.Unit;
             UnitEntityData target = context.Target.Unit ?? context.Unit;
 
@@ -165,66 +168,63 @@ namespace KingmakerAI.NewConsiderations
             {
                 weapon = attacker.Body.AdditionalLimbs[0].MaybeWeapon;
             }
-            int odds = -10;
+            int odds = 0;
             if (weapon != null)
             {
                 var attack_bonus = Rulebook.Trigger(new RuleCalculateAttackBonus(attacker, target, weapon, 0)).Result;
                 var target_ac = Rulebook.Trigger(new RuleCalculateAC(attacker, target, weapon.Blueprint.AttackType)).TargetAC;
-                odds = attack_bonus - target_ac;
+                odds = attack_bonus - target_ac + 10;  // 0 means 50% chance to hit more is better
             }
 
-            int uncertainty = 0;
+            int certainty = 0;
             var unit_part_attack_scores = attacker.Ensure<UnitPartAttackScoreStorage>();
+
             if (unit_part_attack_scores.attack_scores.ContainsKey(target))
             {
-                uncertainty = unit_part_attack_scores.attack_scores[target];
+                certainty = unit_part_attack_scores.attack_scores[target];
             }
             else
             {
-                float uncertanity_base = 0.0f;
-                float sanity = Math.Max(-4, (attacker.Stats.Intelligence.Bonus + attacker.Stats.Wisdom.Bonus) / 2);
-                if (sanity >= 0)
-                {
-                    uncertanity_base = (float)(2.0 + 0.5f*sanity); // 10 for 0,  7 for +2,  5 for + 4,   2 for + 16
-                }
-                else
-                {
-                    uncertanity_base = 2.0f + 0.25f * sanity; //20 for -4, 14 for -2, 10 for 0
-                }
-                //20 for -4, 13 for -2, 10 for 0, 7 for +2,  5 for +4, 4 for +6, 2 for +16
+                var check_bonus = attacker.Stats.Intelligence.Bonus + attacker.Stats.Wisdom.Bonus + attacker.Descriptor.Progression.CharacterLevel;
+                var dc = 10 + (target.Stats.CheckBluff.ModifiedValue + target.Stats.SkillStealth.ModifiedValue)/2 + attacker.Descriptor.Progression.CharacterLevel;
+                certainty = rng.Next(1, 20) + check_bonus - dc;
+                certainty = Math.Max(Math.Min(10, certainty), -10); // from -10 to 10
                 
-                int uncertainty_range = (int)Math.Round(20.0f / uncertanity_base);               
-                if (uncertanity_base != 0)
-                {
-                    uncertainty = rng.Next(0, uncertainty_range);
-                }
-                unit_part_attack_scores.attack_scores[target] = uncertainty;
-                //uncertainty_values[(attacker, target)] = uncertainty;
+                unit_part_attack_scores.attack_scores[target] = certainty;
             }
 
+            odds = Math.Min(Math.Max(odds, -10), 10); //from -10 to 10
+            float certainty_coeff = (1.0f + certainty*0.1f) * 0.5f; //from 0 to 1
+            float odds_coeff = (1.0f + odds*0.1f)*0.5f;  //1 for auto hit, 0 for auto miss
 
-            odds = Math.Min(Math.Max(odds, -20), 0); //from -20 to 0
-            odds += uncertainty;
-            odds = Math.Min(Math.Max(odds, -20), 0); //from -20 to 0
+            float score = 1.0f - chance_to_hit_weight *  (0.5f + (0.5f - odds_coeff) * certainty_coeff); 
 
-            var score = (float)(odds + 20) / 20.0f;
-            score *= 0.5f;
-            //try to use tumble if possible
+            var distance = Math.Max((target.Position - attacker.Position).magnitude, 5.Feet().Meters);
+            var distance_coeff = 5.Feet().Meters / distance; //from 1 to 0;
+
+            if ((weapon != null && weapon.Blueprint.IsRanged) 
+                || (context.Ability?.Blueprint != null && context.Ability.Blueprint.Range >= AbilityRange.Close
+                    && context.Ability.Blueprint.Range <= AbilityRange.Unlimited)
+               )
+            {
+                distance_coeff = 1.0f;
+            }
+
+            score *= (1.0f - distance_weight * (1.0f - distance_coeff)); //will more likely attack closer units if does not have ranged weapon
+
             var tumble_toggle = attacker.ActivatableAbilities.Enumerable.Where(a => a.Blueprint == tumble).FirstOrDefault();
             if (tumble_toggle != null && !attacker.IsPlayerFaction)
             {
                 tumble_toggle.IsOn = attacker.CombatState.IsEngaged && attacker.Stats.GetStat(Kingmaker.EntitySystem.Stats.StatType.SkillMobility).ModifiedValue >= 10;
             }
 
-            
-            if (attacker.CombatState.IsEngage(target))
-            {
-                score += engage_bonus;
-            }
+            var engaged_score = 1.0f - engaged_by_weight;
             if (attacker.CombatState.EngagedBy.Contains(target))
             {
-                score += engaged_by_bonus;
+                engaged_score = 1.0f;
             }
+
+            score *= engaged_score;
 
             return Math.Max(Math.Min(score, max_score), min_score);
         }

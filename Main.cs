@@ -30,6 +30,10 @@ namespace KingmakerAI
             internal float dungeon_experience_reward_per_stage_scaling { get; set; }
             internal float dungeon_cr_scaling { get; set; }
 
+            internal float ai_chance_to_hit_weight { get; set; }
+            internal float ai_distance_to_target_weight { get; set; }
+            internal float ai_engaged_by_target_weight { get; set; }
+
             internal Settings()
             {
 
@@ -43,6 +47,10 @@ namespace KingmakerAI
                     dungeon_corrupted_unit_chance = Math.Max(Math.Min(100, (int)jo["dungeon_corrupted_unit_chance"]), 0);
                     dungeon_experience_reward_per_stage_scaling = Math.Max((float)jo["dungeon_experience_reward_per_stage_scaling"], 0.0f);
                     dungeon_cr_scaling = Math.Max((float)jo["dungeon_cr_scaling"], 0.0f);
+
+                    ai_chance_to_hit_weight = Math.Min(Math.Max((float)jo["ai_chance_to_hit_weight"], 0.0f), 1.0f);
+                    ai_distance_to_target_weight = Math.Min(Math.Max((float)jo["ai_distance_to_target_weight"], 0.0f), 1.0f);
+                    ai_engaged_by_target_weight = Math.Min(Math.Max((float)jo["ai_engaged_by_target_weight"], 0.0f), 1.0f);
                 }
             }
         }
