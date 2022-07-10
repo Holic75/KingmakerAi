@@ -2,7 +2,7 @@
   "Id": "KingmakerAI",
   "DisplayName": "Kingmaker AI",
   "Author": "Holic75",
-  "Version": "0.48",
+  "Version": "0.49",
   "ManagerVersion": "0.13.0",
   "Requirements": [ "ProperFlanking2"],
   "AssemblyName": "KingmakerAI.dll",

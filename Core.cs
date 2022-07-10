@@ -38,8 +38,29 @@ namespace KingmakerAI
             fixMeleeClerics();
             fixBards();
             fixGoblinShaman();
+            fixDrawEldritchArcher();
 
             fixAbilities();
+        }
+
+
+        static void fixDrawEldritchArcher()
+        {
+            var eldritch_archer = Profiles.ProfileManager.getProfile("EldritchArcher");
+            var draw_magus_feature = library.Get<BlueprintFeature>("2fbadb17e2953d34da6684c3e75b5536");
+            var draw_magus_brain = library.Get<BlueprintBrain>("3bd2bbf70d1ee8449910750aeee53c93");
+            draw_magus_brain.Actions = eldritch_archer.brain.Actions;
+            var weapon_selections = new SelectionEntry[]
+            {
+                Profiles.ProfileManager.createParametrizedFeatureSelection(Profiles.ProfileManager.Feats.weapon_focus, Kingmaker.Enums.WeaponCategory.LightCrossbow),
+                Profiles.ProfileManager.createParametrizedFeatureSelection(Profiles.ProfileManager.Feats.weapon_specialization, Kingmaker.Enums.WeaponCategory.LightCrossbow),
+            };
+
+
+            var old_acl = draw_magus_feature.GetComponent<AddClassLevels>();
+            Profiles.ProfileManager.replaceAcl(old_acl, eldritch_archer.getAcl(old_acl.Levels, weapon_selections));
+            draw_magus_feature.RemoveComponents<AddFacts>();
+            draw_magus_feature.AddComponent(Helpers.CreateAddFacts(eldritch_archer.getFeatures(old_acl.Levels)));
         }
 
         static void fixAbilities()

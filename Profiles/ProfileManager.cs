@@ -4,6 +4,7 @@ using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.Controllers.Brain.Blueprints;
 using Kingmaker.Controllers.Brain.Blueprints.Considerations;
+using Kingmaker.Enums;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Abilities.Components;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
@@ -381,6 +382,7 @@ namespace KingmakerAI.Profiles
             createClericCasterNegative();
             createBardProfile();
             createClericFighter();
+            createEldritchArcher();
         }
 
 
@@ -404,6 +406,17 @@ namespace KingmakerAI.Profiles
             selection_entry.Features = features;
 
             return selection_entry;
+        }
+
+
+        static public SelectionEntry createParametrizedFeatureSelection(BlueprintParametrizedFeature feature, WeaponCategory weapon_category)
+        {
+            var weapon_focus = new SelectionEntry();
+            weapon_focus.IsParametrizedFeature = true;
+            weapon_focus.ParametrizedFeature = feature;
+            weapon_focus.ParamWeaponCategory = weapon_category;
+
+            return weapon_focus;
         }
     }
 }

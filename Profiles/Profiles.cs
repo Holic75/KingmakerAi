@@ -6,6 +6,7 @@ using Kingmaker.EntitySystem.Stats;
 using Kingmaker.Enums;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.ActivatableAbilities;
+using Kingmaker.UnitLogic.Buffs.Blueprints;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -987,7 +988,7 @@ namespace KingmakerAI.Profiles
                                       StatType.Dexterity,
                                       new StatType[] { StatType.SkillPersuasion, StatType.SkillPerception, StatType.SkillMobility, StatType.SkillThievery, StatType.SkillPersuasion });
 
-            profile.addMemorizedSpells(Spells.grease, Spells.remove_fear, Spells.hideous_laughter, Spells.ear_piercing_scream, Spells.feather_step,
+            profile.addSelectedSpells(Spells.grease, Spells.remove_fear, Spells.hideous_laughter, Spells.ear_piercing_scream, Spells.feather_step,
                                        Spells.heroism, NewSpells.blistering_invective, Spells.eagles_splendor, Spells.sound_burst, Spells.cats_grace, 
                                        Spells.haste, Spells.good_hope, Spells.confusion, Spells.thudnering_drums, Spells.feather_step_mass,
                                        Spells.echolocation, Spells.dominate_person, Spells.see_invisibility_communal, Spells.shout, Spells.freedom_of_movement,
@@ -1496,6 +1497,89 @@ namespace KingmakerAI.Profiles
 
             profile.addFeatureSelection(FeatSelections.channel_energy_selection, ClassAbilities.channel_positive);
             profile.addFeatureSelection(FeatSelections.channel_energy_selection, ClassAbilities.channel_negative);
+            registerProfile(profile);
+        }
+
+
+        static void createEldritchArcher()
+        {
+            var profile = new Profile("EldritchArcher",
+                                      Classes.magus,
+                                      StatType.Strength,
+                                      new StatType[] { StatType.SkillMobility, StatType.SkillKnowledgeArcana, StatType.SkillKnowledgeWorld, StatType.SkillUseMagicDevice },
+                                      Archetypes.eldritch_archer
+                                      );
+
+            profile.addMemorizedSpells(Spells.snow_ball, Spells.reduce_person, Spells.shield, Spells.snow_ball, Spells.snow_ball, Spells.snow_ball, Spells.snow_ball,
+                                       Spells.mirror_image, Spells.scorching_ray, Spells.blur, Spells.scorching_ray, Spells.scorching_ray, Spells.scorching_ray,
+                                       Spells.haste, NewSpells.ray_of_exhaustion, NewSpells.channel_vigor, NewSpells.ray_of_exhaustion,
+                                       Spells.greater_invisibility, Spells.controlled_fireball, Spells.controlled_fireball, Spells.controlled_fireball, Spells.controlled_fireball,
+                                       Spells.fire_snake, Spells.fire_snake, Spells.fire_snake, Spells.fire_snake, Spells.fire_snake, Spells.fire_snake,
+                                       Spells.hell_fire_ray, Spells.hell_fire_ray, Spells.disintegrate, Spells.disintegrate, Spells.hell_fire_ray
+                                      );
+     
+            profile.setAiActions(//no cantrips
+                AiActions.attack_action,
+                //1
+                getSelfSpell(Spells.reduce_person, 2, is_precast: true, combat_count: 1),
+                getSelfSpell(Spells.shield, 2,  is_precast: true, combat_count: 1),
+                getSingleTargetAiSpell(Spells.snow_ball, 2, is_ally: false),
+                //2
+                getSelfSpell(Spells.mirror_image, 3, is_precast: true, combat_count: 1),
+                getSelfSpell(Spells.blur, 3, is_precast: true, combat_count: 1),
+                getSingleTargetAiSpell(Spells.scorching_ray, 3, is_ally: false),
+                //3
+                getAoeAiSpell(Spells.haste, 54, is_ally: true, combat_count: 1),
+                getSelfSpell(NewSpells.channel_vigor, 4, combat_count: 1, variant: NewSpells.channel_vigor.Variants[1]),
+                getSingleTargetAiSpell(NewSpells.ray_of_exhaustion, 3, is_ally: false),
+                //4
+                getSelfSpell(Spells.greater_invisibility, 5, combat_count: 1),
+                getAoeAiSpell(Spells.controlled_fireball, 5f, is_ally: false, affects_allies: false),
+                //5
+                getAoeAiSpell(Spells.fire_snake, 6, is_ally: false, affects_allies: false),
+                 //6
+                getSingleTargetAiSpell(Spells.hell_fire_ray, 7, is_ally: false),
+                getSingleTargetAiSpell(Spells.disintegrate, 7, is_ally: false, extra_target_consideration: new Consideration[] { Considerations.light_armor_consideration }),
+
+                getSelfSpell(Arcana.arcane_weapon_switch, 101, combat_count: 1),
+                getSelfSpell(Arcana.prescient_attack, 100, cooldown_rounds: 1),
+                getSelfSpell(Arcana.aracne_accuracy, 99, cooldown_rounds: 1)
+                );
+
+            var free_spells = new BlueprintAbility[]
+            {
+                Spells.reduce_person, Spells.shield, Spells.mirror_image, Spells.blur
+            };
+
+            //feats
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.point_blank_shot);//0
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.precise_shot);//1
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.rapid_shot); //3
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.toughness); //5
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.weapon_focus);//7
+            //to specialize on profile instantiation
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.many_shot);//9
+            
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.improved_initiative); //11
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.combat_casting); //13
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.spell_focus); //15
+            profile.addParametrizedFeatureSelection(Feats.spell_focus, SpellSchool.Evocation);
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.improved_precise_shot); //17
+            profile.addFeatureSelection(FeatSelections.basic_feat, Feats.greater_spell_focus); //19
+            profile.addParametrizedFeatureSelection(Feats.greater_spell_focus, SpellSchool.Evocation);
+
+
+            profile.addFeatureSelection(FeatSelections.magus_feat, Feats.dodge);//5
+            profile.addFeatureSelection(FeatSelections.magus_feat, Feats.clustered_shots);//11
+            profile.addFeatureSelection(FeatSelections.magus_feat, Feats.weapon_specialization);//17
+
+            profile.addFeatureSelection(FeatSelections.magus_arcana, ClassAbilities.arcane_accuracy);
+            profile.addFeatureSelection(FeatSelections.magus_arcana, ClassAbilities.prescient_strike);
+            profile.addFeatureSelection(FeatSelections.magus_arcana, ClassAbilities.enduring_blade);
+
+            profile.addFeatureComponent(0, Helpers.CreateAddFacts(library.Get<BlueprintBuff>("91e4b45ab5f29574aa1fb41da4bbdcf2"), //spell combat
+                                                                  library.Get<BlueprintBuff>("06e0c9887eb1724409977dac7168bfd7") //spell strike
+                                        ));
             registerProfile(profile);
         }
     }

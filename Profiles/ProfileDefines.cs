@@ -58,6 +58,12 @@ namespace KingmakerAI.Profiles
         }
 
 
+        public static class Archetypes
+        {
+            static internal BlueprintArchetype eldritch_archer = library.Get<BlueprintArchetype>("44388c01eb4a29d4d90a25cc0574320d");
+        }
+
+
         public static class AiActions
         {
             static public BlueprintAiCastSpell acid_splash_ai_action = library.Get<BlueprintAiCastSpell>("8cf4732cf870f8f4cbf760331c8f2696");
@@ -132,7 +138,9 @@ namespace KingmakerAI.Profiles
             public static BlueprintAbility haze_of_dreams = library.Get<BlueprintAbility>("40ec382849b60504d88946df46a10f2d");
             public static BlueprintAbility shield_of_faith = library.Get<BlueprintAbility>("183d5bb91dea3a1489a6db6c9cb64445");
             public static BlueprintAbility stunning_barrier = library.Get<BlueprintAbility>("a5ec7892fb1c2f74598b3a82f3fd679f");
-            
+            public static BlueprintAbility snow_ball = library.Get<BlueprintAbility>("9f10909f0be1f5141bf1c102041f93d9");
+            public static BlueprintAbility shield = library.Get<BlueprintAbility>("ef768022b0785eb43a18969903c537c4");
+
 
             public static BlueprintAbility aid = library.Get<BlueprintAbility>("03a9630394d10164a9410882d31572f0");
             public static BlueprintAbility hold_person = library.Get<BlueprintAbility>("c7104f7526c4c524f91474614054547e");
@@ -228,6 +236,7 @@ namespace KingmakerAI.Profiles
             public static BlueprintAbility magical_vestement = library.Get<BlueprintAbility>("2d4263d80f5136b4296d6eb43a221d7d");
             public static BlueprintAbility magical_vestement_armor = library.Get<BlueprintAbility>("956309af83352714aa7ee89fb4ecf201");
             public static BlueprintAbility haste = library.Get<BlueprintAbility>("486eaff58293f6441a5c2759c4872f98");
+            public static BlueprintAbility greater_invisibility = library.Get<BlueprintAbility>("ecaa0def35b38f949bd1976a6c9539e0");
             public static BlueprintAbility slow = library.Get<BlueprintAbility>("f492622e473d34747806bdb39356eb89");
             public static BlueprintAbility deep_slumber = library.Get<BlueprintAbility>("7658b74f626c56a49939d9c20580885e");
             public static BlueprintAbility spiked_pit = library.Get<BlueprintAbility>("46097f610219ac445b4d6403fc596b9f");
@@ -293,6 +302,7 @@ namespace KingmakerAI.Profiles
             public static BlueprintAbility plague_storm = library.Get<BlueprintAbility>("82a5b848c05e3f342b893dedb1f9b446");
             public static BlueprintAbility waves_of_exhaustion = library.Get<BlueprintAbility>("3e4d3b9a5bd03734d9b053b9067c2f38");
             public static BlueprintAbility finger_of_death = library.Get<BlueprintAbility>("6f1dcf6cfa92d1948a740195707c0dbe");
+            public static BlueprintAbility disintegrate = library.Get<BlueprintAbility>("4aa7942c3e62a164387a73184bca3fc1");
 
             public static BlueprintAbility thudnering_drums = library.Get<BlueprintAbility>("c26eeeeabf732914ba723f2b67fe9b9d");
             public static BlueprintAbility cloak_of_dreams = library.Get<BlueprintAbility>("7f71a70d822af94458dc1a235507e972");
@@ -397,8 +407,11 @@ namespace KingmakerAI.Profiles
 
             public static BlueprintFeature ability_focus_bombs = library.Get<BlueprintFeature>("f864101ab0cdb4b418c7d62d2b24eee5");
             public static BlueprintFeature rapid_shot = library.Get<BlueprintFeature>("9c928dc570bb9e54a9649b3ebfe47a41");
+            public static BlueprintFeature many_shot = library.Get<BlueprintFeature>("adf54af2a681792489826f7fd1b62889");
             public static BlueprintFeature extra_bombs = library.Get<BlueprintFeature>("54c57ce67fa1d9044b1b3edc459e05e2");
+            public static BlueprintFeature clustered_shots = library.Get<BlueprintFeature>("f7de245bb20f12f47864c7cb8b1d1abb");
             public static BlueprintParametrizedFeature weapon_focus = library.Get<BlueprintParametrizedFeature>("1e1f627d26ad36f43bbd26cc2bf8ac7e");
+            public static BlueprintParametrizedFeature weapon_specialization = library.Get<BlueprintParametrizedFeature>("31470b17e8446ae4ea0dacd6c5817d86");
 
             public static BlueprintFeature selective_channel = library.Get<BlueprintFeature>("fd30c69417b434d47b6b03b9c1f568ff");
             public static BlueprintFeature extra_channel_cleric = library.Get<BlueprintFeature>("cd9f19775bd9d3343a31a065e93f0c47");
@@ -424,6 +437,8 @@ namespace KingmakerAI.Profiles
             public static BlueprintFeatureSelection domain_selection = library.Get<BlueprintFeatureSelection>("48525e5da45c9c243a343fc6545dbdb9");
             public static BlueprintFeatureSelection domain_selection2 = library.Get<BlueprintFeatureSelection>("43281c3d7fe18cc4d91928395837cd1e");
             public static BlueprintFeatureSelection war_domain_feat = library.Get<BlueprintFeatureSelection>("79c6421dbdb028c4fa0c31b8eea95f16");
+            public static BlueprintFeatureSelection magus_feat = library.Get<BlueprintFeatureSelection>("66befe7b24c42dd458952e3c47c93563");
+            public static BlueprintFeatureSelection magus_arcana = library.Get<BlueprintFeatureSelection>("e9dc4dfc73eaaf94aae27e0ed6cc9ada");
         }
 
         static public class Bloodlines
@@ -483,6 +498,10 @@ namespace KingmakerAI.Profiles
 
             public static BlueprintFeature channel_positive = library.Get<BlueprintFeature>("a79013ff4bcd4864cb669622a29ddafb");
             public static BlueprintFeature channel_negative = library.Get<BlueprintFeature>("3adb2c906e031ee41a01bfc1d5fb7eea");
+
+            public static BlueprintFeature arcane_accuracy = library.Get<BlueprintFeature>("2eacbdbf1c4f4134aa7fea99ab8763dc");
+            public static BlueprintFeature prescient_strike = library.Get<BlueprintFeature>("a3909a7293533fe49a2d7cfe051f17e4");
+            public static BlueprintFeature enduring_blade = library.Get<BlueprintFeature>("7a73bf165e8eda6478b4419f857d1ab5");
         }
 
 
@@ -523,6 +542,14 @@ namespace KingmakerAI.Profiles
             public static BlueprintAbility smilodon = library.Get<BlueprintAbility>("32f1f208ad635224f89ef158140ab509");
             public static BlueprintAbility shambling_mound = library.Get<BlueprintAbility>("943d41b6aaef1dc4e82f115118dbf902");
             public static BlueprintAbility treant = library.Get<BlueprintAbility>("6356f85d679148dd8bb064aebf85aa37");
+        }
+
+
+        static class Arcana
+        {
+            public static BlueprintAbility aracne_accuracy = library.Get<BlueprintAbility>("1b7fb8120390ca24c9da98ce87780b7f");
+            public static BlueprintAbility prescient_attack = library.Get<BlueprintAbility>("fa12d155c229c134dbbbebf0d7b980f0");
+            public static BlueprintAbility arcane_weapon_switch = library.Get<BlueprintAbility>("3c89dfc82c2a3f646808ea250eb91b91");
         }
 
 
